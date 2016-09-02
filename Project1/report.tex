@@ -21,8 +21,8 @@
 \newcommand{\dx}{{\Delta x}}
 
 
-\section{Introduction}
-\subsection{Description of the nature of the problem}
+\section*{Introduction}
+\subsection*{Description of the nature of the problem}
 \textbf{Her kan Jonas kanskje skrive noe om fysikken?}
 
 
@@ -37,8 +37,8 @@ The analytical solution is given by
 \caption{Plotting \eqref{eq:u_analytical} with Wolfram Alpha}
 \end{figure}
 
-\section{Numerical methods}
-\subsection{Deriving a numerical scheme}
+\section*{Solution}
+\subsection*{a) Deriving a numerical scheme}
 Having reduced the problem to a purely mathematical one, we're left with the following ODE with Dirichlet boundary conditions
 \begin{equation}
     -u''(x) = f(x), \quad x\in(0,1), \quad u(0) = u(1) = 0
@@ -98,10 +98,16 @@ Notice that $a_1$ and $c_{n}$ does not appear in the matrix although they are pr
 
 
 
-\subsection{The algorithm}
+\subsection*{b) A general algorithm for solving an equation with a tridiagonal matrix}
+
+\subsection*{c) A more specialized algorithm}
+
+\subsection*{d) Studying the error}
+
+\subsection*{e) LU decomposition}
 
 
-\section{Results}
+%\section{Results}
 
 
 
