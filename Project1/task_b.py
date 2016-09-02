@@ -1,6 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+def u(x):
+	return 1-(1-np.exp(-10))*x-np.exp(-10*x)
+
 def solve(f_func, n, a, b, c):
 	x = np.linspace(0, 1, n)
 	h = x[1] - x[0]
@@ -35,6 +38,11 @@ c = np.full(n-1, -1)
 
 f_func = lambda x: 100*np.exp(-10*x)
 
-u, x = solve(f_func, n, a, b, c)
-plt.plot(x, u)
+u_10, x_10 = solve(f_func, 10, a, b, c)
+u_100, x_100 = solve(f_func, 100, a, b, c)
+u_1000, x_1000 = solve(f_func, 1000, a, b, c)
+
+
+
+plt.plot(x_10, u_10, x_100, u_100, x_1000, u_1000, x_1000, u(x_1000))
 plt.show()
