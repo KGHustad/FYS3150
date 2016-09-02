@@ -8,7 +8,7 @@ def f_func(x):
 	return 100*np.exp(-10*x)
 
 def solve_specific(f_func, n):
-	x = np.linspace(0,1,n+2)
+	x = np.linspace(0, 1, n+2)
 	h = x[1] - x[0]
 	f = f_func(x)*h**2
 	u = np.zeros(n+2)
