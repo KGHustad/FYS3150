@@ -1,48 +1,38 @@
-import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
 
-def u(x):
+def u_func(x):
 	return 1-(1-np.exp(-10))*x-np.exp(-10*x)
 
-def solve(f_func, n, a, b, c):
+def f_func(x):
+	return 100*np.exp(-10*x)
+
+def solve_general(f_func, n, a, b, c):
 	x = np.linspace(0, 1, n)
 	h = x[1] - x[0]
 	f = f_func(x)*h**2
 	u = np.zeros(n)
 
-	a_marked = np.zeros(n)
-	a_marked[0] = a[0]
-
-	b_marked = np.zeros(n)
-	b_marked[0] = b[0]
-
-	f_marked = np.zeros(n)
-
-	for i in range(1,n): #Forward Substitution
-		a_marked[i] = a[i] - (b[i-1]*c[i])/a_marked[i-1]        # 3 FLOPS
-		f_marked[i] = f[i] - f_marked[i-1]*c[i]/a_marked[i-1]   # 3 FLOPS
+	for i in range(2,n): #Forward Substitution
+		a[i] = a[i] - (b[i-1]*c[i])/a[i-1]        # 3 FLOPS
+		f[i] = f[i] - f[i-1]*c[i]/a[i-1]   # 3 FLOPS
 
 	#Backward Substitution
-	u[n-2] = f_marked[n-1]/float(a_marked[n-1])
+	u[n-2] = f[n-1]/float(a[n-1])
 
 	for i in range(n-3,0,-1):
-		u[i] = (f_marked[i] - b[i]*u[i+1]) / a_marked[i]          # 3 FLOPS
+		u[i] = (f[i] - b[i]*u[i+1]) / a[i]          # 3 FLOPS
 
 	return u, x
 
-n = 100000
+def plot_func(f_func, n, a, b, c):
+	u, x = solve_general(f_func, n, a, b, c)
+	plt.plot(x, u, x, u_func(x))
 
-a = np.full(n, 2, dtype=np.float64)
-b = np.full(n-1, -1, dtype=np.float64)
-c = np.full(n-1, -1, dtype=np.float64)
-
-f_func = lambda x: 100*np.exp(-10*x)
-
-u_10, x_10 = solve(f_func, 10, a, b, c)
-u_100, x_100 = solve(f_func, 100, a, b, c)
-u_1000, x_1000 = solve(f_func, 1000, a, b, c)
-
-
-
-plt.plot(x_10, u_10, x_100, u_100, x_1000, u_1000, x_1000, u(x_1000))
+for n in ([10,100,1000]):
+	a = np.full(n, 2, dtype=np.float64)
+	b = np.full(n-1, -1, dtype=np.float64)
+	c = np.full(n, -1, dtype=np.float64)
+	plot_func(f_func, n, a, b, c)
 plt.show()
+
