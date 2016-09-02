@@ -19,8 +19,8 @@ def solve(f_func, n, a, b, c):
 	f_marked = np.zeros(n)
 
 	for i in range(1,n): #Forward Substitution
-		a_marked[i] = a[i] - (b[i-1]*c[i-1])/a_marked[i-1]        # 3 FLOPS
-		f_marked[i] = f[i] - f_marked[i-1]*c[i-1]/a_marked[i-1]   # 3 FLOPS
+		a_marked[i] = a[i] - (b[i-1]*c[i])/a_marked[i-1]        # 3 FLOPS
+		f_marked[i] = f[i] - f_marked[i-1]*c[i]/a_marked[i-1]   # 3 FLOPS
 
 	#Backward Substitution
 	u[n-2] = f_marked[n-1]/float(a_marked[n-1])
@@ -34,7 +34,7 @@ n = 100000
 
 a = np.full(n, 2, dtype=np.float64)
 b = np.full(n-1, -1, dtype=np.float64)
-c = np.full(n-1, -1, dtype=np.float64s)
+c = np.full(n-1, -1, dtype=np.float64)
 
 f_func = lambda x: 100*np.exp(-10*x)
 
