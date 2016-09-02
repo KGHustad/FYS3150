@@ -14,14 +14,14 @@ def solve_general(f_func, n, a, b, c):
 	u = np.zeros(n+2)
 
 	for i in range(2,n+1): #Forward Substitution
-		a[i] = a[i] - (b[i-1]*c[i])/a[i-1]        # 3 FLOPS
-		f[i] = f[i] - f[i-1]*c[i]/a[i-1]   # 3 FLOPS
+		a[i] = a[i] - (b[i-1]*c[i])/a[i-1]	# 3 FLOPS
+		f[i] = f[i] - f[i-1]*c[i]/a[i-1]	# 3 FLOPS
 
 	#Backward Substitution
 	u[n] = f[n]/float(a[n])
 
 	for i in range(n-1,0,-1):
-		u[i] = (f[i] - b[i]*u[i+1]) / a[i]          # 3 FLOPS
+		u[i] = (f[i] - b[i]*u[i+1]) / a[i]	# 3 FLOPS
 
 	return u, x
 
