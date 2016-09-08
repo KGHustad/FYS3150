@@ -2,6 +2,7 @@ LATEX=pdflatex
 LATEX_OPTS=
 report_texdoc=report.tex
 report_pdf=report.pdf
+PLOT_OPTS=--dont_show
 programs=task_b.py
 
 plots = fig/plot_b.pdf
@@ -15,4 +16,4 @@ $(report_pdf): $(report_texdoc) $(plots)
 	$(LATEX) $(LATEX_OPTS) $(report_texdoc)
 plots: $(plots)
 $(plots): $(programs)
-	python task_b.py
+	python task_b.py $(PLOT_OPTS)

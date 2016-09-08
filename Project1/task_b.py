@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
 
 from common import *
 
@@ -46,4 +47,5 @@ if __name__ == '__main__':
     plt.legend(legend)
     plt.savefig('fig/plot_b.png')
     plt.savefig('fig/plot_b.pdf')
-    plt.show()
+    if not "--dont_show" in sys.argv:
+        plt.show()
