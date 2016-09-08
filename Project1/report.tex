@@ -5,12 +5,15 @@
 \usepackage{graphicx}
 \usepackage{parskip}
 \usepackage{lmodern}
+\usepackage{algorithm}
+%\usepackage{algorithmic}
+\usepackage{algpseudocode}
 
 
 \begin{document}
 \title{FYS3150 -- Project 1}
-\author{Kristian Gregorius Hustad \\
-        Jonas Gahr Sturtzel Lunde}
+\author{Kristian Gregorius Hustad (\texttt{krihus})\\
+        Jonas Gahr Sturtzel Lunde (\texttt{jonassl})}
 %\date{}    % if commented out, the date is set to the current date
 
 \maketitle
@@ -99,6 +102,30 @@ Notice that $a_1$ and $c_{n}$ does not appear in the matrix although they are pr
 
 
 \subsection*{b) A general algorithm for solving an equation with a tridiagonal matrix}
+We can solve $A {\bf v} = {\bf s}$ for any tridiagonal matrix $A$ with standard Gaussian elimination. Since most of the matrix elements are zero, we choose to represent the matrix as three arrays, \texttt{a}, \texttt{b}, and \texttt{c}.
+
+\begin{algorithm}
+\caption{Gaussian elimination for a tridiagonal matrix} \label{alg:gaussian-general-tridiagonal}
+\begin{algorithmic}[1]
+  \For {$i \gets 2, \dots, n$} \Comment{Forward substitution eliminating $a_i$}
+    \State $b_i \gets b_i - c_{i-1}\cdot \frac{a_i}{b_{i-1}}$ \Comment{Update $b_i$}
+    \State $s_i \gets s_i - s_{i-1}\cdot \frac{a_i}{b_{i-1}}$ \Comment{Update $s_i$}
+    \State $a_i \gets a_i - b_{i-1}\cdot \frac{a_i}{b_{i-1}} = 0$ \Comment{Set $a_i$ to 0 (can be skipped)}
+  \EndFor
+
+  \Statex \Comment{Backward substitution obtaining $v_i$}
+  \State $v_n \gets \frac{s_n}{a_n}$
+  \For {$i \gets n-1, \dots, 1$}
+    \State $v_i \gets \frac{s_i - b_i v_{i+1}}{a_i}$
+  \EndFor
+\end{algorithmic}
+\end{algorithm}
+
+\begin{figure}[ht]
+\includegraphics[width=\textwidth]{fig/plot_b}
+\caption{Approximation to $u$ by algorithm \ref{alg:gaussian-general-tridiagonal}}
+\end{figure}
+
 
 \subsection*{c) A more specialized algorithm}
 
