@@ -44,8 +44,12 @@ if __name__ == '__main__':
     plt.plot(x, u_func(x))
     legend.append('Analytical sol.')
 
+    # make plot look great
     plt.legend(legend)
-    plt.savefig('fig/plot_b.png')
+    plt.xlabel('x')
+    plt.ylabel('u')
+
+    #plt.savefig('fig/plot_b.png')
     plt.savefig('fig/plot_b.pdf')
     if not "--dont_show" in sys.argv:
         plt.show()

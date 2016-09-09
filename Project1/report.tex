@@ -1,23 +1,41 @@
 \documentclass[a4paper]{article}
+
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc,url}
+\usepackage{hyperref}
 \usepackage{amsmath, amssymb}
 \usepackage{graphicx}
 \usepackage{parskip}
 \usepackage{lmodern}
 \usepackage{algorithm}
-%\usepackage{algorithmic}
 \usepackage{algpseudocode}
+\usepackage{epigraph}
 
 
 \begin{document}
 \title{FYS3150 -- Project 1}
-\author{Kristian Gregorius Hustad (\texttt{krihus})\\
-        Jonas Gahr Sturtzel Lunde (\texttt{jonassl})}
+\author{
+    \begin{tabular}{r l}
+        Kristian Gregorius Hustad & (\texttt{krihus})\\
+        Jonas Gahr Sturtzel Lunde & (\texttt{jonassl})
+    \end{tabular}}
 %\date{}    % if commented out, the date is set to the current date
 
 \maketitle
 
+\setlength{\epigraphwidth}{0.7\textwidth}
+\renewcommand{\epigraphflush}{center}
+\renewcommand{\beforeepigraphskip}{70pt}
+\renewcommand{\epigraphsize}{\normalsize}
+\epigraph{The first principle is that you must not fool yourself -- and you are the easiest person to fool.}{\textit{Richard Feynman}}
+
+\vfill
+
+\begin{center}
+    GitHub repository at \url{https://github.com/KGHustad/FYS3150}
+\end{center}
+
+\newpage
 
 %%% MACROS
 \newcommand{\half}{\frac{1}{2}}
