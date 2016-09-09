@@ -17,3 +17,5 @@ $(report_pdf): $(report_texdoc) $(plots)
 plots: $(plots)
 $(plots): $(programs)
 	python task_b.py $(PLOT_OPTS)
+show: report
+	evince $(report_pdf) &
