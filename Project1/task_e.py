@@ -20,11 +20,24 @@ def make_matrix(n):
     return matrix
 
 def LU_solve(n):
-    p,l,u = sci.lu(make_matrix(n))
-    x = np.linspace(0, 1, n)
+    matrix = make_matrix(n)
+    p,l,u = sci.lu(matrix)
+    x = np.linspace(0, 1, n+2)
     h = x[1]-x[0]
-    f = f_func(x)*h**2
+    f = f_func(x)[1:-1]*h**2
     y = np.linalg.solve(l,f)
-    return np.linalg.solve(u,y)
+    v_inner = np.linalg.solve(u,y)
+    v = np.zeros(n+2)
+    v[1:-1] = v_inner[:]
+    return x, v
 
-print LU_solve(10)
+if __name__ == '__main__':
+    x = np.linspace(0,1,1002)
+    plt.plot(x,u_func(x))
+    x, y = LU_solve(10)
+    plt.plot(x,y)
+    x,y = LU_solve(100)
+    plt.plot(x,y)
+    x,y = LU_solve(10000)
+    plt.plot(x,y)
+    plt.show()
