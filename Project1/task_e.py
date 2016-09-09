@@ -11,17 +11,15 @@ def make_matrix(n):
     matrix[0,1] = -1
     matrix[-1,-1] = 2
     matrix[-1,-2] = -1
-    for i in range(1,n-1):
-        array = np.zeros(n)
-        array[i-1] = -1
-        array[i] = 2
-        array[i+1] = -1
-        matrix[i] = array
+    for i in xrange(1,n-1):
+        matrix[i,i-1] = -1
+        matrix[i,i] = 2
+        matrix[i,i+1] = -1
     return matrix
 
 def LU_solve(n):
     matrix = make_matrix(n)
-    p,l,u = sci.lu(matrix)
+    p,l,u = sci.lu(matrix, overwrite_a=True)
     x = np.linspace(0, 1, n+2)
     h = x[1]-x[0]
     f = f_func(x)[1:-1]*h**2
@@ -34,10 +32,9 @@ def LU_solve(n):
 if __name__ == '__main__':
     x = np.linspace(0,1,1002)
     plt.plot(x,u_func(x))
-    x, y = LU_solve(10)
-    plt.plot(x,y)
-    x,y = LU_solve(100)
-    plt.plot(x,y)
-    x,y = LU_solve(10000)
-    plt.plot(x,y)
+
+    n_values = [10, 100, 1000, 4000]
+    for n in n_values:
+        x, y = LU_solve(n)
+        plt.plot(x,y)
     plt.show()
