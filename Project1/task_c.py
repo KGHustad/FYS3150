@@ -27,14 +27,12 @@ def plot_func(f_func, n):
     x, v = solve_specific(f_func, n)
     plt.plot(x, v, x, u_func(x))
 
-"""
 for n in ([10,100,1000]):
     a = np.full(n+2, 2, dtype=np.float64)
     b = np.full(n+2, -1, dtype=np.float64)
     c = np.full(n+2, -1, dtype=np.float64)
     plot_func(f_func, n)
 plt.show()
-"""
 
 
 def CPU_time(n):
@@ -54,7 +52,6 @@ def CPU_time(n):
     print "Specific function run-time: %f seconds" % (time.time() - start_time)
 
 #CPU_time(10**6)
-
 
 def error_solver(i):
     for n in (i):
