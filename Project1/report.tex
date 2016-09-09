@@ -42,24 +42,47 @@
 \newcommand{\dx}{{\Delta x}}
 
 
-\section*{Introduction}
-\subsection*{Description of the nature of the problem}
+\section{Introduction}
+%\subsection*{Description of the nature of the problem}
+
+In this project, we aim to find a numerical solution to the following ODE with Dirichlet boundary conditions
+\begin{equation}
+    -u''(x) = f(x), \quad x\in(0,1), \quad u(0) = u(1) = 0
+    \label{eq:ddu_dxx_cont}
+\end{equation}
+
 \textbf{Her kan Jonas kanskje skrive noe om fysikken?}
 
+\section{Discussion methods}
+\subsection{An analytical solution}
 
-The analytical solution is given by
+With
+\begin{equation}
+    f(x) = 100e^{-10x}
+\end{equation}
+
+the analytical solution is given by
 \begin{equation}
     u(x) = 1-(1-e^{-10})x-e^{-10x}
     \label{eq:u_analytical}
 \end{equation}
+
+We can easily check that \eqref{eq:u_analytical} is in fact a solution.
+
+\begin{align*}
+    \frac{d^2}{dx^2}  u(x)
+    &= \frac{d^2}{dx^2} \left( 1-(1-e^{-10})x-e^{-10x} \right) \\
+    &= \frac{d}{dx} \left( (1-e^{-10})+10e^{-10x} \right) \\
+    &= -100e^{-10x} \\
+    &= -f(x)
+\end{align*}
 
 \begin{figure}[ht]
 \includegraphics[width=\textwidth]{fig/exact_solution_wolfram_alpha_plot}
 \caption{Plotting \eqref{eq:u_analytical} with Wolfram Alpha}
 \end{figure}
 
-\section*{Solution}
-\subsection*{a) Deriving a numerical scheme}
+\subsection{Deriving a numerical scheme}
 Having reduced the problem to a purely mathematical one, we're left with the following ODE with Dirichlet boundary conditions
 \begin{equation}
     -u''(x) = f(x), \quad x\in(0,1), \quad u(0) = u(1) = 0
@@ -119,7 +142,7 @@ Notice that $a_1$ and $c_{n}$ does not appear in the matrix although they are pr
 
 
 
-\subsection*{b) A general algorithm for solving an equation with a tridiagonal matrix}
+\subsection{A general algorithm for solving an equation with a tridiagonal matrix}
 We can solve $A {\bf v} = {\bf s}$ for any tridiagonal matrix $A$ with standard Gaussian elimination. Since most of the matrix elements are zero, we choose to represent the matrix as three arrays, \texttt{a}, \texttt{b}, and \texttt{c}.
 
 \begin{algorithm}
