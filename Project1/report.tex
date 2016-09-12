@@ -69,7 +69,7 @@ where the source term, $f(x)$, is a known function.
 
 We derive a numerical scheme, which we solve as a matrix equation, by viewing the scheme as a set of linear equation, which can be mapped onto a tridiagonal matrix. We devise a general solution by gaussian elimination, which we then specialize, and lastly we solve the matrix equation by LU-factorization.
 
-In section \ref{sec:methods}, we derive and analyze the algorithms, and in section \ref{sec:results}, we discuss the implementation and analyze the performance of the algoritms. Finally, a conclusion is given in section \ref{sec:conclusion}.
+In section \ref{sec:methods}, we derive and analyze the algorithms, and in section \ref{sec:implementation_and_results}, we discuss the implementation and analyze the performance of the algoritms. Finally, a conclusion is given in section \ref{sec:conclusion}.
 
 \section{Discussion of methods}\label{sec:methods}
 \subsection{An analytical solution}
@@ -125,7 +125,7 @@ Therefore, it is instructive to plot the exact solution here, before we proceed 
 
 \begin{figure}[ht]
 \includegraphics[width=\textwidth]{fig/plot_exact}
-\caption{Plotting \eqref{eq:u_analytical} with Wolfram Alpha}
+\caption{Plotting the analytical solution, \eqref{eq:u_analytical}}
 \end{figure}
 
 \subsection{Deriving a numerical scheme}
