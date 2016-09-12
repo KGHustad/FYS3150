@@ -53,10 +53,11 @@ TODO
 %%% MACROS
 \newcommand{\half}{\frac{1}{2}}
 \newcommand{\dx}{{\Delta x}}
+\newcommand{\bigO}{{\mathcal{O}}}
 
 
 
-\section{Introduction}
+\section{Introduction}\label{sec:intro}
 %\subsection*{Description of the nature of the problem}
 
 In this project, we aim to find a numerical solution to the following ODE with Dirichlet boundary conditions
@@ -130,13 +131,50 @@ Therefore, it is instructive to plot the exact solution here, before we proceed 
 
 \subsection{Deriving a numerical scheme}
 Deriving a numerical scheme for solving \eqref{eq:ddu_dxx_cont} by the finite difference method is rather trivial.
-We discretize $u(x), \quad x \in [0, 1]$ as $n+2$ ($n$ excluding the boundaries) equally spaced points $v_0, \dots, v_{n+1}$. To denote the set of indices for the points, we employ notation from \cite{hpl_fdm} and introduce $\mathcal{I} = \{ i \mid i \in \mathbb{Z}, 0 \leq i \leq n + 1\}$ and for the inner points (viz. excluding the boundaries) $\mathcal{I}_i = \{ i \mid i \in \mathbb{Z}, 0 < i < n + 1\}$.
+
+\subsubsection{Taylor expansion}
+A differentiable function $g(x)$ can be written as
+
+\begin{equation}
+    g(x) = \sum_{n=0} \frac{g^{(n)}(a)}{n!} (x-a)^n
+\end{equation}
+
+If we want our approximation to be accurate, $|x - a|$ should be close to zero. To ease further notation, we introduce $d = (x - a)$, we get
+
+\begin{align}
+    g(a+d)
+    &= \sum_{n=0} \frac{g^{(n)}(a)}{n!} d^n \nonumber \\
+    &= g(a) + g'(a) d + \frac{g''(a)}{2!} d^2 + \frac{g'''(a)}{3!} d^3
+            + \frac{g''''(a)}{4!} d^4 + \dots \label{eq:taylor_forward}\\
+    g(a-h)
+    &= \sum_{n=0} \frac{f^{(n)}(a)}{n!} (-d)^n \nonumber \\
+    &= g(a) - g'(a) d + \frac{g''(a)}{2!} d^2 - \frac{g'''(a)}{3!} d^3
+            + \frac{g''''(a)}{4!} d^4 + \dots \label{eq:taylor_backward}
+\end{align}
+
+The traditional application for such an expansion is to approximate the value of $g$ in a point $x$ close to another point $a$, where $g$ and its derivatives are easy to evaluate. However, we shall take a different view. Recall from section \ref{sec:intro} that we know $u''(x)$ -- what we're after is $u(x)$. We see that the sum of \eqref{eq:taylor_forward} and \eqref{eq:taylor_backward} becomes
+
+\begin{align}
+    g(a+d) + g(a-d)
+        &= 2\left( g(a) + \frac{g''(a)}{2!} d^2 + \frac{g''''(a)}{3!} d^4 + \dots \right) \\
+        &= 2g(a) + g''(a) d^2 + \bigO(d^4)
+\end{align}
+
+Since we only know $g''(a)$ \footnote{In this case, we happen to have an analytical expression for $g''(x)$, which would let us find $g''''(x)$ and find an even more accurate formula, but that approach is not always feasible, so we will not explore it further here.}, we rewrite as
+
+\begin{equation}
+     g(a-d) - 2g(a) + g(a+d) = g''(a)d^2 + \bigO(d^4)
+\end{equation}
+
+\subsubsection{Discretization}
+We discretize $u(x), \quad x \in [0, 1]$ as $n+2$ ($n$ excluding the boundaries) equally spaced points $v_0, \dots, v_{n+1}$ so that $\dx = \frac{1 - 0}{n+1}$ and $v_i \approxeq u(i \dx)$. To denote the set of indices for the points, we employ notation from \cite{hpl_fdm} and introduce $\mathcal{I} = \{ i \mid i \in \mathbb{Z}, 0 \leq i \leq n + 1\}$ and for the inner points (excluding the boundaries) $\mathcal{I}_i = \{ i \mid i \in \mathbb{Z}, 0 < i < n + 1\}$.
 The boundary conditions imply
 \begin{equation}
 v_0 = v_{n+1} = 0
 \label{eq:boundaries_disc}
 \end{equation}
 The source term, $f(x), \quad x \in [0, 1]$ is discretized similarly. We can discretize \eqref{eq:ddu_dxx_cont} as
+\footnote{Here we take a slightly different approach, which is used extensively in \cite{hpl_fdm}, by first estimating the first derivate in two points and then the second derivative in the point in between.}
 
 \begin{align*}
 -[D_x D_x u]_i &= f_i \\
@@ -186,6 +224,8 @@ Being a system of linear equations, \eqref{eq:sys_lin_eq} can be rewritten as a 
 
 Notice that $a_1$ and $c_{n}$ do not appear in the matrix although they are present in the system of equations. As a consequence of the boundary conditions, we have \eqref{eq:boundaries_disc}, which in turn implies $a_1 v_{0} = a_1 \cdot 0 = 0$ and $c_n v_{n+1} = c_n \cdot 0 = 0$, hence we can omit $a_1$ and $c_{n}$ from the matrix.
 
+%\subsection{An estimate of the mathematical error}
+%\label{subsec:mathematical_error}
 
 
 \subsection{A general algorithm for solving an equation with a tridiagonal matrix}\label{subsec:gen_alg}
