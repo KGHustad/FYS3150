@@ -1,12 +1,18 @@
 # Project 1
 
-## Make targets
-To make the report run
+
+## Instructions
+To generate the report run
 ``` sh
 make report
 ```
 
-To display the report run
+To (generate if necessary and) display the report run
 ``` sh
 make show
 ```
+
+
+## Dependencies
+* Python 2 w/ SciPy stack
+* texlive with most of the bells and whistles
