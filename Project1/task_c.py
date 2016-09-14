@@ -8,18 +8,18 @@ from task_b import solve_general
 def solve_specific(f_func, n):
     x = np.linspace(0, 1, n+2)
     h = x[1] - x[0]
-    f = f_func(x)*h**2
+    s = f_func(x)*h**2
     v = np.zeros(n+2)
     a_func = lambda i: (i+1)/i
     a = a_func(np.arange(0,n+1, dtype=np.float64))
     a[0] = 0 #fysiker loesning
     for i in range(2,n+1):
-        f[i] = f[i] + f[i-1]/a[i-1] # 2 FLOP
+        s[i] = s[i] + s[i-1]/a[i-1] # 2 FLOP
 
-    v[n] = f[n]/float(a[n])
+    v[n] = s[n]/float(a[n])
 
     for i in range(n-1,0,-1):
-        v[i] = (f[i]+v[i+1])/a[i]   # 2 FLOP
+        v[i] = (s[i]+v[i+1])/a[i]   # 2 FLOP
 
     return x, v
 
