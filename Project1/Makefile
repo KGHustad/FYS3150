@@ -3,7 +3,7 @@ LATEX_OPTS=
 report_texdoc=report.tex
 report_pdf=report.pdf
 PLOT_OPTS=--dont_show
-plot_programs=plot_exact.py task_b.py
+plot_programs=src/plot_exact.py src/task_b.py
 
 plots = fig/plot_exact.pdf fig/plot_b.pdf
 
