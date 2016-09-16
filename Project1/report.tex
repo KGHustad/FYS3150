@@ -12,6 +12,7 @@
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{epigraph}
+\usepackage{listings}
 
 
 \begin{document}
@@ -358,10 +359,14 @@ We see that
     \epsilon(10N) = \epsilon(\frac{\dx}{10}) \approx \epsilon(N) - \log_{10}{100} = \epsilon(N) - 2
 \end{equation}
 
-That is, the error is $\Theta(h^2)$, which agrees with the derivations we made in section \ref{sec:taylor}
+That is, the error is $\Theta(h^2)$, which is in agreement with the derivations we made in section \ref{sec:taylor}.
 
 \subsection{Efficiency}
+We find that algorithm \ref{alg:gaussian-general-tridiagonal} takes about twice as long as algorithm \ref{alg:gaussian-special-tridiagonal} for a sufficiently large $n$.
 
+LU factorization, on the other hand, runs much slower.
+
+\lstinputlisting{bench_all.dat}
 
 \section{Conclusion}\label{sec:conclusion}
 

@@ -1,9 +1,7 @@
+import time
 from common import *
 
 def CPU_time(n):
-    import time
-    from task_b import solve_general
-
     a = np.full(n+2, -1, dtype=np.float64)
     b = np.full(n+2, 2, dtype=np.float64)
     c = np.full(n+2, -1, dtype=np.float64)
