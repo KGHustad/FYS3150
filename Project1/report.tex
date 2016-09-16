@@ -325,13 +325,13 @@ These observations gives rise to a new algorithm.
 \end{algorithmic}
 \end{algorithm}
 
-We see that algorithm \ref{alg:gaussian-special-tridiagonal} requires a number of floating point operations on the order of $4n$ \footnote{The computation of $b_i$ is not counted in as that operation can be vectorized, and in addition $b_i$ is never modified, so we would be able to reuse it for many sets of $v_i$.}, which is half of what algorithm \ref{alg:gaussian-general-tridiagonal} requires! 
+We see that algorithm \ref{alg:gaussian-special-tridiagonal} requires a number of floating point operations on the order of $4n$ \footnote{The computation of $b_i$ is not counted in as that operation can be vectorized, and in addition $b_i$ is never modified, so we would be able to reuse it for many sets of $v_i$.}, which is half of what algorithm \ref{alg:gaussian-general-tridiagonal} requires!
 
 \subsection{LU decomposition}
 
 
 \section{Implementation and results}\label{sec:implementation_and_results}
-We chose Python as our implementation language because it allows for rapid development and has a syntax which is very close to the algorithmic language we are translating from. For future project, we will consider using C++, but it's main advantage lies is the efficiency, which wasn't a big problem for our programs.
+We chose Python as our implementation language because it allows for rapid development and has a syntax which is very close to the algorithmic language we are translating from. For future projects, we will consider using C++, but it's main advantage lies is its efficiency, which wasn't a big problem with our programs.
 
 \begin{figure}[ht]
 \includegraphics[width=\textwidth]{fig/plot_b}

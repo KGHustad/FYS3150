@@ -1,7 +1,8 @@
 import scipy.linalg as sci
 import numpy as np
-from common import u_func, f_func
 import matplotlib.pyplot as plt
+import sys
+from common import *
 
 n = 10
 
@@ -30,11 +31,10 @@ def LU_solve(n):
     return x, v
 
 if __name__ == '__main__':
-    x = np.linspace(0,1,1002)
-    plt.plot(x,u_func(x))
-
     n_values = [10, 100, 1000, 4000]
-    for n in n_values:
-        x, y = LU_solve(n)
-        plt.plot(x,y)
-    plt.show()
+    plot_magic(n_values, LU_solve)
+
+    plt.savefig('fig/plot_e.pdf')
+
+    if not '--dont_show' in sys.argv:
+        plt.show()
