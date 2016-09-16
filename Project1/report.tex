@@ -133,6 +133,7 @@ Therefore, it is instructive to plot the exact solution here, before we proceed 
 Deriving a numerical scheme for solving \eqref{eq:ddu_dxx_cont} by the finite difference method is rather trivial.
 
 \subsubsection{Taylor expansion}
+\label{sec:taylor}
 A differentiable function $g(x)$ can be written as
 
 \begin{equation}
@@ -152,7 +153,7 @@ If we want our approximation to be accurate, $|x - a|$ should be close to zero. 
             + \frac{g''''(a)}{4!} d^4 + \dots \label{eq:taylor_backward}
 \end{align}
 
-The traditional application for such an expansion is to approximate the value of $g$ in a point $x$ close to another point $a$, where $g$ and its derivatives are easy to evaluate. However, we shall take a different view. Recall from section \ref{sec:intro} that we know $u''(x)$ -- what we're after is $u(x)$. We see that the sum of \eqref{eq:taylor_forward} and \eqref{eq:taylor_backward} becomes
+The traditional application for such an expansion is to approximate the value of $g$ in a point $x$ close to another point $a$, where $g$ and its derivatives are easy to evaluate. However, we shall take a different view. Recall from section \ref{sec:intro} that we know $u''(x)$ -- what we seek is $u(x)$. We see that the sum of \eqref{eq:taylor_forward} and \eqref{eq:taylor_backward} becomes
 
 \begin{align}
     g(a+d) + g(a-d)
@@ -328,10 +329,12 @@ These observations gives rise to a new algorithm.
 We see that algorithm \ref{alg:gaussian-special-tridiagonal} requires a number of floating point operations on the order of $4n$ \footnote{The computation of $b_i$ is not counted in as that operation can be vectorized, and in addition $b_i$ is never modified, so we would be able to reuse it for many sets of $v_i$.}, which is half of what algorithm \ref{alg:gaussian-general-tridiagonal} requires!
 
 \subsection{LU decomposition}
-
+If we want to solve a series of matrix equations $A\mathbf{v} = \mathbf{s}$ with the same matrix $A$, we could invest some time in performing an LU decomposition of $A$ in $\Theta(n^3)$ time, while we could solve $U\mathbf{v} = \mathbf{w}, L\mathbf{w} = \mathbf{s}$ in $\Theta(n^2)$ time.
 
 \section{Implementation and results}\label{sec:implementation_and_results}
 We chose Python as our implementation language because it allows for rapid development and has a syntax which is very close to the algorithmic language we are translating from. For future projects, we will consider using C++, but it's main advantage lies is its efficiency, which wasn't a big problem with our programs.
+
+
 
 \begin{figure}[ht]
 \includegraphics[width=\textwidth]{fig/plot_b}
@@ -339,6 +342,23 @@ We chose Python as our implementation language because it allows for rapid devel
 \end{figure}
 
 \subsection{Studying the error}
+
+\begin{table}[htbp]
+\begin{center}
+\begin{tabular}{r r}
+    \input{table_errors.dat}
+\end{tabular}
+\caption{Errors for various $N$ with the specialized solver}
+\end{center}
+\end{table}
+
+We see that
+
+\begin{equation}
+    \epsilon(10N) = \epsilon(\frac{\dx}{10}) \approx \epsilon(N) - \log_{10}{100} = \epsilon(N) - 2
+\end{equation}
+
+That is, the error is $\Theta(h^2)$, which agrees with the derivations we made in section \ref{sec:taylor}
 
 \subsection{Efficiency}
 

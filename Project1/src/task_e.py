@@ -32,7 +32,7 @@ def LU_solve(n):
 
 if __name__ == '__main__':
     n_values = [10, 100, 1000, 4000]
-    plot_magic(n_values, LU_solve)
+    plot_solutions(n_values, LU_solve)
 
     plt.savefig('fig/plot_e.pdf')
 

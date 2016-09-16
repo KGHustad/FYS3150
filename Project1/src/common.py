@@ -41,7 +41,7 @@ def solve_specific(f_func, n):
     i = np.arange(0, n+2, dtype=np.float64)
     b[1:-1] = b_func(i[1:-1])
     for i in range(2,n+1):
-        s[i] = s[i] + s[i-1]/b[i-1] # 2 FLOPS
+        s[i] += s[i-1]/b[i-1] # 2 FLOPS
 
     v[n] = s[n]/b[n]
 
@@ -51,7 +51,7 @@ def solve_specific(f_func, n):
     return x, v
 
 # PLOTTING
-def plot_magic(n_values, solve):
+def plot_solutions(n_values, solve):
     for n in n_values:
         x, v = solve(n)
         plt.plot(x, v)
@@ -66,3 +66,21 @@ def plot_magic(n_values, solve):
     plt.legend(legend)
     plt.xlabel('x')
     plt.ylabel('u')
+
+def plot_errors(n_values, solve):
+    for n in n_values:
+        x, v = solve(n)
+        u = u_func(x)
+        # we aren't interested in the error for the endpoints
+        x_inner = x[1:-1]
+        u_inner = u[1:-1]
+        v_inner = v[1:-1]
+        abs_rel_err_inner = abs((v_inner-u_inner)/u_inner)
+        plt.semilogy(x_inner, abs_rel_err_inner)
+    legend = ["N = %d" % n for n in n_values]
+
+    # make plot look great
+    plt.legend(legend)
+    plt.xlabel('x')
+    plt.ylabel('error')
+    plt.title('Absolute relative error for u')
