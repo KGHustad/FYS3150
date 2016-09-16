@@ -26,10 +26,10 @@ def bench(n_values):
         end_time = time.time()
         time_data[2,i] = end_time - start_time
 
-        print "%8.1e  |  %8.1e  %8.1e  %8.1e" % (n, time_data[0,i],
-                                                 time_data[1,i],
-                                                 time_data[2,i])
+        print "%8d  |  %8.1e  %8.1e  %8.1e" % (n, time_data[0,i],
+                                                  time_data[1,i],
+                                                  time_data[2,i])
 
 if __name__ == '__main__':
-    n_values = [10**pow for pow in range(1, 5)]
+    n_values = [1*10**pow for pow in range(1, 5)]
     bench(n_values)

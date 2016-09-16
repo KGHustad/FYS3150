@@ -52,25 +52,25 @@ def solve_specific(f_func, n):
     return x, v
 
 def make_matrix(n):
-    matrix = np.zeros(shape=(n,n))
-    matrix[0,0] = 2
-    matrix[0,1] = -1
-    matrix[-1,-1] = 2
-    matrix[-1,-2] = -1
-    for i in xrange(1,n-1):
-        matrix[i,i-1] = -1
-        matrix[i,i] = 2
-        matrix[i,i+1] = -1
-    return matrix
+    """Creates A"""
+    A = np.zeros(shape=(n,n))
+    np.fill_diagonal(A, 2)              # b_i = 2
+    A[range(1, n), range(n-1)] = -1     # a_i = -1
+    A[range(n-1), range(1, n)] = -1     # c_i = -1
+    return A
 
 def solve_LU(f_func, n):
-    matrix = make_matrix(n)
-    p,l,u = scipy.linalg.lu(matrix, overwrite_a=True)
+    A = make_matrix(n)
+    lu, piv = scipy.linalg.lu_factor(A, overwrite_a=True)
+
+    # set up x and s
     x = np.linspace(0, 1, n+2)
     h = x[1]-x[0]
-    f = f_func(x)[1:-1]*h**2
-    y = np.linalg.solve(l,f)
-    v_inner = np.linalg.solve(u,y)
+    s = f_func(x)[1:-1]*h**2
+
+    # solve
+    v_inner = scipy.linalg.lu_solve((lu, piv), s, overwrite_b=True)
+
     v = np.zeros(n+2)
     v[1:-1] = v_inner[:]
     return x, v

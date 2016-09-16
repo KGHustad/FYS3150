@@ -330,6 +330,7 @@ These observations gives rise to a new algorithm.
 We see that algorithm \ref{alg:gaussian-special-tridiagonal} requires a number of floating point operations on the order of $4n$ \footnote{The computation of $b_i$ is not counted in as that operation can be vectorized, and in addition $b_i$ is never modified, so we would be able to reuse it for many sets of $v_i$.}, which is half of what algorithm \ref{alg:gaussian-general-tridiagonal} requires!
 
 \subsection{LU decomposition}
+\label{sec:lu}
 If we want to solve a series of matrix equations $A\mathbf{v} = \mathbf{s}$ with the same matrix $A$, we could invest some time in performing an LU decomposition of $A$ in $\Theta(n^3)$ time, while we could solve $U\mathbf{v} = \mathbf{w}, L\mathbf{w} = \mathbf{s}$ in $\Theta(n^2)$ time.
 
 \section{Implementation and results}\label{sec:implementation_and_results}
@@ -367,6 +368,8 @@ We find that algorithm \ref{alg:gaussian-general-tridiagonal} takes about twice 
 LU factorization, on the other hand, runs much slower.
 
 \lstinputlisting{bench_all.dat}
+
+This should come as no surprise, since we only solve a single equation, and the LU factorization runs in $Theta (n^3)$ time, as mentioned in section \ref{sec:lu}.
 
 \section{Conclusion}\label{sec:conclusion}
 

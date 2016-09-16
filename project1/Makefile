@@ -4,7 +4,7 @@ report_texdoc=report.tex
 report_pdf=report.pdf
 
 benchmarks=bench_all.dat
-benchmark_programs=bench_all.py
+benchmark_programs=src/bench_all.py
 PLOT_OPTS=--dont_show
 plot_programs=src/plot_exact.py src/task_b.py
 plots = fig/plot_exact.pdf fig/plot_b.pdf
@@ -22,10 +22,8 @@ $(report_pdf): $(report_texdoc) $(plots) $(tables) $(benchmarks)
 	$(LATEX) $(LATEX_OPTS) $(report_texdoc)
 	$(LATEX) $(LATEX_OPTS) $(report_texdoc)
 benchmarks: $(benchmarks) $(benchmark_programs)
-bench_all.dat:
+$(benchmarks):
 	python src/bench_all.py > bench_all.dat
-bench_tridiagonal.dat:
-	python src/bench_tridiagonal.py > bench_tridiagonal.dat
 plots: $(plots)
 $(plots): $(plot_programs)
 	for plot_prog in $(plot_programs); do \
