@@ -1,2 +1,13 @@
 *.pyc
 *~
+
+# C / C++
+*.out
+
+# LaTeX
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+
