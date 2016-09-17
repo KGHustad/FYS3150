@@ -41,9 +41,12 @@ def solve_specific(f_func, n):
     b = np.zeros(n+2, dtype=np.float64)
     i = np.arange(0, n+2, dtype=np.float64)
     b[1:-1] = b_func(i[1:-1])
+
+    # forward substitution
     for i in range(2,n+1):
         s[i] += s[i-1]/b[i-1] # 2 FLOPS
 
+    # backward substitution
     v[n] = s[n]/b[n]
 
     for i in range(n-1,0,-1):

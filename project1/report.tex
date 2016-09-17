@@ -39,7 +39,11 @@
 \epigraph{With Python, life is much simpler.}{\textit{Morten Hjorth-Jensen}}
 
 \begin{abstract}
-TODO
+\noindent
+In this report, we show how the problem of finding a numerical solution to an ODE can be expressed in terms of a matrix equation, we derive and discuss algorithms for solving a (sparse) tridiagonal matrix and compare those algorithms to an more general LU factorization algorithm for dense matrices.
+
+\noindent
+Our findings show that the specialized algorithm yields better performance while using less memory than the general algorithm.
 \end{abstract}
 
 \vfill
@@ -110,20 +114,6 @@ We see that \eqref{eq:u_analytical} and \eqref{eq:f_analytical} satifies \eqref{
 This analytical solution will be used in the rest of this project to assert the correctness and measure the rate of convergence of our numerical approximations.
 Therefore, it is instructive to plot the exact solution here, before we proceed into the inexact realm of numerics.
 
-% \begin{figure}[ht]
-% \begin{center}
-% \begin{tikzpicture}[scale=6]
-%     \draw[step=0.1, gray, very thin] (0,0) grid (1, 1);
-%     \draw [domain=0:1] plot (\x, {1 - (1-exp(-10)) * \x - exp(-10 * \x)});
-% \end{tikzpicture}
-% \end{center}
-% \caption{Plotting \eqref{eq:u_analytical} with Wolfram Alpha}
-% \end{figure}
-
-%\begin{figure}[ht]
-%\includegraphics[width=\textwidth]{fig/exact_solution_wolfram_alpha_plot}
-%\caption{Plotting \eqref{eq:u_analytical} with Wolfram Alpha}
-%\end{figure}
 
 \begin{figure}[ht]
 \includegraphics[width=\textwidth]{fig/plot_exact}
@@ -250,7 +240,7 @@ We can solve $A {\bf v} = {\bf s}$ for any tridiagonal matrix $A$ with standard 
 \end{algorithmic}
 \end{algorithm}
 
-We see that algorithm \ref{alg:gaussian-general-tridiagonal} requires a number of floating point operation on the order of $8n$ \footnote{To be precise, there are $(n-1)5 + 1 + (n-1)3 = 8n-7$ flops, but there is no point in fine counting the exact number, as the runtime will be dominated by the leading term, $8n$.}, provided that we avoid computing the ratio $\frac{a_i}{b_{i-1}}$ twice and skip line \ref{alg_line:update_a}.
+We see that algorithm \ref{alg:gaussian-general-tridiagonal} requires a number of floating point operations on the order of $8n$ \footnote{To be precise, there are $(n-1)5 + 1 + (n-1)3 = 8n-7$ flops, but there is no point in fine counting the exact number, as the runtime will be dominated by the leading term, $8n$.}, provided that we avoid computing the ratio $\frac{a_i}{b_{i-1}}$ twice and skip line \ref{alg_line:update_a}.
 We also note that the space requirements are on the order of $5n$.
 
 \subsection{A more specialized algorithm}
@@ -331,7 +321,7 @@ We see that algorithm \ref{alg:gaussian-special-tridiagonal} requires a number o
 
 \subsection{LU decomposition}
 \label{sec:lu}
-If we want to solve a series of matrix equations $A\mathbf{v} = \mathbf{s}$ with the same matrix $A$, we could invest some time in performing an LU decomposition of $A$ in $\Theta(n^3)$ time, while we could solve $U\mathbf{v} = \mathbf{w}, L\mathbf{w} = \mathbf{s}$ in $\Theta(n^2)$ time.
+If we want to solve a series of matrix equations $A\mathbf{v} = \mathbf{s}$ with the same matrix $A$, we could invest some time in performing an LU decomposition of $A$ in $\Theta(n^3)$ time, while we could solve $U\mathbf{v} = \mathbf{w}, L\mathbf{w} = \mathbf{s}$ in $\Theta(n^2)$ time. However, we would need to store a full $n \times n$ matrix, so our memory requirements are on the order of $\Theta(n^2)$.
 
 \section{Implementation and results}\label{sec:implementation_and_results}
 We chose Python as our implementation language because it allows for rapid development and has a syntax which is very close to the algorithmic language we are translating from. For future projects, we will consider using C++, but it's main advantage lies is its efficiency, which wasn't a big problem with our programs.
@@ -369,9 +359,12 @@ LU factorization, on the other hand, runs much slower.
 
 \lstinputlisting{bench_all.dat}
 
-This should come as no surprise, since we only solve a single equation, and the LU factorization runs in $Theta (n^3)$ time, as mentioned in section \ref{sec:lu}.
+This should come as no surprise, since we only solve a single equation, and the LU factorization runs in $\Theta (n^3)$ time, as mentioned in section \ref{sec:lu}.
 
 \section{Conclusion}\label{sec:conclusion}
+We have shown that it can be very benificial to develop a specialized algorithm to solve the matrix equation $A\mathbf{v} = \mathbf{s}$, where $A$ is a tridiagonal matrix.
+
+By specializing our algorithms, we are able to both lower the memory requirements and the number of floating point operations required.
 
 %\bibliographystyle{plain}
 %\bibliographystyle{siam}
