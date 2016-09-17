@@ -1,6 +1,6 @@
 ## Hardware used
 * CPU: Intel G3258 (2C/2T) @ 4.4 GHz
-* Memory: 4 x 4 GB DDR3 @ 1833 MHz, CL9
+* Memory: 4 x 8 GB DDR3 @ 1833 MHz, CL9
 
 ## Runtime for the various algorithms
 |       N  |      Gen. |    Spec. |       LU |
