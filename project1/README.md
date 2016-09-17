@@ -12,6 +12,9 @@ To (generate if necessary and) display the report run
 make show
 ```
 
+## Benchmarks
+See `benchmark.md`
+
 
 ## Dependencies
 * Python 2 w/ SciPy stack
