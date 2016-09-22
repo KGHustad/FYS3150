@@ -2,9 +2,10 @@
 \usepackage{amsmath}
 \begin{document}
 
+\section{exc a)}
+
 Def \textit{unitary transformation}; $\textbf{w}_i = \textbf{U}\textbf{v}_i$, where U is an orthogonal matrix.\\
 \\
-opg a)\\
 We will show that the unitary transformation $\textbf{w}_i = \textbf{U}\textbf{v}_i$ preserves the dot product $\textbf{v}_j^T\textbf{v}_i = \delta_{ij}$, meaning that the dot product of the vectors after the unitary transformation stays the same. $\textbf{w}_j^T\textbf{w}_i = \delta_{ij}$.\\
 \\
 $\textbf{w}_j^T\textbf{w}_i = (\textbf{U}\textbf{v}_i)^T(\textbf{U}\textbf{v}_j) = (\textbf{v}_i^T\textbf{U}^T)(\textbf{U}\textbf{v}_j) = \textbf{v}_i^T\textbf{I}\textbf{v}_j = \textbf{v}_i^T\textbf{v}_j = \delta_{ij}$\\
@@ -12,4 +13,37 @@ $\textbf{w}_j^T\textbf{w}_i = (\textbf{U}\textbf{v}_i)^T(\textbf{U}\textbf{v}_j)
 Notes;\\
 $(\textbf{U}\textbf{v}_i)^T = \textbf{v}_i^T\textbf{U}^T$,\\
 $\textbf{U}^T\textbf{U} = \textbf{I}$ if $\textbf{U}$ is orthogonal.
+
+\section{exc b}
+We need a solver for matrix (2).\\
+
+We have a symetric orthogonal matrix A, and we're gonna reduce each element in the matrix to zero, by the following sequence:\\
+1. Find the largest matrix element, $a_{kl}$.\\
+2. Reduce the chosen element to zero by the following operations:\\
+\\
+(i) Calculate\\
+\\
+$\tau = \dfrac{a_{ll}-a_{kk}}{2a_{kl}}\\
+\\
+t = -\tau \pm \sqrt{1+\tau^2}\\
+\\
+c = \dfrac{1}{\sqrt{1+t^2}}, s = ct$.\\
+\\
+(ii) Calculate\\
+\\
+$b_{kk} = a_{kk}c^2 - 2a_{kl}cs + a_{ll}s^2\\
+\\
+b_{ll} = a_{ll}c^2 + a_{kl}cs + a_{kk}s^2$.\\
+\\
+(iii) Loop over i in range(0,N+1), with $i \neq k,l$, and do the following:\\
+\\
+$b_{ik} = a_{ik}c - a_{il}s\\
+\\
+b_{il} = a_{il}c + a_{ik}s\\
+\\
+b_{ii} = a_{ii}\\
+\\
+$
+The last one is obviously unnecessary if we overwrite A with B.\\
+If overwriting, be careful not to use the overwritten values in the loop! (i.e. using the new $b_{ik}$ instead of the $a_{ik}$, which gets overwritten.)
 \end{document}
