@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 
 def solve(A, R, tol=1E-8):
     # find max
@@ -81,9 +82,12 @@ def make_matrix(n, rho_max=5):
     return A
 
 if __name__ == '__main__':
-    n = 5
+    n = 40
+    if len(sys.argv) > 1:
+        n = float(sys.argv[1])
     A = make_matrix(n)
     R = np.eye(n)
     solve(A, R)
-    print R
-    #print A
+    eig_and_shit = sorted(A[range(n), range(n)])
+    print eig_and_shit#[4:40:8]
+    #print R
