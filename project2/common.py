@@ -1,25 +1,28 @@
 import numpy as np
 
+def find_max(A):
+    n = A.shape[0]
+    maximum = abs(A[0,1])
+    max_k=0
+    max_l=1
+    for i in xrange(n):
+        for j in xrange(n):
+            if i != j:
+                if abs(A[i,j]) > maximum:
+                    maximum = abs(A[i,j])
+                    max_k = i
+                    max_l = j
+    return maximum, max_k, max_l
+
+
 def solve(A, R, tol=1E-8):
     n = A.shape[0]
-    # find max
-    def find_max(A):
-        maximum = abs(A[0,1])
-        max_k=0
-        max_l=1
-        for i in xrange(n):
-            for j in xrange(n):
-                if i != j:
-                    if abs(A[i,j]) > maximum:
-                        maximum = abs(A[i,j])
-                        max_k = i
-                        max_l = j
-        return maximum, max_k, max_l
 
     iterations = 0
     maximum, k, l = find_max(A)
     while maximum > tol:
         iterations += 1
+        #print R[:][1].dot(R[:][0])
         single_step(A, R, k, l)
         maximum, k, l = find_max(A)
 
@@ -35,6 +38,7 @@ def single_step(A, R, k, l):
         t = 1./(tau + np.sqrt(1 + tau*tau))
     else:
         t = 1./(tau - np.sqrt(1 + tau*tau))
+        #t = -1./(-tau + np.sqrt(1 + tau*tau))
     c = 1 / np.sqrt(1+t**2)
     s = c*t
 
@@ -59,7 +63,7 @@ def single_step(A, R, k, l):
         r_ik = R[i,k]
         r_il = R[i,l]
         R[i,k] = c*r_ik - s*r_il
-        R[i,l] = c*r_il - s*r_ik
+        R[i,l] = c*r_il + s*r_ik
 
 
 def make_matrix_noninteraction_case(n, rho_max=5):
@@ -77,7 +81,7 @@ def make_matrix_noninteraction_case(n, rho_max=5):
     A[range(n), range(n)] = d[1:]
     A[range(1, n), range(n-1)] = e
     A[range(n-1), range(1, n)] = e
-    return A
+    return A, rho
 
 def make_matrix_interacting_case(n, omega, rho_max=5):
     """Creates A"""
@@ -95,4 +99,4 @@ def make_matrix_interacting_case(n, omega, rho_max=5):
     A[range(n), range(n)] = d[1:]
     A[range(1, n), range(n-1)] = e
     A[range(n-1), range(1, n)] = e
-    return A
+    return A, rho
