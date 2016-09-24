@@ -29,4 +29,4 @@ if __name__ == '__main__':
     plt.legend(legend)
     plt.xlabel('rho')
     plt.title('The three lowest energy levels.   n=%g' % n)
-    plt.savefig('fig/plot_e.pdf')
+    plt.savefig('fig/plot_e_n=%03d.pdf' % n)
