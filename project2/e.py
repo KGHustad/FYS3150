@@ -10,7 +10,7 @@ if __name__ == '__main__':
     n = 40
     if len(sys.argv) > 1:
         n = int(sys.argv[1])
-    A, rho = make_matrix_noninteraction_case(n)
+    A, rho = make_matrix_noninteracting_case(n)
     R = np.eye(n)
 
     solve(A, R)

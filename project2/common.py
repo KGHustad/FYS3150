@@ -1,6 +1,20 @@
 import numpy as np
 
-def find_max(A):
+def find_max_nondiagonal(A):
+    """Finds the largest (in absolute value) non-diagonal element, a_kl, in an
+    n x n matrix, A, and returns abs(a_kl) and its coordinates, k and l.
+
+    >>> np.random.seed(3150)
+    >>> n = 4
+    >>> A = (np.random.rand(n,n)*-0.5 + np.eye(n))*10
+    >>> A
+    array([[ 8.9581678 , -0.44587921, -3.99281836, -2.34452466],
+           [-2.74278801,  6.00382443, -2.05360951, -0.44483021],
+           [-1.95052115, -3.32927787,  8.43516216, -4.84465403],
+           [-0.07153444, -1.42596855, -0.13139105,  5.21781942]])
+    >>> find_max_nondiagonal(A)
+    (4.8446540255955943, 2, 3)
+    """
     n = A.shape[0]
     maximum = abs(A[0,1])
     max_k=0
@@ -19,26 +33,23 @@ def solve(A, R, tol=1E-8):
     n = A.shape[0]
 
     iterations = 0
-    maximum, k, l = find_max(A)
+    maximum, k, l = find_max_nondiagonal(A)
     while maximum > tol:
         iterations += 1
         #print R[:][1].dot(R[:][0])
         single_step(A, R, k, l)
-        maximum, k, l = find_max(A)
+        maximum, k, l = find_max_nondiagonal(A)
 
     print "Solved in %g iterations" % iterations
+    return iterations
 
 def single_step(A, R, k, l):
     n = A.shape[0]
     tau = (A[l,l] - A[k,k])/(2*A[k,l])
-    #t_1 = -tau + np.sqrt(1 + tau**2)
-    #t_2 = -tau - np.sqrt(1 + tau**2)
-    #t = min(abs(t_1), abs(t_2))
     if tau > 0:
         t = 1./(tau + np.sqrt(1 + tau*tau))
     else:
         t = 1./(tau - np.sqrt(1 + tau*tau))
-        #t = -1./(-tau + np.sqrt(1 + tau*tau))
     c = 1 / np.sqrt(1+t**2)
     s = c*t
 
@@ -66,8 +77,19 @@ def single_step(A, R, k, l):
         R[i,l] = c*r_il + s*r_ik
 
 
-def make_matrix_noninteraction_case(n, rho_max=5):
-    """Creates A"""
+def make_matrix_noninteracting_case(n, rho_max=5):
+    """Creates A for the non-interacting case
+
+    >>> A, rho = make_matrix_noninteracting_case(5, rho_max=5)
+    >>> A
+    array([[  3.,  -1.,   0.,   0.,   0.],
+           [ -1.,   6.,  -1.,   0.,   0.],
+           [  0.,  -1.,  11.,  -1.,   0.],
+           [  0.,   0.,  -1.,  18.,  -1.],
+           [  0.,   0.,   0.,  -1.,  27.]])
+    >>> rho
+    array([ 0.,  1.,  2.,  3.,  4.,  5.])
+    """
     A = np.zeros(shape=(n,n))
 
     rho_0 = 0
@@ -84,7 +106,7 @@ def make_matrix_noninteraction_case(n, rho_max=5):
     return A, rho
 
 def make_matrix_interacting_case(n, omega, rho_max=5):
-    """Creates A"""
+    """Creates A for the interacting case"""
     A = np.zeros(shape=(n,n))
 
     rho_0 = 0
