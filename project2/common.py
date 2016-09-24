@@ -40,7 +40,7 @@ def solve(A, R, tol=1E-8, silent=False):
     while maximum > tol:
         iterations += 1
         #print R[:][1].dot(R[:][0])
-        single_step(A, R, k, l)
+        rotate(A, R, k, l)
         maximum, k, l = find_max_nondiagonal(A)
 
     post = time.clock()
@@ -49,7 +49,7 @@ def solve(A, R, tol=1E-8, silent=False):
         print "Solved in %g iterations" % iterations
     return iterations, time_spent
 
-def single_step(A, R, k, l):
+def rotate(A, R, k, l):
     n = A.shape[0]
     tau = (A[l,l] - A[k,k])/(2*A[k,l])
     if tau > 0:
