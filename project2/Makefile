@@ -4,6 +4,9 @@ report_texdoc=report.tex
 report_pdf=report.pdf
 bibliography=../papers.bib
 
+test_programs=common.py
+pytest_opts=--doctest-modules --doctest-report=none -v
+
 #benchmarks=bench_all.dat
 #benchmark_programs=src/bench_all.py
 #PLOT_OPTS=--dont_show
@@ -38,3 +41,5 @@ $(report_pdf): $(report_texdoc) $(bibliography)
 # 	done
 show: report
 	evince $(report_pdf) &
+test: $(test_programs)
+	pytest $(pytest_opts) $(test_programs)
