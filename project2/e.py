@@ -13,13 +13,11 @@ if __name__ == '__main__':
     A, rho = make_matrix_noninteracting_case(n)
     R = np.eye(n)
 
-    solve(A, R)
+    iterations, time = solve(A, R)
+    print "Solution with n=%d took %g seconds" % (n, time)
 
     # extract eigenvalues and eigenvectors
-    eigvals = A[range(n), range(n)]
-    eigvecs = [np.transpose(R)[i] for i in xrange(n)]
-    eigs = [(eigval, eigvec, i) for i, (eigval, eigvec) in enumerate(zip(eigvals, eigvecs))]
-    sorted_eigs = sorted(eigs, key=itemgetter(0))
+    sorted_eigs = extract_eigs(A, R)
 
     # plot
     legend = []

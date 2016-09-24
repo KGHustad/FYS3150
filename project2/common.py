@@ -1,4 +1,6 @@
 import numpy as np
+import time
+from operator import itemgetter
 
 def find_max_nondiagonal(A):
     """Finds the largest (in absolute value) non-diagonal element, a_kl, in an
@@ -29,7 +31,8 @@ def find_max_nondiagonal(A):
     return maximum, max_k, max_l
 
 
-def solve(A, R, tol=1E-8):
+def solve(A, R, tol=1E-8, silent=False):
+    pre = time.clock()
     n = A.shape[0]
 
     iterations = 0
@@ -40,8 +43,11 @@ def solve(A, R, tol=1E-8):
         single_step(A, R, k, l)
         maximum, k, l = find_max_nondiagonal(A)
 
-    print "Solved in %g iterations" % iterations
-    return iterations
+    post = time.clock()
+    time_spent = post - pre
+    if not silent:
+        print "Solved in %g iterations" % iterations
+    return iterations, time_spent
 
 def single_step(A, R, k, l):
     n = A.shape[0]
@@ -134,3 +140,32 @@ def make_matrix_interacting_case(n, omega, rho_max=5):
     A[range(1, n), range(n-1)] = e
     A[range(n-1), range(1, n)] = e
     return A, rho
+
+def extract_eigs(A, R):
+    """
+    >>> np.random.seed(3150)
+    >>> n = 3
+    >>> A = np.random.rand(n,n)
+    >>> R = np.random.rand(n,n)
+    >>> A
+    array([[ 0.20836644,  0.08917584,  0.79856367],
+           [ 0.46890493,  0.5485576 ,  0.79923511],
+           [ 0.4107219 ,  0.08896604,  0.39010423]])
+    >>> R
+    array([[ 0.66585557,  0.31296757,  0.96893081],
+           [ 0.01430689,  0.28519371,  0.02627821],
+           [ 0.95643612,  0.20162405,  0.29535341]])
+    >>> eigs = extract_eigs(A, R)
+    >>> eigs[0]
+    (0.2083664405073874, array([ 0.66585557,  0.01430689,  0.95643612]), 0)
+    >>> eigs[1]
+    (0.39010423044182929, array([ 0.96893081,  0.02627821,  0.29535341]), 2)
+    >>> eigs[2]
+    (0.54855760104321716, array([ 0.31296757,  0.28519371,  0.20162405]), 1)
+    """
+    n = A.shape[0]
+    eigvals = A[range(n), range(n)]
+    eigvecs = [R[:,i] for i in xrange(n)]
+    eigs = [(eigval, eigvec, i) for i, (eigval, eigvec) in enumerate(zip(eigvals, eigvecs))]
+    sorted_eigs = sorted(eigs, key=itemgetter(0))
+    return sorted_eigs
