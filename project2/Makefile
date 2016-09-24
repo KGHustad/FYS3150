@@ -4,7 +4,7 @@ report_texdoc=report.tex
 report_pdf=report.pdf
 bibliography=../papers.bib
 
-test_programs=common.py
+test_programs=common.py common_accelerated.py
 pytest_opts=--doctest-modules --doctest-report=none -v
 
 #benchmarks=bench_all.dat

@@ -30,6 +30,7 @@ def find_max_nondiagonal(A):
                     max_l = j
     return maximum, max_k, max_l
 
+from common_accelerated import find_max_nondiagonal
 
 def solve(A, R, tol=1E-8, silent=False):
     pre = time.clock()

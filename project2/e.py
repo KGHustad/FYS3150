@@ -4,6 +4,7 @@ import sys
 from operator import itemgetter
 
 from common import *
+from common_accelerated import *
 
 
 if __name__ == '__main__':
