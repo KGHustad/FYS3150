@@ -44,12 +44,10 @@ def find_max_nondiagonal(A):
 
     weave.inline(code,
                  arg_names=['A', 'n', 'coor'],
-                 headers=['<math.h>',   #for round
-                          #'<stdio.h>',  #for printing
-                          #'<string.h>', #for memcpy
+                 headers=['<math.h>',   #for fabs
                          ],
                  extra_compile_args=['-O3',             #optimize loops
-                                     #'-w',              #surpress warnings
+                                     '-w',              #surpress warnings
                                      '-march=native'    #optimize for processor
                                     ],
                 )
