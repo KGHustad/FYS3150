@@ -1,3 +1,4 @@
+import math
 import numpy as np
 import time
 from operator import itemgetter
@@ -47,17 +48,18 @@ def solve(A, R, tol=1E-8, silent=False):
     post = time.clock()
     time_spent = post - pre
     if not silent:
-        print "Solved in %g iterations" % iterations
-    return iterations, time_spent
+        print "Reached tolerance (%.0E) in %g iterations" % (tol, iterations),
+        print "(%.2f iterations/element)" % (iterations/float(n**2))
+    return iterations, time_spent, tol
 
 def rotate(A, R, k, l):
     n = A.shape[0]
     tau = (A[l,l] - A[k,k])/(2*A[k,l])
     if tau > 0:
-        t = 1./(tau + np.sqrt(1 + tau*tau))
+        t = 1./(tau + math.sqrt(1 + tau**2))
     else:
-        t = 1./(tau - np.sqrt(1 + tau*tau))
-    c = 1 / np.sqrt(1+t**2)
+        t = 1./(tau - math.sqrt(1 + tau**2))
+    c = 1 / math.sqrt(1+t**2)
     s = c*t
 
     # we need to store some values for later use
@@ -170,3 +172,12 @@ def extract_eigs(A, R):
     eigs = [(eigval, eigvec, i) for i, (eigval, eigvec) in enumerate(zip(eigvals, eigvecs))]
     sorted_eigs = sorted(eigs, key=itemgetter(0))
     return sorted_eigs
+
+def extract_eigs_dict(A, R):
+    eigs = extract_eigs(A, R)
+    eigs_dict = {}
+    eigenvalues = [eig[0] for eig in eigs]
+    eigenvectors = [eig[1] for eig in eigs]
+    eigs_dict['val'] = eigenvalues
+    eigs_dict['vec'] = eigenvectors
+    return eigs_dict
