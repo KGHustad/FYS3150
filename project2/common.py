@@ -144,7 +144,43 @@ def make_matrix_interacting_case(n, omega, rho_max=5):
     A[range(n-1), range(1, n)] = e
     return A, rho
 
-def extract_eigs(A, R):
+def normalize_eigenvectors(eigenvectors):
+    """Ensure the 1-norm of all eigenvectors is non-negative
+    (the 2-norm is assumed to be 1)
+
+    >>> np.random.seed(3150)
+    >>> n = 4
+    >>> a = np.random.randint(-5, 5, (n,n))
+    >>> a
+    array([[ 1, -4,  2, -5],
+           [-2, -1, -1, -4],
+           [ 0, -1, -3, -3],
+           [-3,  0,  4, -4]])
+    >>> eigenvectors = [a[:,i] for i in xrange(n)]
+    >>> eigenvectors[0]
+    array([ 1, -2,  0, -3])
+    >>> eigenvectors[1]
+    array([-4, -1, -1,  0])
+    >>> eigenvectors[2]
+    array([ 2, -1, -3,  4])
+    >>> eigenvectors[3]
+    array([-5, -4, -3, -4])
+    >>> normalized_eigenvectors = normalize_eigenvectors(eigenvectors)
+    >>> normalized_eigenvectors[0]
+    array([-1,  2,  0,  3])
+    >>> normalized_eigenvectors[1]
+    array([4, 1, 1, 0])
+    >>> normalized_eigenvectors[2]
+    array([ 2, -1, -3,  4])
+    >>> normalized_eigenvectors[3]
+    array([5, 4, 3, 4])
+    """
+    for i in xrange(len(eigenvectors)):
+        if sum(eigenvectors[i]) < 0:
+            eigenvectors[i] = -eigenvectors[i]
+    return eigenvectors
+
+def extract_eigs(A, R, sort_R=True):
     """
     >>> np.random.seed(3150)
     >>> n = 3
@@ -168,16 +204,63 @@ def extract_eigs(A, R):
     """
     n = A.shape[0]
     eigvals = A[range(n), range(n)]
-    eigvecs = [R[:,i] for i in xrange(n)]
+    eigvecs = normalize_eigenvectors([R[:,i].copy() for i in xrange(n)])
     eigs = [(eigval, eigvec, i) for i, (eigval, eigvec) in enumerate(zip(eigvals, eigvecs))]
     sorted_eigs = sorted(eigs, key=itemgetter(0))
+    if sort_R:
+        for i in xrange(n):
+            R[:,i] = sorted_eigs[i][1]
     return sorted_eigs
 
 def extract_eigs_dict(A, R):
     eigs = extract_eigs(A, R)
     eigs_dict = {}
-    eigenvalues = [eig[0] for eig in eigs]
+    eigenvalues = np.array([eig[0] for eig in eigs])
     eigenvectors = [eig[1] for eig in eigs]
+    original_columns = np.array([eig[2] for eig in eigs])
     eigs_dict['val'] = eigenvalues
     eigs_dict['vec'] = eigenvectors
+    eigs_dict['org_col'] = original_columns
     return eigs_dict
+
+
+
+def solve_np(A):
+    n = A.shape[0]
+    w, v = np.linalg.eigh(A)
+    # w (N) holds eigenvalues, v (N,N) holds eigenvectors
+    eigvals = w
+    #print v
+    eigvecs = [v[:,i].copy() for i in xrange(n)]
+    eigvecs = normalize_eigenvectors(eigvecs)
+    for i in xrange(n):
+        v[:,i] = eigvecs[i][:]
+    return eigvals, eigvecs, w, v
+
+def test_solve():
+    n = 10
+    np.set_printoptions(linewidth=200)
+    # set up input
+    A, rho = make_matrix_noninteracting_case(n)
+    R = np.eye(n)
+    # make copy of A
+    A_np = A.copy()
+
+    # solve with our implementation of Jacobi's method
+    solve(A, R)
+    eig = extract_eigs_dict(A, R)
+
+    # solve with NumPy (LAPACK)
+    eigvals_np, eigvecs_np, w, v = solve_np(A_np)
+
+    # compare
+    msg = "Eigvals differ! Diff: " + str(eig['val'] - eigvals_np)
+    assert np.allclose(eig['val'], eigvals_np), msg
+    for i in xrange(n):
+        eigvec_jacobi = eig['vec'][i]
+        eigvec_np = eigvecs_np[i]
+        msg = "Eigvec #%d: " % i + str(eigvec_jacobi - eigvec_np)
+        assert np.allclose(eigvec_jacobi, eigvec_np), msg
+
+if __name__ == '__main__':
+    test_solve()
