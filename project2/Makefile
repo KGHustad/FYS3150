@@ -4,7 +4,7 @@ report_texdoc=report.tex
 report_pdf=report.pdf
 bibliography=../papers.bib
 
-test_programs=common.py common_accelerated.py
+test_programs=src/common.py src/common_accelerated.py
 pytest_opts=--doctest-modules --doctest-report=none -v
 
 #benchmarks=bench_all.dat
@@ -31,6 +31,7 @@ $(report_pdf): $(report_texdoc) $(bibliography)
 # 	python src/bench_all.py > bench_all.dat
 # plots: $(plots)
 # $(plots): $(plot_programs)
+# 	@mkdir -p $(@D)
 # 	for plot_prog in $(plot_programs); do \
 # 		python $$plot_prog $(PLOT_OPTS) ; \
 # 	done
