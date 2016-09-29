@@ -10,17 +10,18 @@ parser.add_argument('-N', '-n',
                     dest='n', metavar='N',
                     type=int, default=40)
 parser.add_argument('-p', '--rho_max',
-                    metavar='rho_max',
                     type=float, default=5)
 parser.add_argument('-w', '--omega',
-                    metavar='omega',
                     type=float, default=1)
 parser.add_argument('--plot',
-                    action='store_true', default=False)
+                    action='store_true', default=False,
+                    help='make plot')
 parser.add_argument('--show',
-                    action='store_true', default=False)
+                    action='store_true', default=False,
+                    help='show plot (only if plot is enabled)')
 parser.add_argument('--interaction',
-                    action='store_true', default=False)
+                    action='store_true', default=False,
+                    help='enable interaction between electrons')
 
 args = parser.parse_args()
 n = args.n
