@@ -25,9 +25,9 @@ if __name__ == '__main__':
     levels=3
     for i in xrange(levels):
         plt.plot(rho[1:], sorted_eigs[i][1]**2)
-        legend.append("Eigval: %g" % sorted_eigs[i][0])
+        legend.append("$\\lambda$ = %g" % sorted_eigs[i][0])
     plt.legend(legend)
-    plt.xlabel('rho')
+    plt.xlabel('$\\rho$')
     title = 'The %d lowest energy levels.\n' % levels
     title += 'n=%g,  %d it. (tol=%.0E)' % (n, iterations, tol)
     plt.title(title)
