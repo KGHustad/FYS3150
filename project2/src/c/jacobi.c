@@ -10,14 +10,12 @@ double find_max_nondiagonal(double** A, int n, int* k_ptr, int* l_ptr) {
     double current;
     int i, j;
     for (i=0; i < n; i++) {
-        for (j=0; j < n; j++) {
-            if (i != j) {
-                current = fabs(A[i][j]);
-                if (current > maximum) {
-                    maximum = current;
-                    max_k = i;
-                    max_l = j;
-                }
+        for (j=i+1; j < n; j++) {
+            current = fabs(A[i][j]);
+            if (current > maximum) {
+                maximum = current;
+                max_k = i;
+                max_l = j;
             }
         }
     }

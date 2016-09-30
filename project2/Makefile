@@ -22,9 +22,9 @@ plots = fig/plot_interacting_omega=0.5,1,5_rho-max=5_n=200.pdf fig/plot_interact
 #table_programs=src/task_d.py
 #tables = table_errors.dat
 
-all: $(jacobi_lib) report
+all: jacobi_lib report
 
-$(jacobi_lib):
+jacobi_lib:
 	$(MAKE) -C $(jacobi_lib)
 
 report: $(report_pdf)

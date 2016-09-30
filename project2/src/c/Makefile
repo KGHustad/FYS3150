@@ -1,5 +1,5 @@
 
-CC_FLAGS = -Wall -O3 -fpic -lm -march=native
+CC_FLAGS = -Wall -O2 -fpic -lm -march=native
 
 jacobi_sources = jacobi.c
 jacobi_headers = jacobi.h
