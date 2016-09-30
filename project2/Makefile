@@ -1,11 +1,17 @@
+.PHONY: clean jacobi_lib
+
 LATEX=pdflatex
 LATEX_OPTS=
 report_texdoc=report.tex
 report_pdf=report.pdf
 bibliography=../papers.bib
 
+clean_latex_ext=*.aux *.bbl *.blg *.log *.out
+
 test_programs=src/common.py src/common_accelerated.py
 pytest_opts=--doctest-modules --doctest-report=none -v
+
+jacobi_lib=src/c
 
 #benchmarks=bench_all.dat
 #benchmark_programs=src/bench_all.py
@@ -16,7 +22,10 @@ pytest_opts=--doctest-modules --doctest-report=none -v
 #table_programs=src/task_d.py
 #tables = table_errors.dat
 
-all: report
+all: jacobi_lib report
+
+jacobi_lib:
+	make -C $(jacobi_lib)
 
 report: $(report_pdf)
 #$(report_pdf): $(report_texdoc) $(plots) $(tables) $(benchmarks)
@@ -44,3 +53,11 @@ show: report
 	evince $(report_pdf) &
 test: $(test_programs)
 	pytest $(pytest_opts) $(test_programs)
+
+clean: clean-c clean-python clean-latex
+clean-c:
+	$(MAKE) clean -C $(jacobi_lib)
+clean-python:
+	$(RM) src/*.pyc
+clean-latex:
+	$(RM) $(clean_latex_ext)
