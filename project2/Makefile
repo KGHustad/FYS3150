@@ -16,16 +16,16 @@ jacobi_lib=src/c
 #benchmarks=bench_all.dat
 #benchmark_programs=src/bench_all.py
 #PLOT_OPTS=--dont_show
-#plot_programs=src/plot_exact.py src/task_b.py
-#plots = fig/plot_exact.pdf fig/plot_b.pdf
+plot_programs=src/plot_d.py
+plots = fig/plot_interacting_omega=0.5,1,5_rho-max=5_n=200.pdf fig/plot_interacting_omega=0.005,0.01,0.05_rho-max=70_n=200.pdf
 
 #table_programs=src/task_d.py
 #tables = table_errors.dat
 
-all: jacobi_lib report
+all: $(jacobi_lib) report
 
-jacobi_lib:
-	make -C $(jacobi_lib)
+$(jacobi_lib):
+	$(MAKE) -C $(jacobi_lib)
 
 report: $(report_pdf)
 #$(report_pdf): $(report_texdoc) $(plots) $(tables) $(benchmarks)
@@ -38,12 +38,12 @@ $(report_pdf): $(report_texdoc) $(bibliography)
 # benchmarks: $(benchmarks) $(benchmark_programs)
 # $(benchmarks):
 # 	python src/bench_all.py > bench_all.dat
-# plots: $(plots)
-# $(plots): $(plot_programs)
-# 	@mkdir -p $(@D)
-# 	for plot_prog in $(plot_programs); do \
-# 		python $$plot_prog $(PLOT_OPTS) ; \
-# 	done
+plots: $(plots)
+$(plots): $(plot_programs) $(jacobi_lib)
+	@mkdir -p $(@D)
+	python src/plot_omegas.py -n 200 --omegas 0.5 1 5 --plot
+	python src/plot_omegas.py -n 200 --omegas 0.5E-2 1E-2 5E-2 --plot -p 70
+
 # tables: $(tables)
 # $(tables): $(table_programs)
 # 	for table_prog in $(table_programs); do \

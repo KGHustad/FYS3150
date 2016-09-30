@@ -43,7 +43,7 @@
 
 \begin{abstract}
 \noindent
-In this report, we show how the probability-distribution of two electrons in an harmonic oscillator well can be solved as an eigenvalue-problem. We will be looking at the behaviour of the probability, with, and without the implementation of the colomb-force, and different oscilator potential, solved with Jacobi's method.
+In this report, we show how the probability-distribution of two electrons in an harmonic oscillator well can be solved as an eigenvalue-problem. We will be looking at the behaviour of the probability, with, and without the implementation of the Coulomb force, and different oscilator potential, solved with Jacobi's method.
 \end{abstract}
 
 \vfill
@@ -64,9 +64,9 @@ In this report, we show how the probability-distribution of two electrons in an 
 
 \section{Introduction}\label{sec:intro}
 %\subsection*{Description of the nature of the problem}
-Schroedingers equation for an electron in a three-dimentional harmonic oscillator well in spherical coordinates, ignoring the colomb force:
+Schroedingers equation for an electron in a three-dimentional harmonic oscillator well in spherical coordinates, ignoring the Coulomb force:
 \begin{equation}
-  -\frac{\hbar^2}{2 m} \frac{d^2}{dr^2} u(r) 
+  -\frac{\hbar^2}{2 m} \frac{d^2}{dr^2} u(r)
        + \left ( V(r) + \frac{l (l + 1)}{r^2}\frac{\hbar^2}{2 m}
                                     \right ) u(r)  = E u(r) .
 \end{equation}
@@ -105,8 +105,14 @@ $\textbf{U}^T\textbf{U} = \textbf{I}$ if $\textbf{U}$ is orthogonal.
 \section{Implementation and results}\label{sec:implementation_and_results}
 \subsection{Implementing unit tests}
 
+\subsection{Studying the results}
+%\begin{figure}[ht]
+%\includegraphics[width=\textwidth]{fig/plot_}
+%\caption{Plotting ...}
+%\end{figure}
+
 \section{Conclusion}\label{sec:conclusion}
-We see that decreasing the strength of the ocillator potential $\omega$ pushes the probability-distribution further away from 0, making it shallower. The same goes for the introduction of the colomb force.
+We see that decreasing the strength of the ocillator potential $\omega$ pushes the probability-distribution further away from 0, making it shallower. The same goes for the introduction of the Coulomb force.
 
 
 %\bibliographystyle{plain}

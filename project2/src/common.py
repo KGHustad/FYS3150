@@ -1,7 +1,9 @@
 import math
 import numpy as np
+import matplotlib.pyplot as plt
 import time
 import ctypes
+import scipy.integrate as integrate
 from operator import itemgetter
 
 def find_max_nondiagonal(A):
@@ -87,7 +89,7 @@ def rotate(A, R, k, l):
         R[i,l] = c*r_il + s*r_ik
 
 
-def make_matrix_noninteracting_case(n, rho_max=5):
+def make_matrix_noninteracting_case(n, omega=1, rho_max=5):
     """Creates A for the non-interacting case
 
     >>> A, rho = make_matrix_noninteracting_case(5, rho_max=5)
@@ -106,8 +108,10 @@ def make_matrix_noninteracting_case(n, rho_max=5):
     rho_n = rho_max
     rho = np.linspace(rho_0, rho_n, n+1)
     h = rho[1]-rho[0]
-    V = rho**2
+    V = np.zeros(n+1)
+    V[1:] = omega**2*rho[1:]**2
     d = 2/h**2 + V
+
     e = -1/h**2
 
     A[range(n), range(n)] = d[1:]
@@ -291,6 +295,53 @@ def solve_c(A, R, tol=1E-8, silent=False):
 
 def test_solve_c():
     solver_tester(solve_c)
+
+def plot_interactive(n, omega_values, rho_max, solver, show=False):
+    # setup input
+    legend = []
+    for omega in omega_values:
+        #print omega
+
+        A, rho = make_matrix_interacting_case(n, omega, rho_max=rho_max)
+        R = np.eye(n)
+
+
+        # solve
+        if solver == 'python':
+            iterations, time, tol = solve(A, R)
+        elif solver == 'c':
+            iterations, time, tol = solve_c(A, R)
+        print "Solution with n=%d took %g seconds" % (n, time)
+
+        # extract eigenvalues and eigenvectors
+        sorted_eigs = extract_eigs(A, R)
+
+        # plot
+        x = rho[1:]
+        y = sorted_eigs[0][1]**2
+
+        # ensure y is a valid probability density function
+        y_pdf = y/integrate.simps(y, x)
+
+        plt.plot(x, y_pdf)
+        legend.append("$\\omega$ = %g" % omega)
+    plt.legend(legend)
+    plt.xlabel('$\\rho$')
+    plt.ylabel('probability')
+    title = 'Interactive case\n'
+    title += 'n=%g,  %d it. (tol=%.0E)' % (n, iterations, tol)
+    plt.title(title)
+    info = 'interacting'
+
+    # include omega value in filename
+    omega_values_str = ",".join(["%g"% omega for omega in omega_values])
+    info += "_omega=%s" % omega_values_str
+    filename = 'fig/plot_%s_rho-max=%g_n=%03d.pdf' % (info, rho_max, n)
+    print "Saving plot to %s" % filename
+    plt.savefig(filename)
+    if show:
+        plt.show()
+    plt.clf()
 
 if __name__ == '__main__':
     test_solve()
