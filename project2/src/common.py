@@ -1,6 +1,7 @@
 import math
 import numpy as np
 import time
+import ctypes
 from operator import itemgetter
 
 def find_max_nondiagonal(A):
@@ -237,7 +238,7 @@ def solve_np(A):
         v[:,i] = eigvecs[i][:]
     return eigvals, eigvecs, w, v
 
-def test_solve():
+def solver_tester(solve):
     n = 10
     np.set_printoptions(linewidth=200)
     # set up input
@@ -261,6 +262,35 @@ def test_solve():
         eigvec_np = eigvecs_np[i]
         msg = "Eigvec #%d: " % i + str(eigvec_jacobi - eigvec_np)
         assert np.allclose(eigvec_jacobi, eigvec_np), msg
+
+def test_solve():
+    solver_tester(solve)
+
+def solve_c(A, R, tol=1E-8, silent=False):
+    pre = time.clock()
+    n = A.shape[0]
+
+    #
+    libjacobi = np.ctypeslib.load_library("jacobi.so", "src/c")
+
+    float64_array = np.ctypeslib.ndpointer(dtype=ctypes.c_double, ndim=1, flags="contiguous")
+    libjacobi.jacobi.argstypes = [float64_array, float64_array,
+                                  ctypes.c_int, ctypes.c_double]
+
+    iterations = libjacobi.jacobi(np.ctypeslib.as_ctypes(A),
+                                  np.ctypeslib.as_ctypes(R),
+                                  ctypes.c_int(n),
+                                  ctypes.c_double(tol))
+
+    post = time.clock()
+    time_spent = post - pre
+    if not silent:
+        print "Reached tolerance (%.0E) in %g iterations" % (tol, iterations),
+        print "(%.2f iterations/element)" % (iterations/float(n**2))
+    return iterations, time_spent, tol
+
+def test_solve_c():
+    solver_tester(solve_c)
 
 if __name__ == '__main__':
     test_solve()

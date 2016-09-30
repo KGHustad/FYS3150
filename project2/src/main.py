@@ -13,6 +13,9 @@ parser.add_argument('-p', '--rho_max',
                     type=float, default=5)
 parser.add_argument('-w', '--omega',
                     type=float, default=1)
+parser.add_argument('--solver',
+                    choices=['python', 'c'], default='c',
+                    help='choose solver')
 parser.add_argument('--plot',
                     action='store_true', default=False,
                     help='make plot')
@@ -27,6 +30,7 @@ args = parser.parse_args()
 n = args.n
 rho_max = args.rho_max
 omega = args.omega
+solver = args.solver
 plot = args.plot
 show = args.show
 interaction = args.interaction
@@ -42,7 +46,10 @@ else:
 R = np.eye(n)
 
 # solve
-iterations, time, tol = solve(A, R)
+if solver == 'python':
+    iterations, time, tol = solve(A, R)
+elif solver == 'c':
+    iterations, time, tol = solve_c(A, R)
 print "Solution with n=%d took %g seconds" % (n, time)
 
 # extract eigenvalues and eigenvectors
