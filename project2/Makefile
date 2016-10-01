@@ -1,4 +1,4 @@
-.PHONY: clean jacobi_lib
+.PHONY: clean
 
 LATEX=pdflatex
 LATEX_OPTS=

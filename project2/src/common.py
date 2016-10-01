@@ -400,6 +400,7 @@ def plot_lowest_energy_levels(n, interacting, omega, rho_max, solver='c',
         plt.savefig(filename)
         if show:
             plt.show()
+        plt.clf()
 
 def plot_varying_omega(n, interacting, omega_values, rho_max,
                        filename=None, show=False):

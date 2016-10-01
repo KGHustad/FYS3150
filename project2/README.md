@@ -24,4 +24,4 @@ __TODO__
 ## Dependencies
 * Python 2 w/ SciPy stack
 * texlive with most of the bells and whistles
-* A C++ compiler
+* Compilers for C and C++
