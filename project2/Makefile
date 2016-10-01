@@ -8,7 +8,7 @@ bibliography=../papers.bib
 
 clean_latex_ext=*.aux *.bbl *.blg *.log *.out
 
-test_programs=src/common.py src/common_accelerated.py
+test_programs=src/common.py
 pytest_opts=--doctest-modules --doctest-report=none -v
 
 jacobi_lib=src/c

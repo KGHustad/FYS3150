@@ -35,7 +35,7 @@ def find_max_nondiagonal_symmetrical_pure_python(A):
                 max_l = j
     return maximum, max_k, max_l
 
-def find_max_nondiagonal_symmetrical(A):
+def find_max_nondiagonal_symmetrical_weave(A):
     """Finds the largest (in absolute value) non-diagonal element, a_kl, in an
     n x n matrix, A, and returns abs(a_kl) and its coordinates, k and l.
 
@@ -48,7 +48,7 @@ def find_max_nondiagonal_symmetrical(A):
            [ -3.18866722,  12.00764887,  -5.38288739,  -1.87079876],
            [ -5.94333952,  -5.38288739,  16.87032431,  -4.97604507],
            [ -2.41605909,  -1.87079876,  -4.97604507,  10.43563885]])
-    >>> find_max_nondiagonal_symmetrical(A)
+    >>> find_max_nondiagonal_symmetrical_weave(A)
     (5.9433395159259188, 0, 2)
     """
     n = A.shape[0]
@@ -88,6 +88,10 @@ def find_max_nondiagonal_symmetrical(A):
     max_l = coor[1]
     maximum = abs(A[max_k, max_l])
     return maximum, max_k, max_l
+
+
+# use weave
+find_max_nondiagonal_symmetrical = find_max_nondiagonal_symmetrical_weave
 
 def solve(A, R, tol=1E-8, silent=False):
     pre = time.clock()
