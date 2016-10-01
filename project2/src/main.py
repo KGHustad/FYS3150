@@ -41,9 +41,8 @@ show = args.show
 interaction = args.interaction
 
 if omegas:
-    interaction = True
     omega_values = omegas
-elif interaction:
+else:
     omega_values = [omega]
 
 interaction_info = 'interacting' if interaction else 'non-interacting'

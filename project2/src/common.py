@@ -353,27 +353,25 @@ def solve_c(A, R, tol=1E-8, silent=False):
 def test_solve_c():
     solver_tester(solve_c)
 
-def plot_interactive(n, omega_values, rho_max, solver, show=False):
-    # setup input
+def plot_varying_omega(n, interacting, omega_values, rho_max,
+                       filename=None, show=False):
     legend = []
     for omega in omega_values:
-        #print omega
-
-        A, rho = make_matrix_interacting_case(n, omega, rho_max=rho_max)
+        # setup input
+        if interacting:
+            A, rho = make_matrix_interacting_case(n, omega, rho_max=rho_max)
+        else:
+            A, rho = make_matrix_noninteracting_case(n, omega, rho_max=rho_max)
         R = np.eye(n)
 
-
         # solve
-        if solver == 'python':
-            iterations, time, tol = solve(A, R)
-        elif solver == 'c':
-            iterations, time, tol = solve_c(A, R)
+        iterations, time, tol = solve_c(A, R)
         print "Solution with n=%d took %g seconds" % (n, time)
 
         # extract eigenvalues and eigenvectors
         sorted_eigs = extract_eigs(A, R)
 
-        # plot
+        # find x and y
         x = rho[1:]
         y = sorted_eigs[0][1]**2
 
@@ -385,20 +383,18 @@ def plot_interactive(n, omega_values, rho_max, solver, show=False):
     plt.legend(legend)
     plt.xlabel('$\\rho$')
     plt.ylabel('probability')
-    title = 'Interactive case\n'
+    info = 'interacting' if interacting else 'non-interacting'
+    title = '%s case\n' % (info.capitalize())
     title += 'n=%g,  %d it. (tol=%.0E)' % (n, iterations, tol)
     plt.title(title)
-    info = 'interacting'
 
     # include omega value in filename
     omega_values_str = ",".join(["%g"% omega for omega in omega_values])
     info += "_omega=%s" % omega_values_str
-    filename = 'fig/plot_%s_rho-max=%g_n=%03d.pdf' % (info, rho_max, n)
+    if filename == None:
+        filename = 'fig/plot_%s_rho-max=%g_n=%03d.pdf' % (info, rho_max, n)
     print "Saving plot to %s" % filename
     plt.savefig(filename)
     if show:
         plt.show()
     plt.clf()
-
-if __name__ == '__main__':
-    test_solve()
