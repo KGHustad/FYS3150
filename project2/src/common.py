@@ -353,8 +353,57 @@ def solve_c(A, R, tol=1E-8, silent=False):
 def test_solve_c():
     solver_tester(solve_c)
 
+def plot_lowest_energy_levels(n, interacting, omega, rho_max, solver='c',
+                              levels=3, plot=True, show=False, silent=False):
+    interaction_info = 'interacting' if interacting else 'non-interacting'
+    if not interacting:
+        A, rho = make_matrix_noninteracting_case(n, rho_max=rho_max)
+    else:
+        A, rho = make_matrix_interacting_case(n, omega, rho_max)
+    R = np.eye(n)
+
+    # solve
+    if solver == 'python':
+        iterations, time, tol = solve(A, R, silent=silent)
+    elif solver == 'c':
+        iterations, time, tol = solve_c(A, R, silent=silent)
+    print "Solution for %s case with omega=%6g, n=%d took %g seconds" \
+          % (interaction_info, omega, n, time)
+
+    # extract eigenvalues and eigenvectors
+    sorted_eigs = extract_eigs(A, R)
+
+    # plot
+    if plot:
+        legend = []
+        x = rho[1:]
+        for i in xrange(levels):
+            y = sorted_eigs[i][1]**2
+
+            # ensure y is a valid probability density function
+            y_pdf = y/integrate.simps(y, x)
+
+            plt.plot(x, y_pdf)
+            legend.append("$\\lambda$ = %g" % sorted_eigs[i][0])
+        plt.legend(legend)
+        plt.xlabel('$\\rho$')
+        plt.ylabel('probability density')
+        title = 'The %d lowest energy levels for the %s case\n' \
+                % (levels, interaction_info)
+        title += "$\\omega$=%g, " % omega
+        title += 'n=%g,  %d it. (tol=%.0E)' % (n, iterations, tol)
+        plt.title(title)
+        info = interaction_info + "_omega=%g" % omega
+        filename = 'fig/plot_%d-lowest_%s_rho-max=%g_n=%03d.pdf' \
+                    % (levels, info, rho_max, n)
+        print "Saving plot to %s" % filename
+        plt.savefig(filename)
+        if show:
+            plt.show()
+
 def plot_varying_omega(n, interacting, omega_values, rho_max,
                        filename=None, show=False):
+    info = 'interacting' if interacting else 'non-interacting'
     legend = []
     for omega in omega_values:
         # setup input
@@ -365,8 +414,9 @@ def plot_varying_omega(n, interacting, omega_values, rho_max,
         R = np.eye(n)
 
         # solve
-        iterations, time, tol = solve_c(A, R)
-        print "Solution with n=%d took %g seconds" % (n, time)
+        iterations, time, tol = solve_c(A, R, silent=True)
+        print "Solution for %s case with omega=%6g, n=%d took %g seconds" \
+        % (info, omega, n, time)
 
         # extract eigenvalues and eigenvectors
         sorted_eigs = extract_eigs(A, R)
@@ -382,8 +432,8 @@ def plot_varying_omega(n, interacting, omega_values, rho_max,
         legend.append("$\\omega$ = %g" % omega)
     plt.legend(legend)
     plt.xlabel('$\\rho$')
-    plt.ylabel('probability')
-    info = 'interacting' if interacting else 'non-interacting'
+    plt.ylabel('probability density')
+
     title = '%s case\n' % (info.capitalize())
     title += 'n=%g,  %d it. (tol=%.0E)' % (n, iterations, tol)
     plt.title(title)
@@ -391,8 +441,10 @@ def plot_varying_omega(n, interacting, omega_values, rho_max,
     # include omega value in filename
     omega_values_str = ",".join(["%g"% omega for omega in omega_values])
     info += "_omega=%s" % omega_values_str
+    plot_type = "varying-omega"
     if filename == None:
-        filename = 'fig/plot_%s_rho-max=%g_n=%03d.pdf' % (info, rho_max, n)
+        filename = 'fig/plot_%s_%s_rho-max=%g_n=%03d.pdf' \
+                    % (plot_type, info, rho_max, n)
     print "Saving plot to %s" % filename
     plt.savefig(filename)
     if show:

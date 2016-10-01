@@ -64,13 +64,13 @@ In this report, we show how the probability-distribution of two electrons in an 
 
 \section{Introduction}\label{sec:intro}
 %\subsection*{Description of the nature of the problem}
-Schroedingers equation for an electron in a three-dimentional harmonic oscillator well in spherical coordinates, ignoring the Coulomb force:
+Schrödinger's equation for an electron in a three-dimensional harmonic oscillator well in spherical coordinates, ignoring the Coulomb force, is
 \begin{equation}
   -\frac{\hbar^2}{2 m} \frac{d^2}{dr^2} u(r)
        + \left ( V(r) + \frac{l (l + 1)}{r^2}\frac{\hbar^2}{2 m}
                                     \right ) u(r)  = E u(r) .
 \end{equation}
-If we discretize this equation at the groudstate of the orbital momentum of the electrons, it can be rewritten as an eigenvalue-problem with a tri-diagonal matrix:
+If we discretize this equation at the ground state of the orbital momentum of the electrons, it can be rewritten \cite{fys3150_project2} as an eigenvalue-problem with a tri-diagonal matrix:
 \begin{equation*}
 A\textbf{x} = \lambda \textbf{x}
 \end{equation*}
@@ -106,13 +106,13 @@ $\textbf{U}^T\textbf{U} = \textbf{I}$ if $\textbf{U}$ is orthogonal.
 \subsection{Implementing unit tests}
 
 \subsection{Studying the results}
-%\begin{figure}[ht]
-%\includegraphics[width=\textwidth]{fig/plot_}
-%\caption{Plotting ...}
-%\end{figure}
+\begin{figure}[ht]
+\includegraphics[width=\textwidth]{fig/plot_3-lowest_non-interacting_omega=1_rho-max=5_n=200.pdf}
+\caption{$N=200$ seems to yield sufficiently accurate values for $\lambda$, with the error being in the fifth significant digit}
+\end{figure}
 
 \section{Conclusion}\label{sec:conclusion}
-We see that decreasing the strength of the ocillator potential $\omega$ pushes the probability-distribution further away from 0, making it shallower. The same goes for the introduction of the Coulomb force.
+We see that decreasing the strength of the oscillator potential $\omega$ pushes the probability-distribution further away from 0, making it shallower. The same goes for the introduction of the Coulomb force.
 
 
 %\bibliographystyle{plain}
