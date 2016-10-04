@@ -149,21 +149,20 @@ def rotate(A, R, k, l):
 def make_matrix_noninteracting_case(n, omega=1, rho_max=5):
     """Creates A for the non-interacting case
 
-    >>> A, rho = make_matrix_noninteracting_case(5, rho_max=5)
+    >>> A, rho = make_matrix_noninteracting_case(4, rho_max=5)
     >>> A
-    array([[  3.,  -1.,   0.,   0.,   0.],
-           [ -1.,   6.,  -1.,   0.,   0.],
-           [  0.,  -1.,  11.,  -1.,   0.],
-           [  0.,   0.,  -1.,  18.,  -1.],
-           [  0.,   0.,   0.,  -1.,  27.]])
+    array([[  3.,  -1.,   0.,   0.],
+           [ -1.,   6.,  -1.,   0.],
+           [  0.,  -1.,  11.,  -1.],
+           [  0.,   0.,  -1.,  18.]])
     >>> rho
-    array([ 0.,  1.,  2.,  3.,  4.,  5.])
+    array([ 0.,  1.,  2.,  3.,  4.])
     """
     A = np.zeros(shape=(n,n), dtype=np.float64)
 
     rho_0 = 0
     rho_n = rho_max
-    rho = np.linspace(rho_0, rho_n, n+1)
+    rho = np.linspace(rho_0, rho_n, n+2)[:-1]   # quickfix
     h = rho[1]-rho[0]
     V = np.zeros(n+1)
     V[1:] = omega**2*rho[1:]**2
@@ -181,7 +180,7 @@ def make_matrix_interacting_case(n, omega, rho_max=5):
 
     >>> n = 4
     >>> omega = 2
-    >>> A, rho = make_matrix_interacting_case(n, omega, rho_max=4)
+    >>> A, rho = make_matrix_interacting_case(n, omega, rho_max=5)
     >>> A
     array([[  7.        ,  -1.        ,   0.        ,   0.        ],
            [ -1.        ,  18.5       ,  -1.        ,   0.        ],
@@ -194,7 +193,7 @@ def make_matrix_interacting_case(n, omega, rho_max=5):
 
     rho_0 = 0
     rho_n = rho_max
-    rho = np.linspace(rho_0, rho_n, n+1)
+    rho = np.linspace(rho_0, rho_n, n+2)[:-1]
     h = rho[1]-rho[0]
     V = np.zeros(n+1)
     V[1:] = omega**2*rho[1:]**2 + 1/rho[1:]
