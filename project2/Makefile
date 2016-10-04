@@ -14,16 +14,15 @@ pytest_opts=--doctest-modules --doctest-report=none -v
 jacobi_lib_dir=src/c
 jacobi_lib_file=src/c/jacobi.so
 
-#benchmarks=bench_all.dat
-#benchmark_programs=src/bench_all.py
+benchmarks=benchmark.dat
+benchmark_programs=src/benchmark.py
 util_programs=src/common.py
 plot_programs=src/plot_b.py src/plot_d.py
-plots = fig/plot_3-lowest_interacting_omega=1_rho-max=5_n=200.pdf fig/plot_3-lowest_non-interacting_omega=1_rho-max=5_n=200.pdf fig/plot_varying-omega_interacting_omega=0.005,0.01,0.05_rho-max=70_n=100.pdf fig/plot_varying-omega_interacting_omega=0.5,1,5_rho-max=5_n=100.pdf fig/plot_varying-omega_non-interacting_omega=0.005,0.01,0.05_rho-max=70_n=100.pdf fig/plot_varying-omega_non-interacting_omega=0.5,1,5_rho-max=5_n=100.pdf
-
-fig/plot_interacting_omega=0.5,1,5_rho-max=5_n=200.pdf fig/plot_interacting_omega=0.005,0.01,0.05_rho-max=70_n=200.pdf
+plots = fig/plot_3-lowest_interacting_omega=1_rho-max=5_n=200.pdf fig/plot_3-lowest_non-interacting_omega=1_rho-max=5_n=200.pdf fig/plot_3-lowest_non-interacting_omega=1_rho-max=10_n=200.pdf fig/plot_varying-omega_interacting_omega=0.005,0.01,0.05_rho-max=70_n=100.pdf fig/plot_varying-omega_interacting_omega=0.5,1,5_rho-max=5_n=100.pdf fig/plot_varying-omega_non-interacting_omega=0.005,0.01,0.05_rho-max=70_n=100.pdf fig/plot_varying-omega_non-interacting_omega=0.5,1,5_rho-max=5_n=100.pdf
 
 #table_programs=src/task_d.py
-#tables = table_errors.dat
+#table_program_opts=--only_table --latex
+#tables = table_non_interacting_rho-max=5.dat
 
 all: jacobi_lib report
 

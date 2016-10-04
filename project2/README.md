@@ -58,9 +58,10 @@ user    0m5.812s
 sys     0m2.188s
 ```
 
-This was run on a i7-6560U @ 3 GHz (approximately)
+This was run on a i7-6560U @ 3 GHz
 
 ## Dependencies
 * Python 2 w/ SciPy stack
+* The Python package `tabulate` [can be installed with pip](https://pypi.python.org/pypi/tabulate)
 * texlive with most of the bells and whistles
 * Compilers for C and C++

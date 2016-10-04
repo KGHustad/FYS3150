@@ -7,6 +7,7 @@
 \usepackage{amsmath, amssymb}
 \usepackage{tikz}
 \usepackage{graphicx}
+\usepackage{subcaption}
 \usepackage{parskip}
 \usepackage{lmodern}
 \usepackage{algorithm}
@@ -59,6 +60,7 @@ In this report, we show how the probability-distribution of two electrons in an 
 \newcommand{\half}{\frac{1}{2}}
 \newcommand{\dx}{{\Delta x}}
 \newcommand{\bigO}{{\mathcal{O}}}
+\newcommand{\rhomax}{{\rho_{\mathrm{max}}}}
 
 
 
@@ -70,12 +72,12 @@ Schrödinger's equation for an electron in a three-dimensional harmonic oscillat
        + \left ( V(r) + \frac{l (l + 1)}{r^2}\frac{\hbar^2}{2 m}
                                     \right ) u(r)  = E u(r) .
 \end{equation}
-If we discretize this equation at the ground state of the orbital momentum of the electrons, it can be rewritten \cite{fys3150_project2} as an eigenvalue-problem with a tri-diagonal matrix:
+If we discretize this equation at the ground state of the orbital momentum of the electrons, it can be rewritten (as shown in \cite{fys3150_project2}) as an eigenvalue-problem with a tri-diagonal matrix:
 \begin{equation*}
 A\textbf{x} = \lambda \textbf{x}
 \end{equation*}
 where
-\begin{equation*}
+\begin{equation}
 A = \begin{bmatrix} \frac{2}{h^2}+V_1 & -\frac{1}{h^2} & 0   & 0    & \dots  &0     & 0 \\
                                 -\frac{1}{h^2} & \frac{2}{h^2}+V_2 & -\frac{1}{h^2} & 0    & \dots  &0     &0 \\
                                 0   & -\frac{1}{h^2} & \frac{2}{h^2}+V_3 & -\frac{1}{h^2}  &0       &\dots & 0\\
@@ -83,8 +85,12 @@ A = \begin{bmatrix} \frac{2}{h^2}+V_1 & -\frac{1}{h^2} & 0   & 0    & \dots  &0 
                                 0   & \dots & \dots & \dots  &-\frac{1}{h^2}  &\frac{2}{h^2}+V_{N-2} & -\frac{1}{h^2}\\
                                 0   & \dots & \dots & \dots  &\dots       &-\frac{1}{h^2} & \frac{2}{h^2}+V_{N-1}
              \end{bmatrix}
-\end{equation*}
-It has been shown \cite{mhj_lecture_notes} that...
+\label{eq:A_matrix}
+\end{equation}
+It has been shown in \cite{mhj_lecture_notes} that \eqref{eq:A_matrix} can be solved can be solved by Jacobi's method with the following algorithm.
+
+
+
 
 \section{Discussion of methods}\label{sec:methods}
 We can solve this eigenvalue-problem by a series of rotations that preserve the orthogonality of the matrix, through Jacobi's rotational method, described in \cite{mhj_lecture_notes}.
@@ -102,17 +108,96 @@ Notes;\\
 $(\textbf{U}\textbf{v}_i)^T = \textbf{v}_i^T\textbf{U}^T$,\\
 $\textbf{U}^T\textbf{U} = \textbf{I}$ if $\textbf{U}$ is orthogonal.
 
-\section{Implementation and results}\label{sec:implementation_and_results}
-\subsection{Implementing unit tests}
+\subsection{Complexity analysis}
 
-\subsection{Studying the results}
+\begin{algorithm}
+\caption{Jacobi's method} \label{alg:jacobi}
+\begin{algorithmic}[1]
+  \Procedure{Jacobi}{$A, R, n, tol$}
+  \Statex \Comment{Find $|A_{kl}| = \max\limits_{i,j}(|A_{ij}|) \mid i \neq j$}
+  \State $maximum, k, l \gets$ \textsc{Find max nondiagonal symmetrical}$(A,n)$
+  \While {$maximum > tol$}
+    \State \textsc{Rotate}$(A, R, n, k, l)$
+    \State $maximum, k, l \gets$ \textsc{Find max nondiagonal symmetrical}$(A,n)$
+  \EndWhile
+  \EndProcedure
+
+  \Statex % empty line between procedures
+
+  \Procedure{Rotate}{$A, R, n, k, l$}
+
+
+  \State $\tau \gets \frac{A_{ll} - A_{kk}}{2A_{kl}}$
+  \If {$\tau > 0$}
+      \State $t \gets \frac{1}{\tau + \sqrt{1 + \tau^{2}}}$
+  \Else
+      \State $t \gets \frac{1}{\tau - \sqrt{1 + \tau^{2}}}$
+  \EndIf
+  \State $c \gets 1 / \sqrt{1+t^{2}}$
+  \State $s \gets c \cdot t$
+
+  %# we need to store some values for later use
+  \State $a_{kk} \gets A_{kk}$
+  \State $a_{ll} \gets A_{ll}$
+
+  \State $A_{kk} \gets c^{2} \cdot a_{kk} - 2 \cdot c \cdot s \cdot A_{kl} + s^{2} \cdot a_{ll}$
+  \State $A_{ll} \gets s^{2} \cdot a_{kk} + 2 \cdot c \cdot s \cdot A_{kl} + c^{2} \cdot a_{ll}$
+  \State $A_{kl} \gets 0$
+  \State $A_{lk} \gets 0$
+
+    \For {$i \gets 0, \dots, n-1$}
+        \If {$i \neq k$ and $i \neq l$}
+          \State $a_{ik} \gets A_{ik}$
+          \State $a_{il} \gets A_{il}$
+          \State $A_{ik} \gets c \cdot a_{ik} - s \cdot a_{il}$
+          \State $A_{ki} \gets A_{ik}$
+          \State $A_{il} \gets c \cdot a_{il} + s \cdot a_{ik}$
+          \State $A_{li} \gets A_{il}$
+      \EndIf
+
+        \State $r_{ik} \gets R_{ik}$
+        \State $r_{il} \gets R_{il}$
+        \State $R_{ik} \gets c \cdot r_{ik} - s \cdot r_{il}$
+        \State $R_{il} \gets c \cdot r_{il} + s \cdot r_{ik}$
+    \EndFor
+
+
+  \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+Analysing algorithm \ref{alg:jacobi}, we see that the loop in \textsc{Jacobi} runs until a tolerance is reached. For each round in the loop, \textsc{Rotate} and \textsc{Find max nondiagonal symmetrical} are called once each. We see that \textsc{Rotate} runs in $\Theta(n)$ time, albeit with some constant terms which require a substantial number of FLOPs. The algorithm for \textsc{Find max nondiagonal symmetrical} is not listed, but it is trivial to see that finding the maximum non-diagonal element in a symmetrical $n \times n$ matrix takes $\Theta(n^2)$ time.
+
+We shall not attempt to determine how many rotations are required to reach the tolerance analytically, but rather revisit this topic in subsection \ref{subsec:studying_the_results}, armed with experimental data.
+
+\section{Implementation and results}\label{sec:implementation_and_results}
+
+We first implemented the algorithm straightforward in Python, then we rewrote \textsc{Find max nondiagonal symmetrical} in C and called the C function from Python via \texttt{scipy.weave.inline}, reducing the runtime by a factor of 10. We did not settle there, but rewrote the entire solver in C, so that the matrices were initialized in Python, and then they were passed into a C function which interfaced with Python via \texttt{ctypes}. This led to another speedup by a factor of 10.
+
+Going with a hybrid Python/C solution allowed us to combine the speed of C with the many powerful Python libraries we are fond of. All the data are directly available in Python, so we don't have to deal with writing results to a file and all the hazzle related to that.
+
+\subsection{Implementing unit tests}
+There are several ways of implementing unit tests in Python. For most of the functions, we made a simple doctest which has the strength of being both easy to read and easy to write. In addition, we made a more extensive test which compares the eigenvalues and eigenvectors returned by our algorithm with those returned by \texttt{numpy.linalg.eigh}.
+
+\subsection{Studying the results}\label{subsec:studying_the_results}
 \begin{figure}[ht]
+\begin{subfigure}[t]{0.5\textwidth}
 \includegraphics[width=\textwidth]{fig/plot_3-lowest_non-interacting_omega=1_rho-max=5_n=200.pdf}
-\caption{$N=200$ seems to yield sufficiently accurate values for $\lambda$, with the error being in the fifth significant digit}
+\caption{Choosing $\rhomax = 5$ seems optimal}
+\end{subfigure}
+\begin{subfigure}[t]{0.5\textwidth}
+\includegraphics[width=\textwidth]{fig/plot_3-lowest_non-interacting_omega=1_rho-max=10_n=200.pdf}
+\caption{With $\rhomax = 10$, over half the plot is just zero.}
+\end{subfigure}
+
+\caption{The 3 lowest energy levels for the non-interacting case}
+\label{fig:non-interacting_compare_rho_max}
 \end{figure}
 
+From figure \ref{fig:non-interacting_compare_rho_max}, we observe that $N=200$ seems to yield sufficiently accurate values for $\lambda$, with the error being in the fifth significant digit. We also note that doubling $\rhomax$ (while keeping all other parameters constant) causes the error to grow by a factor of 4. This is in agreement with the scheme having an error of the order of $\Theta(h^2)$.
+
 \section{Conclusion}\label{sec:conclusion}
-We see that decreasing the strength of the oscillator potential $\omega$ pushes the probability-distribution further away from 0, making it shallower. The same goes for the introduction of the Coulomb force.
+We see that decreasing the strength of the oscillator potential $\omega$ pushes the probability distribution further away from 0, making it shallower. The same goes for the introduction of the Coulomb force.
 
 
 %\bibliographystyle{plain}
