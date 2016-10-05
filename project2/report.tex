@@ -44,7 +44,7 @@
 
 \begin{abstract}
 \noindent
-In this report, we show how the probability-distribution of two electrons in an harmonic oscillator well can be solved as an eigenvalue-problem. We will be looking at the behaviour of the probability, with, and without the implementation of the Coulomb force, and different oscilator potential, solved with Jacobi's method.
+In this report, we show how the probability-distribution of two electrons in an harmonic oscillator well can be solved as an eigenvalue-problem. We will be looking at the behaviour of the probability, with, and without the implementation of the Coulomb force, and different oscillator potential, solved with Jacobi's method.
 \end{abstract}
 
 \vfill
@@ -72,7 +72,7 @@ Schrödinger's equation for an electron in a three-dimensional harmonic oscillat
        + \left ( V(r) + \frac{l (l + 1)}{r^2}\frac{\hbar^2}{2 m}
                                     \right ) u(r)  = E u(r) .
 \end{equation}
-If we discretize this equation at the ground state of the orbital momentum of the electrons, it can be rewritten (as shown in \cite{fys3150_project2}) as an eigenvalue-problem with a tri-diagonal matrix:
+If we discretize this equation at the ground state of the orbital momentum of the electrons, it can be rewritten (as shown in \cite{fys3150_project2}) as an eigenvalue-problem with a tridiagonal matrix:
 \begin{equation*}
 A\textbf{x} = \lambda \textbf{x}
 \end{equation*}
@@ -115,10 +115,10 @@ $\textbf{U}^T\textbf{U} = \textbf{I}$ if $\textbf{U}$ is orthogonal.
 \begin{algorithmic}[1]
   \Procedure{Jacobi}{$A, R, n, tol$}
   \Statex \Comment{Find $|A_{kl}| = \max\limits_{i,j}(|A_{ij}|) \mid i \neq j$}
-  \State $maximum, k, l \gets$ \textsc{Find max nondiagonal symmetrical}$(A,n)$
+  \State $maximum, k, l \gets$ \textsc{Find max non-diagonal symmetrical}$(A,n)$
   \While {$maximum > tol$}
     \State \textsc{Rotate}$(A, R, n, k, l)$
-    \State $maximum, k, l \gets$ \textsc{Find max nondiagonal symmetrical}$(A,n)$
+    \State $maximum, k, l \gets$ \textsc{Find max non-diagonal symmetrical}$(A,n)$
   \EndWhile
   \EndProcedure
 
@@ -166,15 +166,15 @@ $\textbf{U}^T\textbf{U} = \textbf{I}$ if $\textbf{U}$ is orthogonal.
 \end{algorithmic}
 \end{algorithm}
 
-Analysing algorithm \ref{alg:jacobi}, we see that the loop in \textsc{Jacobi} runs until a tolerance is reached. For each round in the loop, \textsc{Rotate} and \textsc{Find max nondiagonal symmetrical} are called once each. We see that \textsc{Rotate} runs in $\Theta(n)$ time, albeit with some constant terms which require a substantial number of FLOPs. The algorithm for \textsc{Find max nondiagonal symmetrical} is not listed, but it is trivial to see that finding the maximum non-diagonal element in a symmetrical $n \times n$ matrix takes $\Theta(n^2)$ time.
+Analysing algorithm \ref{alg:jacobi}, we see that the loop in \textsc{Jacobi} runs until a tolerance is reached. For each round in the loop, \textsc{Rotate} and \textsc{Find max non-diagonal symmetrical} are called once each. We see that \textsc{Rotate} runs in $\Theta(n)$ time, albeit with some constant terms which require a substantial number of FLOPs. The algorithm for \textsc{Find max non-diagonal symmetrical} is not listed, but it is trivial to see that finding the maximum non-diagonal element in a symmetrical $n \times n$ matrix takes $\Theta(n^2)$ time.
 
 We shall not attempt to determine how many rotations are required to reach the tolerance analytically, but rather revisit this topic in subsection \ref{subsec:studying_the_results}, armed with experimental data.
 
 \section{Implementation and results}\label{sec:implementation_and_results}
 
-We first implemented the algorithm straightforward in Python, then we rewrote \textsc{Find max nondiagonal symmetrical} in C and called the C function from Python via \href{http://docs.scipy.org/doc/scipy/reference/generated/scipy.weave.inline.html}{\texttt{scipy.weave.inline}}, reducing the runtime by a factor of 10. We did not settle there, but rewrote the entire solver in C, so that the matrices were initialized in Python, and then they were passed into a C function which interfaced with Python via \href{https://docs.python.org/2/library/ctypes.html}{\texttt{ctypes}}. This led to another speedup by a factor of 10.
+We first implemented the algorithm straightforward in Python, then we rewrote \textsc{Find max non-diagonal symmetrical} in C and called the C function from Python via \href{http://docs.scipy.org/doc/scipy/reference/generated/scipy.weave.inline.html}{\texttt{scipy.weave.inline}}, reducing the runtime by a factor of 10. We did not settle there, but rewrote the entire solver in C, so that the matrices were initialized in Python, and then they were passed into a C function which interfaced with Python via \href{https://docs.python.org/2/library/ctypes.html}{\texttt{ctypes}}. This led to another speedup by a factor of 10.
 
-Going with a hybrid Python/C solution allowed us to combine the speed of C with the many powerful Python libraries we are fond of. All the data are directly available in Python, so we don't have to deal with writing results to a file and all the hazzle related to that.
+Going with a hybrid Python/C solution allowed us to combine the speed of C with the many powerful Python libraries we are fond of. All the data are directly available in Python, so we don't have to deal with writing results to a file and all the hassle related to that.
 
 \subsection{Implementing unit tests}
 There are several ways of implementing unit tests in Python. For most of the functions, we made a simple doctest which has the strength of being both easy to read and easy to write. In addition, we made a more extensive test which compares the eigenvalues and eigenvectors returned by our algorithm with those returned by \href{http://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.eigh.html}{\texttt{numpy.linalg.eigh}}.
@@ -198,7 +198,7 @@ From figure \ref{fig:non-interacting_compare_rho_max}, we observe that $N=200$ s
 \begin{table}[htbp]
 \begin{center}
     \input{table_non_interacting_rho-max=5.dat}
-\caption{Results for the non-interating case with $\rhomax=5$, $\omega=1$ and a tolerance of $10^{-8}$ for selected values of $N$}
+\caption{Results for the non-interacting case with $\rhomax=5$, $\omega=1$ and a tolerance of $10^{-8}$ for selected values of $N$}
 \label{table:non-interacting}
 \end{center}
 \end{table}
