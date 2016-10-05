@@ -38,8 +38,8 @@ $(report_pdf): $(report_texdoc) $(bibliography) $(plots) $(tables)
 	bibtex report
 	$(LATEX) $(LATEX_OPTS) $(report_texdoc)
 	$(LATEX) $(LATEX_OPTS) $(report_texdoc)
-benchmarks: $(benchmarks) $(benchmark_programs)
-$(benchmarks):
+benchmarks: $(benchmarks)
+$(benchmarks): $(benchmark_programs) $(jacobi_lib_file) $(util_programs)
 	python src/benchmark.py
 plots: $(plots)
 $(plots): $(plot_programs) $(jacobi_lib_file) $(util_programs)
