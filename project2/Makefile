@@ -20,9 +20,9 @@ util_programs=src/common.py
 plot_programs=src/plot_b.py src/plot_d.py
 plots = fig/plot_3-lowest_interacting_omega=1_rho-max=5_n=200.pdf fig/plot_3-lowest_non-interacting_omega=1_rho-max=5_n=200.pdf fig/plot_3-lowest_non-interacting_omega=1_rho-max=10_n=200.pdf fig/plot_varying-omega_interacting_omega=0.005,0.01,0.05_rho-max=70_n=100.pdf fig/plot_varying-omega_interacting_omega=0.5,1,5_rho-max=5_n=100.pdf fig/plot_varying-omega_non-interacting_omega=0.005,0.01,0.05_rho-max=70_n=100.pdf fig/plot_varying-omega_non-interacting_omega=0.5,1,5_rho-max=5_n=100.pdf
 
-#table_programs=src/task_d.py
-#table_program_opts=--only_table --latex
-#tables = table_non_interacting_rho-max=5.dat
+table_programs=src/benchmark.py
+table_program_opts=--only_table --latex
+tables = table_non_interacting_rho-max=5.dat
 
 all: jacobi_lib report
 
@@ -32,15 +32,15 @@ $(jacobi_lib_file):
 
 report: $(report_pdf)
 #$(report_pdf): $(report_texdoc) $(plots) $(tables) $(benchmarks)
-$(report_pdf): $(report_texdoc) $(bibliography) $(plots)
+$(report_pdf): $(report_texdoc) $(bibliography) $(plots) $(tables)
 	# need to run several times to fix references
 	$(LATEX) $(LATEX_OPTS) $(report_texdoc)
 	bibtex report
 	$(LATEX) $(LATEX_OPTS) $(report_texdoc)
 	$(LATEX) $(LATEX_OPTS) $(report_texdoc)
-# benchmarks: $(benchmarks) $(benchmark_programs)
-# $(benchmarks):
-# 	python src/bench_all.py > bench_all.dat
+benchmarks: $(benchmarks) $(benchmark_programs)
+$(benchmarks):
+	python src/benchmark.py
 plots: $(plots)
 $(plots): $(plot_programs) $(jacobi_lib_file) $(util_programs)
 	@mkdir -p $(@D)
@@ -48,11 +48,9 @@ $(plots): $(plot_programs) $(jacobi_lib_file) $(util_programs)
 		python $$plot_prog ; \
 	done
 
-# tables: $(tables)
-# $(tables): $(table_programs)
-# 	for table_prog in $(table_programs); do \
-# 		python $$table_prog ; \
-# 	done
+tables: $(tables)
+$(tables): $(table_programs)
+	python src/benchmark.py $(table_program_opts) > table_non_interacting_rho-max=5.dat
 show: report
 	evince $(report_pdf) &
 test: $(test_programs) $(jacobi_lib_file)
@@ -64,6 +62,7 @@ clean-c:
 	$(MAKE) clean -C $(jacobi_lib_dir)
 clean-python:
 	$(RM) src/*.pyc
+	$(RM) -r __pycache__
 clean-latex:
 	$(RM) $(clean_latex_ext)
 clean-plots:

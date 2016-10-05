@@ -189,12 +189,42 @@ There are several ways of implementing unit tests in Python. For most of the fun
 \includegraphics[width=\textwidth]{fig/plot_3-lowest_non-interacting_omega=1_rho-max=10_n=200.pdf}
 \caption{With $\rhomax = 10$, over half the plot is just zero.}
 \end{subfigure}
-
 \caption{The 3 lowest energy levels for the non-interacting case}
 \label{fig:non-interacting_compare_rho_max}
 \end{figure}
 
 From figure \ref{fig:non-interacting_compare_rho_max}, we observe that $N=200$ seems to yield sufficiently accurate values for $\lambda$, with the error being in the fifth significant digit. We also note that doubling $\rhomax$ (while keeping all other parameters constant) causes the error to grow by a factor of 4. This is in agreement with the scheme having an error of the order of $\Theta(h^2)$.
+
+\begin{table}[htbp]
+\begin{center}
+    \input{table_non_interacting_rho-max=5.dat}
+\caption{Results for the non-interating case with $\rhomax=5$, $\omega=1$ and a tolerance of $10^{-8}$ for selected values of $N$}
+\label{table:non-interacting}
+\end{center}
+\end{table}
+
+In table \ref{table:non-interacting}, we increase $N$ by $\sqrt[4]{2}$. We notice that the number of iterations, i.e. rounds in \textsc{Jacobi}, increases by more than a ratio of 4 by each doubling of N. It seems that the number of iterations is lower bounded by $n^2$ ($\Omega(n^2)$). This means that our algorithm should run in $\Omega(n^4)$ time. We see that the time used roughly doubles for each increase of $N$ by $\sqrt[4]{2}$, so our algorithm runs in $n^4$ time for these $N$ values. If we were to test with even larger $N$, we might see that this is a lower bound, but since the runtime increases so quickly, such an empirical approach may become unfeasible.
+
+
+\subsubsection{Effect of Coulomb interaction}
+
+\begin{figure}[ht]
+    \begin{subfigure}[t]{\textwidth}
+        \includegraphics[width=\textwidth]{{fig/plot_varying-omega_non-interacting_omega=0.5,1,5_rho-max=5_n=100}.pdf}
+        \caption{Non-interacting case}
+    \end{subfigure}
+
+    \begin{subfigure}[t]{\textwidth}
+        \includegraphics[width=\textwidth]{{fig/plot_varying-omega_interacting_omega=0.5,1,5_rho-max=5_n=100}.pdf}
+        \caption{Interacting case}
+    \end{subfigure}
+
+\caption{The lowest energy level for selected $\omega$}
+\label{fig:compare_interaction_various_omega}
+\end{figure}
+
+From figure \ref{fig:compare_interaction_various_omega} we observe that the interacting case is slightly shifted to the right compared to the non-interacting case. This is due to the repulsive interaction between electrons.
+
 
 \section{Conclusion}\label{sec:conclusion}
 We see that decreasing the strength of the oscillator potential $\omega$ pushes the probability distribution further away from 0, making it shallower. The same goes for the introduction of the Coulomb force.

@@ -52,7 +52,7 @@ if __name__ == '__main__':
                "it./N**2", "time"]
     if latex_table_format:
         headers = ["$N$", "$\lambda_1$", "$\lambda_2$", "$\lambda_3$",
-                   "iterations", "$\frac{iterations}{N^2}$", "time"]
+                   "iterations", "$\\frac{iterations}{N^2}$", "time"]
         print tabulate.tabulate(data, headers, tablefmt='latex')
     else:
         """
