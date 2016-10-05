@@ -172,12 +172,12 @@ We shall not attempt to determine how many rotations are required to reach the t
 
 \section{Implementation and results}\label{sec:implementation_and_results}
 
-We first implemented the algorithm straightforward in Python, then we rewrote \textsc{Find max nondiagonal symmetrical} in C and called the C function from Python via \texttt{scipy.weave.inline}, reducing the runtime by a factor of 10. We did not settle there, but rewrote the entire solver in C, so that the matrices were initialized in Python, and then they were passed into a C function which interfaced with Python via \texttt{ctypes}. This led to another speedup by a factor of 10.
+We first implemented the algorithm straightforward in Python, then we rewrote \textsc{Find max nondiagonal symmetrical} in C and called the C function from Python via \href{http://docs.scipy.org/doc/scipy/reference/generated/scipy.weave.inline.html}{\texttt{scipy.weave.inline}}, reducing the runtime by a factor of 10. We did not settle there, but rewrote the entire solver in C, so that the matrices were initialized in Python, and then they were passed into a C function which interfaced with Python via \href{https://docs.python.org/2/library/ctypes.html}{\texttt{ctypes}}. This led to another speedup by a factor of 10.
 
 Going with a hybrid Python/C solution allowed us to combine the speed of C with the many powerful Python libraries we are fond of. All the data are directly available in Python, so we don't have to deal with writing results to a file and all the hazzle related to that.
 
 \subsection{Implementing unit tests}
-There are several ways of implementing unit tests in Python. For most of the functions, we made a simple doctest which has the strength of being both easy to read and easy to write. In addition, we made a more extensive test which compares the eigenvalues and eigenvectors returned by our algorithm with those returned by \texttt{numpy.linalg.eigh}.
+There are several ways of implementing unit tests in Python. For most of the functions, we made a simple doctest which has the strength of being both easy to read and easy to write. In addition, we made a more extensive test which compares the eigenvalues and eigenvectors returned by our algorithm with those returned by \href{http://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.eigh.html}{\texttt{numpy.linalg.eigh}}.
 
 \subsection{Studying the results}\label{subsec:studying_the_results}
 \begin{figure}[ht]
