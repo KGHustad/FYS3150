@@ -17,6 +17,11 @@ Run all tests with
 make test
 ```
 
+There is a main program , `src/main.py`, which provides a basic command-line interface to our solver. For instructions on how to use this, run
+``` sh
+python src/main.py --help
+```
+
 ## Benchmarks
 See `benchmark.md`
 
