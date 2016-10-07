@@ -1,8 +1,4 @@
-#import sys
-#import numpy as np
-import matplotlib.pyplot as plt
 import argparse
-import scipy.integrate as integrate
 
 from common import *
 
@@ -46,8 +42,6 @@ else:
     omega_values = [omega]
 
 interaction_info = 'interacting' if interaction else 'non-interacting'
-
-#print args
 
 if __name__ == '__main__':
     plot_lowest_energy_levels(n, interaction, omega, rho_max, solver=solver,
