@@ -40,6 +40,15 @@ class SolarSystem:
             P_new[n] += V_new[n]*dt
         return P_new, V_new
 
+    def VelocityVerlet(self, P, V, dt):
+        length = len(P)
+        P_new = P
+        V_new = V
+        for n in range(length):
+            Acc_P = self.Acc(P)
+            P_new = P + V*dt + 0.5*Acc_P*dt**2
+            V_new = V + 0.5*(Acc_P+self.Acc(P_new)*dt
+
     def FillArray( self, steps, years ):
         num_objects = self.NumberOfObjects
         dt = float(years)/(steps+1)
@@ -48,7 +57,7 @@ class SolarSystem:
         p[0] = self.ObjectPositions
         v[0] = self.ObjectVelocities
         for i in xrange( steps ):
-            p[i+1], v[i+1] = self.FEulerStep(p[i], v[i], dt)
+            p[i+1], v[i+1] = self.VelocityVerlet(p[i], v[i], dt)
         return p
 
     def Acc(self, Positions, target, Masses):
