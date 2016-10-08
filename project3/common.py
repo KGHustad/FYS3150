@@ -59,7 +59,7 @@ class SolarSystem:
         v[0] = self.ObjectVelocities
         for i in xrange( steps ):
             p[i+1], v[i+1] = self.VelocityVerlet(p[i], v[i], dt)
-        return p
+        return p, v
 
     def Acc(self, Positions, target, Masses):
         x_acc = 0
@@ -73,7 +73,7 @@ class SolarSystem:
                 y_acc -= G*Masses[i]*y_distance/distance**3
         return np.array( [x_acc, y_acc] )
 
-"""
-    def Acc(self, p, n, s):
-        return np.array([0.1,0.1])
-"""
+    def EnergyConservation(self, P, V):
+        KineticEnergy = 0.5*self.ObjectMasses[1]*V[:,1,0]**2*V[:,1,1]**2
+        plt.plot(KineticEnergy)
+        plt.show()
