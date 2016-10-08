@@ -31,26 +31,14 @@ class SolarSystem:
             self.ObjectRadiuses = np.append( self.ObjectRadiuses, radius )
         self.NumberOfObjects += 1
 
-    def Acc(self, Positions, target, Mass_Sources):
-        x_acc = 0
-        y_acc = 0
-        for i in range(self.NumberOfObjects):
-            if i != target:
-                x_distance = abs( Positions[target,0] - Positions[i,0] )
-                y_distance = abs( Positions[target,1] - Positions[i,1] )
-                distance = np.sqrt( x_distance**2 + y_distance**2 )
-                x_acc -= G*Mass_Sources[i]*x_distance/distance**3
-                y_acc -= G*Mass_Sources[i]*y_distance/distance**3
-        return np.array( x_acc, y_acc )
-
     def FEulerStep(self, P, V, dt):
         length = len(P)
-        p_new = np.zeros( shape = (length,2) )
-        v_new = np.zeros( shape = (length,2) )
+        P_new = P
+        V_new = V
         for n in range(length):
-            v_new[n] += self.Acc(P, n, self.ObjectMasses)*dt
-            p_new[n] += v_new[n]*dt
-        return p_new, v_new
+            V_new[n] += self.Acc(P, n, self.ObjectMasses)*dt
+            P_new[n] += V_new[n]*dt
+        return P_new, V_new
 
     def FillArray( self, steps, years ):
         num_objects = self.NumberOfObjects
@@ -59,9 +47,23 @@ class SolarSystem:
         v = np.zeros( shape = ( steps+1, num_objects, 2 ) )
         p[0] = self.ObjectPositions
         v[0] = self.ObjectVelocities
-        print self.ObjectVelocities
-        print p, v
         for i in xrange( steps ):
             p[i+1], v[i+1] = self.FEulerStep(p[i], v[i], dt)
-
         return p
+
+    def Acc(self, Positions, target, Masses):
+        x_acc = 0
+        y_acc = 0
+        for i in range(self.NumberOfObjects):
+            if i != target:
+                x_distance = Positions[target,0] - Positions[i,0]
+                y_distance = Positions[target,1] - Positions[i,1]
+                distance = np.sqrt( x_distance**2 + y_distance**2 )
+                x_acc -= G*Masses[i]*x_distance/distance**3
+                y_acc -= G*Masses[i]*y_distance/distance**3
+        return np.array( [x_acc, y_acc] )
+
+"""
+    def Acc(self, p, n, s):
+        return np.array([0.1,0.1])
+"""

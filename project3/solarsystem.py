@@ -1,13 +1,16 @@
 from common import SolarSystem
 import matplotlib.pyplot as plt
+import numpy as np
 
 MySolarSystem = SolarSystem()
 
-MySolarSystem.CreateCelestialObject(0, 0, 0, 0, 1, 0.1)
-MySolarSystem.CreateCelestialObject(1, 1, 0, 0, 0.001, 0.0001)
+MySolarSystem.CreateCelestialObject(0, 0, 0, 0, 1, 1)
+MySolarSystem.CreateCelestialObject(1, 0, 0, 2*np.pi, 0.0000001, 1)
+MySolarSystem.CreateCelestialObject(0, 4, np.pi, 0, 0.0000001, 1)
+p = MySolarSystem.FillArray(1000, 10)
 
-p = MySolarSystem.FillArray(10, 0.00001)
-
-plt.plot(p[:,0], p[:,1], "ro")
-plt.axis([-3,3,-3,3])
+plt.plot(p[:,0,0], p[:,0,1], "yo")
+plt.plot(p[:,1,0], p[:,1,1], "r-")
+plt.plot(p[:,2,0], p[:,2,1], "b-")
+#plt.axis([-2,2,-2,2])
 plt.show()
