@@ -7,7 +7,7 @@ MySolarSystem = SolarSystem()
 MySolarSystem.CreateCelestialObject(0, 0, 0, 0, 1, 1)
 MySolarSystem.CreateCelestialObject(1, 0, 0, 2*np.pi, 0.0000001, 1)
 MySolarSystem.CreateCelestialObject(0, 4, np.pi, 0, 0.0000001, 1)
-p = MySolarSystem.FillArray(1000, 10)
+p = MySolarSystem.FillArray(100, 10)
 
 plt.plot(p[:,0,0], p[:,0,1], "yo")
 plt.plot(p[:,1,0], p[:,1,1], "r-")

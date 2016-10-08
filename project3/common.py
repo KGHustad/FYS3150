@@ -31,7 +31,7 @@ class SolarSystem:
             self.ObjectRadiuses = np.append( self.ObjectRadiuses, radius )
         self.NumberOfObjects += 1
 
-    def FEulerStep(self, P, V, dt):
+    def ForwardEuler(self, P, V, dt):
         length = len(P)
         P_new = P
         V_new = V
@@ -45,9 +45,10 @@ class SolarSystem:
         P_new = P
         V_new = V
         for n in range(length):
-            Acc_P = self.Acc(P)
-            P_new = P + V*dt + 0.5*Acc_P*dt**2
-            V_new = V + 0.5*(Acc_P+self.Acc(P_new)*dt
+            Acc_P = self.Acc(P, n, self.ObjectMasses)
+            P_new[n] = P[n] + V[n]*dt + 0.5*Acc_P*dt**2
+            V_new[n] = V[n] + 0.5*(Acc_P+self.Acc(P_new, n, self.ObjectMasses))*dt
+        return P_new, V_new
 
     def FillArray( self, steps, years ):
         num_objects = self.NumberOfObjects
