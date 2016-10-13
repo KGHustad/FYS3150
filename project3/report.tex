@@ -1,0 +1,86 @@
+\documentclass[a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc,url}
+\usepackage{cite}
+\usepackage{hyperref}
+\usepackage{amsmath, amssymb}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{parskip}
+\usepackage{lmodern}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{epigraph}
+\usepackage{listings}
+
+
+\begin{document}
+\title{FYS3150 -- Project 3}
+\author{
+    \begin{tabular}{r l}
+        Kristian Gregorius Hustad & (\texttt{krihus})\\
+        Jonas Gahr Sturtzel Lunde & (\texttt{jonassl})
+    \end{tabular}}
+%\date{}    % if commented out, the date is set to the current date
+
+\maketitle
+
+
+
+% quote
+\setlength{\epigraphwidth}{0.75\textwidth}
+\renewcommand{\epigraphflush}{center}
+\renewcommand{\beforeepigraphskip}{50pt}
+\renewcommand{\afterepigraphskip}{100pt}
+\renewcommand{\epigraphsize}{\normalsize}
+
+\epigraph{Rockets are cool. There's no getting around that.}
+{\textit{Elon Musk}}
+
+% alternative quote
+%\epigraph{The first principle is that you must not fool yourself -- and you are the easiest person to fool.}{\textit{Richard Feynman}}
+
+\begin{abstract}
+\noindent
+In this report, ...
+\end{abstract}
+
+\vfill
+
+
+\begin{center}
+    GitHub repository at \url{https://github.com/KGHustad/FYS3150}
+\end{center}
+
+\newpage
+
+%%% MACROS
+\newcommand{\half}{\frac{1}{2}}
+\newcommand{\dx}{{\Delta x}}
+\newcommand{\bigO}{{\mathcal{O}}}
+\newcommand{\rhomax}{{\rho_{\mathrm{max}}}}
+
+
+
+\section{Introduction}\label{sec:intro}
+%\subsection*{Description of the nature of the problem}
+\cite{mhj_lecture_notes} % must cite something to avoid compilation error when using bibtex
+
+
+\section{Discussion of methods}\label{sec:methods}
+
+\section{Implementation and results}\label{sec:implementation_and_results}
+
+
+
+\section{Conclusion}\label{sec:conclusion}
+
+
+%\bibliographystyle{plain}
+%\bibliographystyle{siam}
+\bibliographystyle{IEEEtran}
+\bibliography{../papers}{}
+
+\end{document}
