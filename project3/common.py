@@ -1,3 +1,4 @@
+import math
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -35,7 +36,7 @@ class SolarSystem:
         length = len(P)
         P_new = P
         V_new = V
-        for n in range(length):
+        for n in xrange(length):
             V_new[n] += self.Acc(P, n, self.ObjectMasses)*dt
             P_new[n] += V_new[n]*dt
         return P_new, V_new
@@ -44,7 +45,7 @@ class SolarSystem:
         length = len(P)
         P_new = P
         V_new = V
-        for n in range(length):
+        for n in xrange(length):
             Acc_P = self.Acc(P, n, self.ObjectMasses)
             P_new[n] = P[n] + V[n]*dt + 0.5*Acc_P*dt**2
             V_new[n] = V[n] + 0.5*(Acc_P+self.Acc(P_new, n, self.ObjectMasses))*dt
@@ -64,11 +65,11 @@ class SolarSystem:
     def Acc(self, Positions, target, Masses):
         x_acc = 0
         y_acc = 0
-        for i in range(self.NumberOfObjects):
+        for i in xrange(self.NumberOfObjects):
             if i != target:
                 x_distance = Positions[target,0] - Positions[i,0]
                 y_distance = Positions[target,1] - Positions[i,1]
-                distance = np.sqrt( x_distance**2 + y_distance**2 )
+                distance = math.sqrt( x_distance**2 + y_distance**2 )
                 x_acc -= G*Masses[i]*x_distance/distance**3
                 y_acc -= G*Masses[i]*y_distance/distance**3
         return np.array( [x_acc, y_acc] )
