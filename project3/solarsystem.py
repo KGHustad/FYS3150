@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 MySolarSystem = SolarSystem()
-
+"""
 MySolarSystem.CreateCelestialObject(0, 0, 0, 0, 1, 1)
 MySolarSystem.CreateCelestialObject(1, 0, 0, 2.8*np.pi, 0.0000001, 1)
 MySolarSystem.CreateCelestialObject(0, 4, np.pi, 0, 0.0000001, 1)
@@ -17,3 +17,5 @@ plt.plot(p[:,2,0], p[:,2,1], "b-")
 plt.show()
 
 MySolarSystem.EnergyConservation(p,v)
+"""
+MySolarSystem.timestep_test()

@@ -58,7 +58,7 @@ class SolarSystem:
         p[0] = self.ObjectPositions
         v[0] = self.ObjectVelocities
         for i in xrange( steps ):
-            p[i+1], v[i+1] = self.VelocityVerlet(p[i], v[i], dt)
+            p[i+1], v[i+1] = self.ForwardEuler(p[i], v[i], dt)
         return p, v
 
     def Acc(self, Positions, target, Masses):
@@ -76,4 +76,20 @@ class SolarSystem:
     def EnergyConservation(self, P, V):
         KineticEnergy = 0.5*self.ObjectMasses[1]*V[:,1,0]**2*V[:,1,1]**2
         plt.plot(KineticEnergy)
+        plt.show()
+
+    def timestep_test(self):
+        self.CreateCelestialObject(0, 0, 0, 0, 1, 1)
+        self.CreateCelestialObject(1, 0, 0, 2*np.pi, 0.0000001, 1)
+
+        P20 = self.FillArray(20, 1)[0]
+        P50 = self.FillArray(40, 1)[0]
+        P100 = self.FillArray(100, 1)[0]
+        P1000 = self.FillArray(1000, 1)[0]
+
+        plt.plot(P1000[:,0,0], P1000[:,0,1], "yo")
+
+        plt.plot(P20[:,1,0], P20[:,1,1], "g-")
+        plt.plot(P50[:,1,0], P50[:,1,1], "r-")
+        plt.plot(P100[:,1,0], P100[:,1,1], "b-")
         plt.show()
