@@ -15,7 +15,7 @@ plt.plot(p[:,1,0], p[:,1,1], "r-")
 plt.plot(p[:,2,0], p[:,2,1], "b-")
 #plt.axis([-2,2,-2,2])
 plt.show()
-
-MySolarSystem.EnergyConservation(p,v)
 """
-MySolarSystem.timestep_test()
+MySolarSystem.EnergyConservation_test()
+
+#MySolarSystem.TimeStep_test()
