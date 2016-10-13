@@ -37,9 +37,9 @@ class SolarSystem:
         "Adjust sun to ensure that the centre of mass lies in (0, 0)"
         solar_mass = self.ObjectMasses[0]
         new_celestial_object_mass = self.ObjectMasses[-1]
-        self.ObjectPositions[0,:] -= self.ObjectPositions[-1,:]*new_celestial_object_mass/solar_mass
-
-        self.ObjectVelocities[0,:] -= self.ObjectVelocities[-1,:]*new_celestial_object_mass/solar_mass
+        mass_ratio = new_celestial_object_mass / solar_mass
+        self.ObjectPositions[0,:] -= self.ObjectPositions[-1,:]*mass_ratio
+        self.ObjectVelocities[0,:] -= self.ObjectVelocities[-1,:]*mass_ratio
 
     def ForwardEuler(self, P, V, dt):
         length = len(P)
