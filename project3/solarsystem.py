@@ -2,6 +2,26 @@ from common import SolarSystem
 import matplotlib.pyplot as plt
 import numpy as np
 
-MySolarSystem.EnergyConservation_test()
+masses = { 'mercury' : 0.166e-6, 'venus' : 2.081e-6, 'earth' : 3.003e-6, 'mars' : 0.323e-6, 'jupiter' : 954.7e-6, 'saturn' : 285.8e-6, 'uranus' : 43.6e-6, 'neptune' : 51.5e-6}
 
-MySolarSystem.TimeStep_test()
+distances = { 'mercury' : 0.39, 'venus' : 0.72, 'earth' : 1, 'mars' : 1.52, 'jupiter' : 5.20, 'saturn' : 9.58, 'uranus' : 19.23, 'neptune' : 30.10}
+
+speeds_kms = { 'mercury' : 47.4, 'venus' : 35.0, 'earth' : 29.8, 'mars' : 24.1, 'jupiter' : 13.1, 'saturn' : 9.7, 'uranus' : 6.8, 'neptune' : 5.4}
+
+speeds = {key: speeds_kms[key]*0.210805 for key in speeds_kms}
+
+MySolarSystem = SolarSystem()
+MySolarSystem.CreateCelestialObject(0, 0, 0, 0, 1, 1)
+bodies = ['sun']
+for key in sorted(distances.keys()):
+    MySolarSystem.CreateCelestialObject(distances[key], 0, 0, speeds[key], masses[key], 1)
+    bodies.append(key)
+
+p, v = MySolarSystem.FillArray(100000, 100)
+
+plt.axes(aspect='equal')
+for i in range(len(masses)+1):
+    plt.plot(p[:,i,0], p[:,i,1])
+#plt.axis([-10,10,-10,10])
+plt.legend(bodies)
+plt.show()

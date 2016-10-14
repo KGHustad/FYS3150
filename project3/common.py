@@ -1,6 +1,7 @@
 import math
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
 
 G = 4*np.pi**2
 
@@ -53,7 +54,11 @@ class SolarSystem:
         p[0] = self.ObjectPositions
         v[0] = self.ObjectVelocities
         for i in xrange( steps ):
-            p[i+1], v[i+1] = self.VelocityVerlet(p[i], v[i], dt)
+            p[i+1], v[i+1] = self.ForwardEuler(p[i], v[i], dt)
+            sys.stdout.write("\r")
+            sys.stdout.write("%.2f%%" % (i*100.0/steps))
+            sys.stdout.flush()
+        sys.stdout.write("\n")
         return p, v
 
     def Acc(self, Positions, target, Masses):
@@ -68,7 +73,8 @@ class SolarSystem:
                 y_acc -= G*Masses[i]*y_distance/distance**3
         return np.array( [x_acc, y_acc] )
 
-    def EnergyConservation_test(self):
+    @staticmethod
+    def EnergyConservation_test():
         TestSolarSystem = SolarSystem()
         TestSolarSystem.CreateCelestialObject(0, 0, 0, 0, 1, 1)
         TestSolarSystem.CreateCelestialObject(1, 0, 0, 2.5*np.pi, 0.0000001, 1)
@@ -95,7 +101,8 @@ class SolarSystem:
         plt.plot(AngularMomentum)
         plt.show()
 
-    def TimeStep_test(self):
+    @staticmethod
+    def TimeStep_test():
         TestSolarSystem = SolarSystem()
         TestSolarSystem.CreateCelestialObject(0, 0, 0, 0, 1, 1)
         TestSolarSystem.CreateCelestialObject(1, 0, 0, 2*np.pi, 0.0000001, 1)
