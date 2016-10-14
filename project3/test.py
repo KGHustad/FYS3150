@@ -1,5 +1,9 @@
 import numpy as np
 
-a = np.array(1,1)
+a = 2
 
-print a
+a_new = a
+
+a_new = 0
+
+print a_new, a

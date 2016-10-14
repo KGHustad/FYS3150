@@ -71,19 +71,20 @@ class SolarSystem:
         return np.array( [x_acc, y_acc] )
 
     def EnergyConservation_test(self):
-        self.CreateCelestialObject(0, 0, 0, 0, 1, 1)
-        self.CreateCelestialObject(1, 0, 0, 2.5*np.pi, 0.0000001, 1)
+        TestSolarSystem = SolarSystem()
+        TestSolarSystem.CreateCelestialObject(0, 0, 0, 0, 1, 1)
+        TestSolarSystem.CreateCelestialObject(1, 0, 0, 2.5*np.pi, 0.0000001, 1)
 
-        P, V = self.FillArray(100000, 15)
+        P, V = TestSolarSystem.FillArray(100000, 15)
 
-        KineticEnergyEarth = 0.5*self.ObjectMasses[1] * (V[:,1,0]**2 + V[:,1,1]**2) #SolarMasses*AU**2/yr**2
-        KineticEnergySun = 0.5*self.ObjectMasses[0] * (V[:,0,0]**2 + V[:,0,1]**2)
+        KineticEnergyEarth = 0.5*TestSolarSystem.ObjectMasses[1] * (V[:,1,0]**2 + V[:,1,1]**2) #SolarMasses*AU**2/yr**2
+        KineticEnergySun = 0.5*TestSolarSystem.ObjectMasses[0] * (V[:,0,0]**2 + V[:,0,1]**2)
         KineticEnergy = KineticEnergySun + KineticEnergyEarth
 
-        CenterOfMass = P[:,0,:]*self.ObjectMasses[0] + P[:,1,:]*self.ObjectMasses[1]
+        CenterOfMass = P[:,0,:]*TestSolarSystem.ObjectMasses[0] + P[:,1,:]*TestSolarSystem.ObjectMasses[1]
         print CenterOfMass
         distance = np.sqrt( (P[:,1,0] - P[:,0,0])**2 + (P[:,0,1] - P[:,1,1])**2 )
-        PotentialEnergy = -G*self.ObjectMasses[0]*self.ObjectMasses[1]/distance
+        PotentialEnergy = -G*TestSolarSystem.ObjectMasses[0]*TestSolarSystem.ObjectMasses[1]/distance
 
         plt.plot(KineticEnergy)
         plt.plot(PotentialEnergy)
@@ -91,19 +92,20 @@ class SolarSystem:
 
         plt.show()
 
-        AngularMomentum = self.ObjectMasses[1]*distance*np.sqrt(V[:,1,0]**2 + V[:,1,1]**2)
+        AngularMomentum = TestSolarSystem.ObjectMasses[1]*distance*np.sqrt(V[:,1,0]**2 + V[:,1,1]**2)
 
         plt.plot(AngularMomentum)
         plt.show()
 
     def TimeStep_test(self):
-        self.CreateCelestialObject(0, 0, 0, 0, 1, 1)
-        self.CreateCelestialObject(1, 0, 0, 2*np.pi, 0.0000001, 1)
+        TestSolarSystem = SolarSystem()
+        TestSolarSystem.CreateCelestialObject(0, 0, 0, 0, 1, 1)
+        TestSolarSystem.CreateCelestialObject(1, 0, 0, 2*np.pi, 0.0000001, 1)
 
-        P10 = self.FillArray(10, 1)[0]
-        P20 = self.FillArray(20, 1)[0]
-        P40 = self.FillArray(40, 1)[0]
-        P1000 = self.FillArray(1000, 1)[0]
+        P10 = TestSolarSystem.FillArray(10, 1)[0]
+        P20 = TestSolarSystem.FillArray(20, 1)[0]
+        P40 = TestSolarSystem.FillArray(40, 1)[0]
+        P1000 = TestSolarSystem.FillArray(1000, 1)[0]
 
         plt.plot(P10[:,1,0], P10[:,1,1], "g-")
         plt.plot(P20[:,1,0], P20[:,1,1], "r-")
