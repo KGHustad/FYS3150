@@ -7,8 +7,8 @@ mercuryspeed = 47.4*0.210805
 mercurydistance = 0.39
 
 MySolarSystem = SolarSystem()
-MySolarSystem.CreateCelestialObject(0, 0, 0, 0, 1, 1)
-MySolarSystem.CreateCelestialObject(mercurydistance, 0, 0, mercuryspeed, mercurymass, 1)
+MySolarSystem.CreateCelestialObject(0, 0, 0, 0, 1)
+MySolarSystem.CreateCelestialObject(mercurydistance, 0, 0, mercuryspeed, mercurymass)
 
 p, v = MySolarSystem.FillArray(20000, 100)
 

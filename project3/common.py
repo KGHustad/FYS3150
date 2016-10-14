@@ -10,19 +10,18 @@ class SolarSystem:
     def __init__(self):
         self.NumberOfObjects = 0
 
-    def CreateCelestialObject(self, x0, y0, vx0, vy0, mass, radius):
+    def CreateCelestialObject(self, x0, y0, vx0, vy0, mass):
         if self.NumberOfObjects == 0:
             self.ObjectPositions = np.array( [[x0, y0]] , dtype=np.float64)
             self.ObjectVelocities = np.array( [[vx0, vy0]] , dtype=np.float64)
             self.ObjectMasses = np.array( mass , dtype=np.float64)
-            self.ObjectRadiuses = np.array( radius , dtype=np.float64)
         else:
             self.ObjectPositions = np.append( self.ObjectPositions, [[x0, y0]], axis=0 )
             self.ObjectVelocities = np.append( self.ObjectVelocities, [[vx0, vy0]], axis=0 )
             self.ObjectMasses = np.append( self.ObjectMasses, mass )
-            self.ObjectRadiuses = np.append( self.ObjectRadiuses, radius )
             self.AdjustSun()
         self.NumberOfObjects += 1
+
 
     def AdjustSun(self):
         "Adjust sun to ensure that the centre of mass lies in (0, 0)"
@@ -32,12 +31,14 @@ class SolarSystem:
         self.ObjectPositions[0,:] -= self.ObjectPositions[-1,:]*mass_ratio
         self.ObjectVelocities[0,:] -= self.ObjectVelocities[-1,:]*mass_ratio
 
+
     def ForwardEuler(self, P, V, dt, acc_method):
         length = len(P)
         for n in xrange(length):
             V[n] += acc_method(P, V[n], n, self.ObjectMasses)*dt
             P[n] += V[n]*dt
         return P, V
+
 
     def VelocityVerlet(self, P, V, dt, acc_method):
         length = len(P)
@@ -46,6 +47,7 @@ class SolarSystem:
             P[n] = P[n] + V[n]*dt + 0.5*Acc_P*dt**2
             V[n] = V[n] + 0.5*(Acc_P+acc_method(P, V[n], n, self.ObjectMasses))*dt
         return P, V
+
 
     def FillArray( self, steps, years, int_method = None, acc_method = None ):
         if int_method == None:
@@ -65,6 +67,7 @@ class SolarSystem:
             sys.stdout.flush()
         sys.stdout.write("\n")
         return p, v
+
 
     def Acc(self, Positions, Velocity, target, Masses ):
         x_acc = 0
@@ -91,7 +94,7 @@ class SolarSystem:
 
                 l = np.sqrt( Velocity[0]**2 + Velocity[1]**2 )
                 rel_fac = 1 + ( (3*l**2) / (distance**2*c**2) )
-                
+
                 x_acc -= G*Masses[i]*x_distance/distance**3*rel_fac
                 y_acc -= G*Masses[i]*y_distance/distance**3*rel_fac
         return np.array( [x_acc, y_acc] )
@@ -100,8 +103,8 @@ class SolarSystem:
     @staticmethod
     def EnergyConservation_test():
         TestSolarSystem = SolarSystem()
-        TestSolarSystem.CreateCelestialObject(0, 0, 0, 0, 1, 1)
-        TestSolarSystem.CreateCelestialObject(1, 0, 0, 2.5*np.pi, 0.0000001, 1)
+        TestSolarSystem.CreateCelestialObject(0, 0, 0, 0, 1)
+        TestSolarSystem.CreateCelestialObject(1, 0, 0, 2.5*np.pi, 3.003e-6)
 
         P, V = TestSolarSystem.FillArray(100000, 15)
 
@@ -128,8 +131,8 @@ class SolarSystem:
     @staticmethod
     def TimeStep_test():
         TestSolarSystem = SolarSystem()
-        TestSolarSystem.CreateCelestialObject(0, 0, 0, 0, 1, 1)
-        TestSolarSystem.CreateCelestialObject(1, 0, 0, 2*np.pi, 0.0000001, 1)
+        TestSolarSystem.CreateCelestialObject(0, 0, 0, 0, 1)
+        TestSolarSystem.CreateCelestialObject(1, 0, 0, 29.8*0.210805, 3.003e-6)
 
         P10 = TestSolarSystem.FillArray(10, 1)[0]
         P20 = TestSolarSystem.FillArray(20, 1)[0]

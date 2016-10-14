@@ -2,19 +2,10 @@ from common import SolarSystem
 import matplotlib.pyplot as plt
 import numpy as np
 
-KGtoSM = 5.02785431e-31
-KMtoAU = 6.68459e-9
-
-earthmass = 5.97219*10**24*KGtoSM
-
-jupiterdistance = np.sqrt(5.429091121847574**2 + 0.446412185703396**2 + 0.1232706724471818**2)
-jupiterspeed = np.sqrt( (5.310921442239308e-4*365.2422)**2 + (7.163232763813381e-3*365.2422)**2 + (1.792277878205211e-5*365.2422)**2 )
-jupitermass = 1898.13*10**24*KGtoSM
-
 MySolarSystem = SolarSystem()
-MySolarSystem.CreateCelestialObject(0, 0, 0, 0, 1, 1)
-MySolarSystem.CreateCelestialObject(1, 0, 0, 2*np.pi, earthmass, 1)
-MySolarSystem.CreateCelestialObject(jupiterdistance, 0, 0, jupiterspeed, jupitermass, 1) #Jupiter
+MySolarSystem.CreateCelestialObject(0, 0, 0, 0, 1) #Sun
+MySolarSystem.CreateCelestialObject(1, 0, 0, 29.8*0.210805, 3.003e-6) #Earth
+MySolarSystem.CreateCelestialObject(5.20, 0, 0, 13.1*0.210805, 954.7e-6) #Jupiter
 
 p, v = MySolarSystem.FillArray(20000, 10)
 

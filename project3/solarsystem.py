@@ -12,7 +12,7 @@ speeds_kms = { 'mercury' : 47.4, 'venus' : 35.0, 'earth' : 29.8, 'mars' : 24.1, 
 speeds = {key: speeds_kms[key]*0.210805 for key in speeds_kms}
 
 MySolarSystem = SolarSystem()
-MySolarSystem.CreateCelestialObject(0, 0, 0, 0, 1, 1)
+MySolarSystem.CreateCelestialObject(0, 0, 0, 0, 1)
 bodies = ['sun']
 
 # sort planets after distance
@@ -20,7 +20,7 @@ body_dist = [(key, distances[key]) for key in distances]
 sorted_bodies = [item[0] for item in sorted(body_dist, key=itemgetter(1))]
 
 for key in sorted_bodies:
-    MySolarSystem.CreateCelestialObject(distances[key], 0, 0, speeds[key], masses[key], 1)
+    MySolarSystem.CreateCelestialObject(distances[key], 0, 0, speeds[key], masses[key])
     bodies.append(key)
 
 p, v = MySolarSystem.FillArray(10000, 100, int_method = MySolarSystem.ForwardEuler, acc_method = MySolarSystem.AccRelativistic)
