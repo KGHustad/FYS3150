@@ -4,17 +4,6 @@ import matplotlib.pyplot as plt
 
 G = 4*np.pi**2
 
-"""
-class CelestialObject: #Outdated
-    def __init__(self, xPos, yPos, xVel, yVel, mass, radius): #All units in years and AU
-        self.xPos = xPos
-        self.yPos = yPos
-        self.xVel = xVel
-        self.yVel = yVel
-        self.mass = mass
-        self.radius = radius
-"""
-
 class SolarSystem:
     def __init__(self):
         self.NumberOfObjects = 0
