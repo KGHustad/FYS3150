@@ -2,6 +2,8 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
+import time
+import ctypes
 
 G = 4*np.pi**2
 c = 63197.8
@@ -19,7 +21,7 @@ class SolarSystem:
             self.ObjectPositions = np.append( self.ObjectPositions, [[x0, y0]], axis=0 )
             self.ObjectVelocities = np.append( self.ObjectVelocities, [[vx0, vy0]], axis=0 )
             self.ObjectMasses = np.append( self.ObjectMasses, mass )
-#            self.AdjustSun()
+            self.AdjustSun()
         self.NumberOfObjects += 1
 
 
@@ -31,44 +33,6 @@ class SolarSystem:
         self.ObjectPositions[0,:] -= self.ObjectPositions[-1,:]*mass_ratio
         self.ObjectVelocities[0,:] -= self.ObjectVelocities[-1,:]*mass_ratio
 
-
-    def ForwardEuler(self, P, V, dt, acc_method):
-        length = len(P)
-        for n in xrange(length):
-            V[n] += acc_method(P, V[n], n, self.ObjectMasses)*dt
-            P[n] += V[n]*dt
-        return P, V
-
-
-    def VelocityVerlet(self, P, V, dt, acc_method):
-        length = len(P)
-        for n in xrange(length):
-            Acc_P = acc_method(P, V[n], n, self.ObjectMasses)
-            P[n] = P[n] + V[n]*dt + 0.5*Acc_P*dt**2
-            V[n] = V[n] + 0.5*(Acc_P+acc_method(P, V[n], n, self.ObjectMasses))*dt
-        return P, V
-
-
-    def FillArray( self, steps, years, int_method = None, acc_method = None ):
-        if int_method == None:
-            int_method = self.VelocityVerlet
-        if acc_method == None:
-            acc_method = self.Acc
-        num_objects = self.NumberOfObjects
-        dt = float(years)/(steps+1)
-        p = np.zeros( shape = ( steps+1, num_objects, 2 ) )
-        v = np.zeros( shape = ( steps+1, num_objects, 2 ) )
-        p[0] = self.ObjectPositions
-        v[0] = self.ObjectVelocities
-        for i in xrange( steps ):
-            p[i+1], v[i+1] = int_method(p[i], v[i], dt, acc_method)
-            sys.stdout.write("\r")
-            sys.stdout.write("%.2f%%" % (i*100.0/steps))
-            sys.stdout.flush()
-        sys.stdout.write("\n")
-        return p, v
-
-
     def Acc(self, Positions, Velocity, target, Masses ):
         x_acc = 0
         y_acc = 0
@@ -79,6 +43,12 @@ class SolarSystem:
                 distance = math.sqrt( x_distance**2 + y_distance**2 )
                 x_acc -= G*Masses[i]*x_distance/distance**3
                 y_acc -= G*Masses[i]*y_distance/distance**3
+                """
+                if target == 0:
+                    print "Sun acc: (%15E, %15E) from %d" % (G*Masses[i]*x_distance/distance**3, G*Masses[i]*y_distance/distance**3, i)
+        if target == 0:
+            print "Sun acc: (%15E, %15E) TOTAL\n" % (x_acc, y_acc)
+            """
         return np.array( [x_acc, y_acc] )
 
 
@@ -99,6 +69,87 @@ class SolarSystem:
                 y_acc -= G*Masses[i]*y_distance/distance**3*rel_fac
         return np.array( [x_acc, y_acc] )
 
+    def ForwardEuler(self, P, V, P_new, V_new, dt, acc_method):
+        length = len(P)
+        for n in xrange(length):
+            V_new[n] = V[n] + acc_method(P, V[n], n, self.ObjectMasses)*dt
+            P_new[n] = P[n] + V_new[n]*dt
+        #return P, V
+
+
+    def VelocityVerlet(self, P, V, P_new, V_new, dt, acc_method):
+        length = len(P)
+        acc_P = np.zeros((length, 2), dtype = np.float64)
+        for n in xrange(length):
+            acc_P[n] = acc_method(P, V[n], n, self.ObjectMasses)
+            P_new[n] = P[n] + V[n]*dt + 0.5*acc_P[n]*dt**2
+        for n in xrange(length):
+            acc_P_new = acc_method(P_new, V[n], n, self.ObjectMasses)
+            V_new[n] = V[n] + 0.5*(acc_P[n] + acc_P_new)*dt
+        #return P, V
+
+
+    def FillArray( self, steps, years, int_method = None, acc_method = None ):
+        if int_method == None:
+            int_method = self.VelocityVerlet
+        if acc_method == None:
+            acc_method = self.Acc
+        num_objects = self.NumberOfObjects
+        dt = float(years)/steps
+        print "dt = %g" % dt
+        p = np.zeros( shape = ( steps+1, num_objects, 2 ) )
+        v = np.zeros( shape = ( steps+1, num_objects, 2 ) )
+        p[0] = self.ObjectPositions[:][:]
+        v[0] = self.ObjectVelocities[:][:]
+
+        pre = time.clock()
+        for i in xrange( steps ):
+            int_method(p[i], v[i], p[i+1], v[i+1], dt, acc_method)
+            if i % 100 == 0 and False:
+                sys.stdout.write("\r")
+                sys.stdout.write("%.2f%%" % (i*100.0/steps))
+                sys.stdout.flush()
+        sys.stdout.write("\n")
+        post = time.clock()
+        time_spent = post - pre
+        print "Time spent (pure Python): %g" % time_spent
+        return p, v
+
+    def fill_array_c(self, steps, years, int_method = None, acc_method = None):
+        # only a single int_method and acc_method has been implemented
+        num_bodies = self.NumberOfObjects
+        masses = self.ObjectMasses
+        dt = float(years)/steps
+
+        p = np.zeros( shape = ( steps+1, num_bodies, 2 ), dtype=np.float64)
+        v = np.zeros( shape = ( steps+1, num_bodies, 2 ), dtype=np.float64)
+
+        p[0] = self.ObjectPositions[:][:]
+        v[0] = self.ObjectVelocities[:][:]
+
+
+        pre = time.clock()
+
+        # ctypes magic
+        libsolarsystem = np.ctypeslib.load_library("solar_system.so", "src/c")
+
+        float64_array = np.ctypeslib.ndpointer(dtype=ctypes.c_double, ndim=1,
+                                               flags="contiguous")
+        libsolarsystem.solve.argstypes = [float64_array, float64_array,
+                                          float64_array, ctypes.c_int,
+                                          ctypes.c_int, ctypes.c_double]
+
+        libsolarsystem.solve(np.ctypeslib.as_ctypes(p),
+                                          np.ctypeslib.as_ctypes(v),
+                                          np.ctypeslib.as_ctypes(masses),
+                                          ctypes.c_int(num_bodies),
+                                          ctypes.c_int(steps),
+                                          ctypes.c_double(dt))
+
+        post = time.clock()
+        time_spent = post - pre
+        print "Time spent (C): %g" % time_spent
+        return p, v
 
     @staticmethod
     def EnergyConservation_test():

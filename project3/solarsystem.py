@@ -23,11 +23,35 @@ for key in sorted_bodies:
     MySolarSystem.CreateCelestialObject(distances[key], 0, 0, speeds[key], masses[key])
     bodies.append(key)
 
-p, v = MySolarSystem.FillArray(10000, 100, int_method = MySolarSystem.ForwardEuler, acc_method = MySolarSystem.AccRelativistic)
+#p, v = MySolarSystem.FillArray(10000, 100, int_method = MySolarSystem.ForwardEuler, acc_method = MySolarSystem.AccRelativistic)
 
+#p, v = MySolarSystem.FillArray(4, 1E-2, int_method = MySolarSystem.ForwardEuler, acc_method = MySolarSystem.Acc)
+#p, v = MySolarSystem.FillArray(20000, 100, int_method = MySolarSystem.VelocityVerlet, acc_method = MySolarSystem.Acc)
+p, v = MySolarSystem.fill_array_c(20000, 100, int_method = MySolarSystem.VelocityVerlet, acc_method = MySolarSystem.Acc)
+
+"""
+print "\nInitial values:"
+print p[0]
+print v[0]
+
+print "\nAfter first step:"
+print p[1]
+print v[1]
+
+print "\nAfter second step:"
+print p[2]
+print v[2]
+"""
+
+print "\nSun development:"
+print p[:,0]
+print v[:,0]
+
+#"""
 plt.axes(aspect='equal')
 for i in range(len(masses)+1):
     plt.plot(p[:,i,0], p[:,i,1])
 #plt.axis([-10,10,-10,10])
 plt.legend(bodies)
 plt.show()
+#"""

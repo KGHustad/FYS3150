@@ -11,8 +11,8 @@ clean_latex_ext=*.aux *.bbl *.blg *.log *.out
 # test_programs=src/common.py
 # pytest_opts=--doctest-modules --doctest-report=none -v
 #
-# jacobi_lib_dir=src/c
-# jacobi_lib_file=src/c/jacobi.so
+solar_system_lib_dir=src/c
+solar_system_lib_file=src/c/solar_system.so
 #
 # benchmarks=benchmark.dat
 # benchmark_programs=src/benchmark.py
@@ -26,9 +26,9 @@ clean_latex_ext=*.aux *.bbl *.blg *.log *.out
 
 all: report
 
-jacobi_lib: $(jacobi_lib_file)
-$(jacobi_lib_file):
-	$(MAKE) -C $(jacobi_lib_dir)
+solar_system_lib: $(solar_system_lib_file)
+$(solar_system_lib_file):
+	$(MAKE) -C $(solar_system_lib_dir)
 
 report: $(report_pdf)
 #$(report_pdf): $(report_texdoc) $(plots) $(tables) $(benchmarks)
@@ -39,10 +39,10 @@ $(report_pdf): $(report_texdoc) $(bibliography)# $(plots) $(tables)
 	$(LATEX) $(LATEX_OPTS) $(report_texdoc)
 	$(LATEX) $(LATEX_OPTS) $(report_texdoc)
 # benchmarks: $(benchmarks)
-# $(benchmarks): $(benchmark_programs) $(jacobi_lib_file) $(util_programs)
+# $(benchmarks): $(benchmark_programs) $(solar_system_lib_file) $(util_programs)
 # 	python src/benchmark.py
 # plots: $(plots)
-# $(plots): $(plot_programs) $(jacobi_lib_file) $(util_programs)
+# $(plots): $(plot_programs) $(solar_system_lib_file) $(util_programs)
 # 	@mkdir -p $(@D)
 # 	for plot_prog in $(plot_programs); do \
 # 		python $$plot_prog ; \
@@ -53,13 +53,13 @@ $(report_pdf): $(report_texdoc) $(bibliography)# $(plots) $(tables)
 # 	python src/benchmark.py $(table_program_opts) > table_non_interacting_rho-max=5.dat
 show: report
 	evince $(report_pdf) &
-test: $(test_programs) #$(jacobi_lib_file)
+test: $(test_programs) #$(solar_system_lib_file)
 	pytest $(pytest_opts) $(test_programs)
 
 clean-all: clean clean-plots
 clean: clean-c clean-python clean-latex
 clean-c:
-	$(MAKE) clean -C $(jacobi_lib_dir)
+	$(MAKE) clean -C $(solar_system_lib_dir)
 clean-python:
 	$(RM) src/*.pyc
 	$(RM) -r __pycache__
