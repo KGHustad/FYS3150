@@ -19,7 +19,7 @@ class SolarSystem:
             self.ObjectPositions = np.append( self.ObjectPositions, [[x0, y0]], axis=0 )
             self.ObjectVelocities = np.append( self.ObjectVelocities, [[vx0, vy0]], axis=0 )
             self.ObjectMasses = np.append( self.ObjectMasses, mass )
-            self.AdjustSun()
+#            self.AdjustSun()
         self.NumberOfObjects += 1
 
 
