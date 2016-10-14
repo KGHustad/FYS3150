@@ -18,4 +18,4 @@ plt.show()
 """
 MySolarSystem.EnergyConservation_test()
 
-#MySolarSystem.TimeStep_test()
+MySolarSystem.TimeStep_test()

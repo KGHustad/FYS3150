@@ -32,17 +32,15 @@ class SolarSystem:
 
     def ForwardEuler(self, P, V, dt):
         length = len(P)
-        P_new = P
-        V_new = V
         for n in xrange(length):
-            V_new[n] += self.Acc(P, n, self.ObjectMasses)*dt
-            P_new[n] += V_new[n]*dt
-        return P_new, V_new
+            V[n] += self.Acc(P, n, self.ObjectMasses)*dt
+            P[n] += V[n]*dt
+        return P, V
 
     def VelocityVerlet(self, P, V, dt):
         length = len(P)
-        P_new = P
-        V_new = V
+        P_new = P[:][:]
+        V_new = V[:][:]
         for n in xrange(length):
             Acc_P = self.Acc(P, n, self.ObjectMasses)
             P_new[n] = P[n] + V[n]*dt + 0.5*Acc_P*dt**2
