@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import sys
 
 G = 4*np.pi**2
+c = 63197.8
 
 class SolarSystem:
     def __init__(self):
@@ -34,16 +35,16 @@ class SolarSystem:
     def ForwardEuler(self, P, V, dt):
         length = len(P)
         for n in xrange(length):
-            V[n] += self.Acc(P, n, self.ObjectMasses)*dt
+            V[n] += self.Acc(P, V[n], n, self.ObjectMasses)*dt
             P[n] += V[n]*dt
         return P, V
 
     def VelocityVerlet(self, P, V, dt):
         length = len(P)
         for n in xrange(length):
-            Acc_P = self.Acc(P, n, self.ObjectMasses)
+            Acc_P = self.Acc(P, V[n], n, self.ObjectMasses)
             P[n] = P[n] + V[n]*dt + 0.5*Acc_P*dt**2
-            V[n] = V[n] + 0.5*(Acc_P+self.Acc(P, n, self.ObjectMasses))*dt
+            V[n] = V[n] + 0.5*(Acc_P+self.Acc(P, V[n], n, self.ObjectMasses))*dt
         return P, V
 
     def FillArray( self, steps, years ):
@@ -61,7 +62,7 @@ class SolarSystem:
         sys.stdout.write("\n")
         return p, v
 
-    def Acc(self, Positions, target, Masses):
+    def Acc(self, Positions, Velocity, target, Masses):
         x_acc = 0
         y_acc = 0
         for i in xrange(self.NumberOfObjects):
@@ -72,6 +73,24 @@ class SolarSystem:
                 x_acc -= G*Masses[i]*x_distance/distance**3
                 y_acc -= G*Masses[i]*y_distance/distance**3
         return np.array( [x_acc, y_acc] )
+
+    def AccRelativistic(self, Positions, Velocity, target, Masses)
+        x_acc = 0
+        y_acc = 0
+        for i in xrange(self.NumberOfObjects):
+            if i != target:
+
+                x_distance = Positions[target,0] - Positions[i,0]
+                y_distance = Positions[target,1] - Positions[i,1]
+                distance = math.sqrt( x_distance**2 + y_distance**2 )
+
+                l = np.sqrt( Velocity[0]**2 + Velocity[1]**2 )
+                rel_fac = 1 + ( (3*l**2) / (distance**2*c**2) )
+
+                x_acc -= G*Masses[i]*x_distance/distance**3
+                y_acc -= G*Masses[i]*y_distance/distance**3
+        return np.array( [x_acc, y_acc] )
+
 
     @staticmethod
     def EnergyConservation_test():
