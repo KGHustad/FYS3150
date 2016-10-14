@@ -32,22 +32,26 @@ class SolarSystem:
         self.ObjectPositions[0,:] -= self.ObjectPositions[-1,:]*mass_ratio
         self.ObjectVelocities[0,:] -= self.ObjectVelocities[-1,:]*mass_ratio
 
-    def ForwardEuler(self, P, V, dt):
+    def ForwardEuler(self, P, V, dt, acc_method):
         length = len(P)
         for n in xrange(length):
-            V[n] += self.Acc(P, V[n], n, self.ObjectMasses)*dt
+            V[n] += acc_method(P, V[n], n, self.ObjectMasses)*dt
             P[n] += V[n]*dt
         return P, V
 
-    def VelocityVerlet(self, P, V, dt):
+    def VelocityVerlet(self, P, V, dt, acc_method):
         length = len(P)
         for n in xrange(length):
-            Acc_P = self.Acc(P, V[n], n, self.ObjectMasses)
+            Acc_P = acc_method(P, V[n], n, self.ObjectMasses)
             P[n] = P[n] + V[n]*dt + 0.5*Acc_P*dt**2
-            V[n] = V[n] + 0.5*(Acc_P+self.Acc(P, V[n], n, self.ObjectMasses))*dt
+            V[n] = V[n] + 0.5*(Acc_P+acc_method(P, V[n], n, self.ObjectMasses))*dt
         return P, V
 
-    def FillArray( self, steps, years ):
+    def FillArray( self, steps, years, int_method = None, acc_method = None ):
+        if int_method == None:
+            int_method = self.VelocityVerlet
+        if acc_method == None:
+            acc_method = self.Acc
         num_objects = self.NumberOfObjects
         dt = float(years)/(steps+1)
         p = np.zeros( shape = ( steps+1, num_objects, 2 ) )
@@ -55,14 +59,14 @@ class SolarSystem:
         p[0] = self.ObjectPositions
         v[0] = self.ObjectVelocities
         for i in xrange( steps ):
-            p[i+1], v[i+1] = self.ForwardEuler(p[i], v[i], dt)
+            p[i+1], v[i+1] = int_method(p[i], v[i], dt, acc_method)
             sys.stdout.write("\r")
             sys.stdout.write("%.2f%%" % (i*100.0/steps))
             sys.stdout.flush()
         sys.stdout.write("\n")
         return p, v
 
-    def Acc(self, Positions, Velocity, target, Masses):
+    def Acc(self, Positions, Velocity, target, Masses ):
         x_acc = 0
         y_acc = 0
         for i in xrange(self.NumberOfObjects):
@@ -74,7 +78,8 @@ class SolarSystem:
                 y_acc -= G*Masses[i]*y_distance/distance**3
         return np.array( [x_acc, y_acc] )
 
-    def AccRelativistic(self, Positions, Velocity, target, Masses)
+
+    def AccRelativistic(self, Positions, Velocity, target, Masses):
         x_acc = 0
         y_acc = 0
         for i in xrange(self.NumberOfObjects):
@@ -86,9 +91,9 @@ class SolarSystem:
 
                 l = np.sqrt( Velocity[0]**2 + Velocity[1]**2 )
                 rel_fac = 1 + ( (3*l**2) / (distance**2*c**2) )
-
-                x_acc -= G*Masses[i]*x_distance/distance**3
-                y_acc -= G*Masses[i]*y_distance/distance**3
+                
+                x_acc -= G*Masses[i]*x_distance/distance**3*rel_fac
+                y_acc -= G*Masses[i]*y_distance/distance**3*rel_fac
         return np.array( [x_acc, y_acc] )
 
 

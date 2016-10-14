@@ -23,7 +23,7 @@ for key in sorted_bodies:
     MySolarSystem.CreateCelestialObject(distances[key], 0, 0, speeds[key], masses[key], 1)
     bodies.append(key)
 
-p, v = MySolarSystem.FillArray(100000, 100)
+p, v = MySolarSystem.FillArray(10000, 100, int_method = MySolarSystem.ForwardEuler, acc_method = MySolarSystem.AccRelativistic)
 
 plt.axes(aspect='equal')
 for i in range(len(masses)+1):
