@@ -3,14 +3,7 @@
 #include <math.h>
 #include "solar_system.h"
 
-static const double G = 4*M_PI*M_PI;
-//double G = 4*M_PI*M_PI;
-
-/*
-typedef struct {
-    double x, y;
-} coor;
-*/
+const double G = 4*M_PI*M_PI;
 
 void acceleration(coor* pos, double* masses, int target_body, int num_bodies,
                   coor* acc_ptr, double dt) {
@@ -94,13 +87,6 @@ void solve(double* pos_flat, double* vel_flat, double* masses,
         v[i] = v_flat + num_bodies*i;
     }
 
-    /*
-    for (i = 0; i < num_bodies; i++) {
-        v[2][i].x = 2*i - 1;
-        v[2][i].y = 2*i;
-    }
-    //p[1][2].y=234;
-    */
     fill_arrays(p, v, masses, num_bodies, steps, dt);
 
     free(p);
