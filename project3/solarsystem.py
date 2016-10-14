@@ -1,6 +1,7 @@
 from common import SolarSystem
 import matplotlib.pyplot as plt
 import numpy as np
+from operator import itemgetter
 
 masses = { 'mercury' : 0.166e-6, 'venus' : 2.081e-6, 'earth' : 3.003e-6, 'mars' : 0.323e-6, 'jupiter' : 954.7e-6, 'saturn' : 285.8e-6, 'uranus' : 43.6e-6, 'neptune' : 51.5e-6}
 
@@ -13,7 +14,12 @@ speeds = {key: speeds_kms[key]*0.210805 for key in speeds_kms}
 MySolarSystem = SolarSystem()
 MySolarSystem.CreateCelestialObject(0, 0, 0, 0, 1, 1)
 bodies = ['sun']
-for key in sorted(distances.keys()):
+
+# sort planets after distance
+body_dist = [(key, distances[key]) for key in distances]
+sorted_bodies = [item[0] for item in sorted(body_dist, key=itemgetter(1))]
+
+for key in sorted_bodies:
     MySolarSystem.CreateCelestialObject(distances[key], 0, 0, speeds[key], masses[key], 1)
     bodies.append(key)
 
