@@ -1,5 +1,5 @@
 
-CC_FLAGS = -Wall -fpic -lm -march=native
+CC_FLAGS = -Wall -O3 -fpic -lm -march=native
 
 solar_system_sources = solar_system.c
 solar_system_headers = solar_system.h

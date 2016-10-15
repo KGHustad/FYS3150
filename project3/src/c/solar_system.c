@@ -3,8 +3,6 @@
 #include <math.h>
 #include "solar_system.h"
 
-//const double G = 4*M_PI*M_PI;
-
 acceleration_func_ptr acceleration_func;
 
 void acceleration_classical(coor* pos, coor vel, double* masses,
@@ -101,10 +99,6 @@ void fill_arrays(coor** p, coor** v, double* masses,
     int i;
     coor* acc_buf = malloc(sizeof(coor)*num_bodies);
     for (i = 0; i < steps; i++) {
-        /*
-        velocity_verlet(p[i], v[i], p[i+1], v[i+1], acc_buf, masses, dt,
-                        num_bodies);
-        */
         (*integration_func)(p[i], v[i], p[i+1], v[i+1], acc_buf, masses, dt,
                             num_bodies);
     }
@@ -116,7 +110,6 @@ void python_interface(double* pos_flat, double* vel_flat, double* masses,
                       enum integration_alg chosen_integration_alg,
                       enum acceleration_alg chosen_acceleration_alg) {
     /* handle options */
-    //void (*integration_func)(coor*, coor*, coor*, coor*, coor*, double*, double, int);
     integration_func_ptr integration_func;
     switch (chosen_integration_alg) {
         case FORWARD_EULER:
@@ -133,7 +126,7 @@ void python_interface(double* pos_flat, double* vel_flat, double* masses,
             integration_func = &velocity_verlet;
     }
 
-    //integration_func_ptr integration_func;
+    /* acceleration_func is a global variable */
     switch (chosen_acceleration_alg) {
         case CLASSICAL:
             acceleration_func = &acceleration_classical;
