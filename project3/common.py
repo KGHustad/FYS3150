@@ -116,7 +116,14 @@ class SolarSystem:
         return p, v
 
     def fill_array_c(self, steps, years, int_method = None, acc_method = None):
-        # only a single int_method and acc_method has been implemented
+        if int_method == None:
+            int_method = self.VelocityVerlet
+        if acc_method == None:
+            acc_method = self.Acc
+        # only a single acc_method has been implemented yet
+        integration_alg = 1 if int_method == self.VelocityVerlet else 0
+        acceleration_alg = 1 if acc_method == self.AccRelativistic else 0
+
         num_bodies = self.NumberOfObjects
         masses = self.ObjectMasses
         dt = float(years)/steps
@@ -131,20 +138,23 @@ class SolarSystem:
         pre = time.clock()
 
         # ctypes magic
-        libsolarsystem = np.ctypeslib.load_library("solar_system.so", "src/c")
+        lib_ss = np.ctypeslib.load_library("solar_system.so", "src/c")
 
         float64_array = np.ctypeslib.ndpointer(dtype=ctypes.c_double, ndim=1,
                                                flags="contiguous")
-        libsolarsystem.solve.argstypes = [float64_array, float64_array,
-                                          float64_array, ctypes.c_int,
-                                          ctypes.c_int, ctypes.c_double]
+        lib_ss.python_interface.argstypes = [float64_array, float64_array,
+                                             float64_array, ctypes.c_int,
+                                             ctypes.c_int, ctypes.c_double,
+                                             ctypes.c_int, ctypes.c_int]
 
-        libsolarsystem.solve(np.ctypeslib.as_ctypes(p),
-                                          np.ctypeslib.as_ctypes(v),
-                                          np.ctypeslib.as_ctypes(masses),
-                                          ctypes.c_int(num_bodies),
-                                          ctypes.c_int(steps),
-                                          ctypes.c_double(dt))
+        lib_ss.python_interface(np.ctypeslib.as_ctypes(p),
+                                np.ctypeslib.as_ctypes(v),
+                                np.ctypeslib.as_ctypes(masses),
+                                ctypes.c_int(num_bodies),
+                                ctypes.c_int(steps),
+                                ctypes.c_double(dt),
+                                ctypes.c_int(integration_alg),
+                                ctypes.c_int(acceleration_alg))
 
         post = time.clock()
         time_spent = post - pre
