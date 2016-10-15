@@ -22,6 +22,8 @@ There is a main program , `src/main.py`, which provides a basic command-line int
 python src/main.py --help
 ```
 
+__Note__: All programs should be run from this directory since the location of the library used by ctypes is relatively specified.
+
 ## Benchmarks
 See `benchmark.md`
 
