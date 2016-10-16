@@ -5,9 +5,9 @@
 
 acceleration_func_ptr acceleration_func;
 
-void acceleration_classical(coor* pos, coor vel, double* masses,
+void acceleration_classical(vec* pos, vec vel, double* masses,
                             int target_body, int num_bodies,
-                            coor* acc_ptr, double dt) {
+                            vec* acc_ptr, double dt) {
     double x_acc = 0;
     double y_acc = 0;
     double x_dist;
@@ -29,9 +29,9 @@ void acceleration_classical(coor* pos, coor vel, double* masses,
     acc_ptr->y = y_acc;
 }
 
-void acceleration_relativistic(coor* pos, coor vel, double* masses,
+void acceleration_relativistic(vec* pos, vec vel, double* masses,
                                int target_body, int num_bodies,
-                               coor* acc_ptr, double dt) {
+                               vec* acc_ptr, double dt) {
     double x_acc = 0;
     double y_acc = 0;
     double x_dist;
@@ -59,10 +59,10 @@ void acceleration_relativistic(coor* pos, coor vel, double* masses,
     acc_ptr->y = y_acc;
 }
 
-void forward_euler(coor* pos, coor* vel,
-                   coor* pos_new, coor* vel_new, coor* acc_buf,
+void forward_euler(vec* pos, vec* vel,
+                   vec* pos_new, vec* vel_new, vec* acc_buf,
                    double* masses, double dt, int num_bodies) {
-    coor acc;
+    vec acc;
     int i;
     for (i = 0; i < num_bodies; i++) {
         (*acceleration_func)(pos, vel[i], masses, i, num_bodies, &acc, dt);
@@ -73,10 +73,10 @@ void forward_euler(coor* pos, coor* vel,
     }
 }
 
-void velocity_verlet(coor* pos, coor* vel,
-                     coor* pos_new, coor* vel_new, coor* acc_buf,
+void velocity_verlet(vec* pos, vec* vel,
+                     vec* pos_new, vec* vel_new, vec* acc_buf,
                      double* masses, double dt, int num_bodies) {
-    coor acc_new;
+    vec acc_new;
 
     int i;
     double dt_sq = dt*dt;
@@ -93,11 +93,11 @@ void velocity_verlet(coor* pos, coor* vel,
 }
 
 
-void fill_arrays(coor** p, coor** v, double* masses,
+void fill_arrays(vec** p, vec** v, double* masses,
                  int num_bodies, int steps, double dt,
                  integration_func_ptr integration_func) {
     int i;
-    coor* acc_buf = malloc(sizeof(coor)*num_bodies);
+    vec* acc_buf = malloc(sizeof(vec)*num_bodies);
     for (i = 0; i < steps; i++) {
         (*integration_func)(p[i], v[i], p[i+1], v[i+1], acc_buf, masses, dt,
                             num_bodies);
@@ -144,13 +144,13 @@ void python_interface(double* pos_flat, double* vel_flat, double* masses,
 
 
     /* setup arrays */
-    coor* p_flat = (coor*) pos_flat;
-    coor* v_flat = (coor*) vel_flat;
+    vec* p_flat = (vec*) pos_flat;
+    vec* v_flat = (vec*) vel_flat;
 
     int i;
 
-    coor** p = malloc(sizeof(coor*)*steps+1);
-    coor** v = malloc(sizeof(coor*)*steps+1);
+    vec** p = malloc(sizeof(vec*)*steps+1);
+    vec** v = malloc(sizeof(vec*)*steps+1);
     for (i = 0; i < steps+1; i++) {
         p[i] = p_flat + num_bodies*i;
         v[i] = v_flat + num_bodies*i;

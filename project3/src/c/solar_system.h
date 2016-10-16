@@ -3,13 +3,13 @@
 /* type for representing pair of x, y values*/
 typedef struct {
     double x, y;
-} coor;
+} vec;
 
 /* type for a functionpointer to one of the integration_algorithms */
-typedef void (*integration_func_ptr)(coor*, coor*, coor*, coor*, coor*,
+typedef void (*integration_func_ptr)(vec*, vec*, vec*, vec*, vec*,
                                      double*, double, int);
 
-typedef void (*acceleration_func_ptr)(coor*, coor, double*, int, int, coor*,
+typedef void (*acceleration_func_ptr)(vec*, vec, double*, int, int, vec*,
                                       double);
 
 /* ENUMS FOR ALGORITHM OPTIONS */
@@ -24,22 +24,22 @@ const double G = 4*M_PI*M_PI;
 
 
 /* FUNCTIONS */
-void acceleration_classical(coor* pos, coor vel, double* masses,
+void acceleration_classical(vec* pos, vec vel, double* masses,
                             int target_body, int num_bodies,
-                            coor* acc_ptr, double dt);
+                            vec* acc_ptr, double dt);
 /* TODO: Relativistic acceleration */
-void acceleration_relativistic(coor* pos, coor vel, double* masses,
+void acceleration_relativistic(vec* pos, vec vel, double* masses,
                                int target_body, int num_bodies,
-                               coor* acc_ptr, double dt);
+                               vec* acc_ptr, double dt);
 
-void forward_euler(coor* pos, coor* vel,
-                   coor* pos_new, coor* vel_new, coor* acc_buf,
+void forward_euler(vec* pos, vec* vel,
+                   vec* pos_new, vec* vel_new, vec* acc_buf,
                    double* masses, double dt, int num_bodies);
-void velocity_verlet(coor* pos, coor* vel,
-                     coor* pos_new, coor* vel_new, coor* acc_buf,
+void velocity_verlet(vec* pos, vec* vel,
+                     vec* pos_new, vec* vel_new, vec* acc_buf,
                      double* masses, double dt, int num_bodies);
 
-void fill_arrays(coor** p, coor** v, double* masses,
+void fill_arrays(vec** p, vec** v, double* masses,
                  int num_bodies, int steps, double dt,
                  integration_func_ptr integration_func);
 
