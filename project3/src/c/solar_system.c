@@ -3,7 +3,11 @@
 #include <math.h>
 #include "solar_system.h"
 
+/* global variable specifying which acceleration algorithm to use */
 acceleration_func_ptr acceleration_func;
+
+
+/* acceleration algorithms */
 
 void acceleration_classical(vec* pos, vec vel, double* masses,
                             int target_body, int num_bodies,
@@ -59,6 +63,9 @@ void acceleration_relativistic(vec* pos, vec vel, double* masses,
     acc_ptr->y = y_acc;
 }
 
+
+/* integration algorithms */
+
 void forward_euler(vec* pos, vec* vel,
                    vec* pos_new, vec* vel_new, vec* acc_buf,
                    double* masses, double dt, int num_bodies) {
@@ -92,6 +99,8 @@ void velocity_verlet(vec* pos, vec* vel,
     }
 }
 
+
+/* utility functions */
 
 void fill_arrays(vec** p, vec** v, double* masses,
                  int num_bodies, int steps, double dt,

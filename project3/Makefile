@@ -26,8 +26,10 @@ solar_system_lib_file=src/c/solar_system.so
 
 all: report
 
-solar_system_lib: $(solar_system_lib_file)
-$(solar_system_lib_file):
+#solar_system_lib: $(solar_system_lib_file)
+#$(solar_system_lib_file):
+$(solar_system_lib_file): solar_system_lib
+solar_system_lib:
 	$(MAKE) -C $(solar_system_lib_dir)
 
 report: $(report_pdf)

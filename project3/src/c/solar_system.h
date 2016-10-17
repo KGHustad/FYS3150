@@ -5,7 +5,7 @@ typedef struct {
     double x, y;
 } vec;
 
-/* type for a functionpointer to one of the integration_algorithms */
+/* type for a function pointer to one of the integration_algorithms */
 typedef void (*integration_func_ptr)(vec*, vec*, vec*, vec*, vec*,
                                      double*, double, int);
 
@@ -24,14 +24,15 @@ const double G = 4*M_PI*M_PI;
 
 
 /* FUNCTIONS */
+/* acceleration algorithms */
 void acceleration_classical(vec* pos, vec vel, double* masses,
                             int target_body, int num_bodies,
                             vec* acc_ptr, double dt);
-/* TODO: Relativistic acceleration */
 void acceleration_relativistic(vec* pos, vec vel, double* masses,
                                int target_body, int num_bodies,
                                vec* acc_ptr, double dt);
 
+/* integration algorithms */
 void forward_euler(vec* pos, vec* vel,
                    vec* pos_new, vec* vel_new, vec* acc_buf,
                    double* masses, double dt, int num_bodies);
@@ -39,6 +40,7 @@ void velocity_verlet(vec* pos, vec* vel,
                      vec* pos_new, vec* vel_new, vec* acc_buf,
                      double* masses, double dt, int num_bodies);
 
+/* utility functions */
 void fill_arrays(vec** p, vec** v, double* masses,
                  int num_bodies, int steps, double dt,
                  integration_func_ptr integration_func);
