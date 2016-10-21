@@ -89,7 +89,7 @@ class SolarSystem:
         #return P, V
 
 
-    def FillArray( self, steps, years, int_method = None, acc_method = None ):
+    def fill_array( self, steps, years, int_method = None, acc_method = None ):
         if int_method == None:
             int_method = self.VelocityVerlet
         if acc_method == None:
@@ -167,7 +167,7 @@ class SolarSystem:
         TestSolarSystem.CreateCelestialObject(0, 0, 0, 0, 1)
         TestSolarSystem.CreateCelestialObject(1, 0, 0, 2.5*np.pi, 3.003e-6)
 
-        P, V = TestSolarSystem.FillArray(100000, 15)
+        P, V = TestSolarSystem.fill_array(100000, 15)
 
         KineticEnergyEarth = 0.5*TestSolarSystem.ObjectMasses[1] * (V[:,1,0]**2 + V[:,1,1]**2) #SolarMasses*AU**2/yr**2
         KineticEnergySun = 0.5*TestSolarSystem.ObjectMasses[0] * (V[:,0,0]**2 + V[:,0,1]**2)
@@ -195,10 +195,10 @@ class SolarSystem:
         TestSolarSystem.CreateCelestialObject(0, 0, 0, 0, 1)
         TestSolarSystem.CreateCelestialObject(1, 0, 0, 29.8*0.210805, 3.003e-6)
 
-        P10 = TestSolarSystem.FillArray(10, 1)[0]
-        P20 = TestSolarSystem.FillArray(20, 1)[0]
-        P40 = TestSolarSystem.FillArray(40, 1)[0]
-        P1000 = TestSolarSystem.FillArray(1000, 1)[0]
+        P10 = TestSolarSystem.fill_array_c(10, 1)[0]
+        P20 = TestSolarSystem.fill_array_c(20, 1)[0]
+        P40 = TestSolarSystem.fill_array_c(40, 1)[0]
+        P1000 = TestSolarSystem.fill_array_c(1000, 1)[0]
 
         plt.plot(P10[:,1,0], P10[:,1,1], "g-")
         plt.plot(P20[:,1,0], P20[:,1,1], "r-")

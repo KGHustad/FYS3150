@@ -23,11 +23,11 @@ for key in sorted_bodies:
     MySolarSystem.CreateCelestialObject(distances[key], 0, 0, speeds[key], masses[key])
     bodies.append(key)
 
-#p, v = MySolarSystem.FillArray(10000, 100, int_method = MySolarSystem.ForwardEuler, acc_method = MySolarSystem.AccRelativistic)
+#p, v = MySolarSystem.fill_array(10000, 100, int_method = MySolarSystem.ForwardEuler, acc_method = MySolarSystem.AccRelativistic)
 
-#p, v = MySolarSystem.FillArray(4, 1E-2, int_method = MySolarSystem.ForwardEuler, acc_method = MySolarSystem.Acc)
-#p, v = MySolarSystem.FillArray(20000, 100, int_method = MySolarSystem.VelocityVerlet, acc_method = MySolarSystem.Acc)
-p, v = MySolarSystem.fill_array_c(20000, 100, int_method = MySolarSystem.VelocityVerlet, acc_method = MySolarSystem.Acc)
+#p, v = MySolarSystem.fill_array(4, 1E-2, int_method = MySolarSystem.ForwardEuler, acc_method = MySolarSystem.Acc)
+#p, v = MySolarSystem.fill_array(20000, 100, int_method = MySolarSystem.VelocityVerlet, acc_method = MySolarSystem.Acc)
+p, v = MySolarSystem.fill_array_c(20000*20, 20, int_method = MySolarSystem.VelocityVerlet, acc_method = MySolarSystem.Acc)
 
 """
 print "\nInitial values:"

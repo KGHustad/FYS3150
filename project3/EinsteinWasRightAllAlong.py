@@ -10,9 +10,9 @@ MySolarSystem = SolarSystem()
 MySolarSystem.CreateCelestialObject(0, 0, 0, 0, 1)
 MySolarSystem.CreateCelestialObject(mercurydistance, 0, 0, mercuryspeed, mercurymass)
 
-p_newton, v_newton = MySolarSystem.FillArray(100000, 100)
+p_newton, v_newton = MySolarSystem.fill_array_c(100000, 100)
 
-p_einstein, v_einstein = MySolarSystem.FillArray(100000, 100, acc_method=MySolarSystem.AccRelativistic)
+p_einstein, v_einstein = MySolarSystem.fill_array_c(100000, 100, acc_method=MySolarSystem.AccRelativistic)
 
 
 plt.axes(aspect='equal')
