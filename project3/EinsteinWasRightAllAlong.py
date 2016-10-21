@@ -12,9 +12,9 @@ MySolarSystem = SolarSystem()
 MySolarSystem.CreateCelestialObject(0, 0, 0, 0, 1)
 MySolarSystem.CreateCelestialObject(mercury_perihelion_distance, 0, 0, mercuryspeed, mercurymass)
 
-p_newton, v_newton = MySolarSystem.fill_array_c(int(1e7), 100, skip_saving=40)
+p_newton, v_newton = MySolarSystem.fill_array_c(int(1e7), 100, skip_saving=10)
 
-p_einstein, v_einstein = MySolarSystem.fill_array_c(int(1e7), 100, acc_method=MySolarSystem.AccRelativistic, skip_saving=40)
+p_einstein, v_einstein = MySolarSystem.fill_array_c(int(1e7), 100, acc_method=MySolarSystem.AccRelativistic, skip_saving=10)
 
 
 
@@ -27,12 +27,18 @@ for i in range(len(local_min_indexes)):
 plt.plot(perihelion_angle_newton, "r-")
 
 local_min_indexes = scipy.signal.argrelextrema( np.sqrt((p_einstein[:,1,0] - p_einstein[:,0,0])**2 + (p_einstein[:,1,1] - p_einstein[:,0,1])**2), np.less )[0]
+print np.shape(local_min_indexes)
 perihelion_angle_einstein = np.zeros(len(local_min_indexes))
 perihelion_points_einstein = np.zeros(shape=(len(local_min_indexes),2))
 for i in range(len(local_min_indexes)):
     perihelion_points_einstein[i] = p_einstein[local_min_indexes[i],1]
     perihelion_angle_einstein[i] = np.arctan( p_einstein[local_min_indexes[i],1,1] / p_einstein[local_min_indexes[i],1,0] )
 plt.plot(perihelion_angle_einstein, "b-")
+
+plt.title("Change in perihelion angle over a century")
+plt.legend(["Clasical Mechanics case", "Relativistic case"])
+plt.xlabel("time in years")
+plt.ylabel("angle in radians")
 plt.show()
 
 plt.axes(aspect='equal')
