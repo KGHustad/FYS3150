@@ -167,7 +167,7 @@ class SolarSystem:
         TestSolarSystem.CreateCelestialObject(0, 0, 0, 0, 1)
         TestSolarSystem.CreateCelestialObject(1, 0, 0, 2.5*np.pi, 3.003e-6)
 
-        P, V = TestSolarSystem.fill_array(100000, 15)
+        P, V = TestSolarSystem.fill_array_c(100000, 15)
 
         KineticEnergyEarth = 0.5*TestSolarSystem.ObjectMasses[1] * (V[:,1,0]**2 + V[:,1,1]**2) #SolarMasses*AU**2/yr**2
         KineticEnergySun = 0.5*TestSolarSystem.ObjectMasses[0] * (V[:,0,0]**2 + V[:,0,1]**2)
@@ -184,9 +184,10 @@ class SolarSystem:
 
         plt.show()
 
-        AngularMomentum = TestSolarSystem.ObjectMasses[1]*distance*np.sqrt(V[:,1,0]**2 + V[:,1,1]**2)
+        AngularMomentum = TestSolarSystem.ObjectMasses[1]*np.cross(P[:,1], V[:,1])
 
         plt.plot(AngularMomentum)
+        plt.axis([0,100000,0,0.00003])
         plt.show()
 
     @staticmethod

@@ -17,8 +17,8 @@ p_einstein, v_einstein = MySolarSystem.fill_array_c(100000, 100, acc_method=MySo
 
 plt.axes(aspect='equal')
 plt.plot(p_newton[:,0,0], p_newton[:,0,1], "yo")
-plt.plot(p_newton[99900:,1,0], p_newton[99900:,1,1], "r-")
-plt.plot(p_einstein[99900:,1,0], p_einstein[99900:,1,1], "b-")
+plt.plot(p_newton[99800:,1,0], p_newton[99800:,1,1], "r-")
+plt.plot(p_einstein[99800:,1,0], p_einstein[99800:,1,1], "b-")
 plt.plot(p_newton[-1,1,0], p_newton[-1,1,1], "ro")
 plt.plot(p_einstein[-1,1,0], p_einstein[-1,1,1], "bo")
 plt.show()
