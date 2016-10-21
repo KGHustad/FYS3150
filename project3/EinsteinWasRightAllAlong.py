@@ -27,7 +27,6 @@ for i in range(len(local_min_indexes)):
 plt.plot(perihelion_angle_newton, "r-")
 
 local_min_indexes = scipy.signal.argrelextrema( np.sqrt((p_einstein[:,1,0] - p_einstein[:,0,0])**2 + (p_einstein[:,1,1] - p_einstein[:,0,1])**2), np.less )[0]
-print np.shape(local_min_indexes)
 perihelion_angle_einstein = np.zeros(len(local_min_indexes))
 perihelion_points_einstein = np.zeros(shape=(len(local_min_indexes),2))
 for i in range(len(local_min_indexes)):
