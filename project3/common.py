@@ -115,7 +115,7 @@ class SolarSystem:
         print "Time spent (pure Python): %g" % time_spent
         return p, v
 
-    def fill_array_c(self, steps, years, int_method = None, acc_method = None, skip_saving=0):
+    def fill_array_c(self, steps, years, int_method = None, acc_method = None):
         if int_method == None:
             int_method = self.VelocityVerlet
         if acc_method == None:
@@ -127,8 +127,6 @@ class SolarSystem:
         num_bodies = self.NumberOfObjects
         masses = self.ObjectMasses
         dt = float(years)/steps
-        if (skip_saving != 0):
-            dt /= skip_saving
 
         p = np.zeros( shape = ( steps+1, num_bodies, 2 ), dtype=np.float64)
         v = np.zeros( shape = ( steps+1, num_bodies, 2 ), dtype=np.float64)
@@ -147,8 +145,7 @@ class SolarSystem:
         lib_ss.python_interface.argstypes = [float64_array, float64_array,
                                              float64_array, ctypes.c_int,
                                              ctypes.c_int, ctypes.c_double,
-                                             ctypes.c_int, ctypes.c_int,
-                                             ctypes.c_int]
+                                             ctypes.c_int, ctypes.c_int]
 
         lib_ss.python_interface(np.ctypeslib.as_ctypes(p),
                                 np.ctypeslib.as_ctypes(v),
@@ -156,7 +153,6 @@ class SolarSystem:
                                 ctypes.c_int(num_bodies),
                                 ctypes.c_int(steps),
                                 ctypes.c_double(dt),
-                                ctypes.c_int(skip_saving),
                                 ctypes.c_int(integration_alg),
                                 ctypes.c_int(acceleration_alg))
 
@@ -185,12 +181,15 @@ class SolarSystem:
         plt.plot(KineticEnergy)
         plt.plot(PotentialEnergy)
         plt.plot(KineticEnergy+PotentialEnergy)
-
+        plt.title("Energy of Planet-Sun system over 15 years")
+        plt.legend(["Kinetic Energy","Potential Energy","Total Energy"])
+        plt.xlabel("time in years")
+        plt.ylabel("energy in SolarMasses*AU^2/Year^2")
         plt.show()
 
         AngularMomentum = TestSolarSystem.ObjectMasses[1]*np.cross(P[:,1], V[:,1])
-
         plt.plot(AngularMomentum)
+        plt.title("Angular Momentum of Planet over 15 years")
         plt.axis([0,100000,0,0.00003])
         plt.show()
 
@@ -211,7 +210,8 @@ class SolarSystem:
         plt.plot(P1000[:,1,0], P1000[:,1,1], "k-")
         plt.plot(P1000[:,0,0], P1000[:,0,1], "yo")
         plt.axis([-1.5,1.5,-1.5,1.5])
+        plt.xlabel("AU")
+        plt.ylabel("AU")
         plt.title("Comparing timesteps with Forward Euler")
-
         plt.legend(["dt=1/10 year","dt=1/20 year","dt=1/40 year","dt=1/1000 year"])
         plt.show()
