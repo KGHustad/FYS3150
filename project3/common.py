@@ -115,7 +115,7 @@ class SolarSystem:
         print "Time spent (pure Python): %g" % time_spent
         return p, v
 
-    def fill_array_c(self, steps, years, int_method = None, acc_method = None):
+    def fill_array_c(self, steps, years, int_method = None, acc_method = None, skip_saving=0):
         if int_method == None:
             int_method = self.VelocityVerlet
         if acc_method == None:
@@ -127,6 +127,8 @@ class SolarSystem:
         num_bodies = self.NumberOfObjects
         masses = self.ObjectMasses
         dt = float(years)/steps
+        if (skip_saving != 0):
+            dt /= skip_saving
 
         p = np.zeros( shape = ( steps+1, num_bodies, 2 ), dtype=np.float64)
         v = np.zeros( shape = ( steps+1, num_bodies, 2 ), dtype=np.float64)
@@ -145,7 +147,8 @@ class SolarSystem:
         lib_ss.python_interface.argstypes = [float64_array, float64_array,
                                              float64_array, ctypes.c_int,
                                              ctypes.c_int, ctypes.c_double,
-                                             ctypes.c_int, ctypes.c_int]
+                                             ctypes.c_int, ctypes.c_int,
+                                             ctypes.c_int]
 
         lib_ss.python_interface(np.ctypeslib.as_ctypes(p),
                                 np.ctypeslib.as_ctypes(v),
@@ -153,6 +156,7 @@ class SolarSystem:
                                 ctypes.c_int(num_bodies),
                                 ctypes.c_int(steps),
                                 ctypes.c_double(dt),
+                                ctypes.c_int(skip_saving),
                                 ctypes.c_int(integration_alg),
                                 ctypes.c_int(acceleration_alg))
 

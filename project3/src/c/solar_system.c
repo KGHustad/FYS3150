@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <string.h>
 #include "solar_system.h"
 
 /* global variable specifying which acceleration algorithm to use */
@@ -114,8 +115,60 @@ void fill_arrays(vec** p, vec** v, double* masses,
     free(acc_buf);
 }
 
+void fill_arrays_every_nth_step(vec** p, vec** v, double* masses,
+                                int num_bodies, int steps, double dt,
+                                integration_func_ptr integration_func, int n) {
+    int i, j;
+    size_t tot_vec_size = sizeof(vec)*num_bodies;
+    vec* acc_buf = malloc(tot_vec_size);
+
+    vec *p_a, *p_b;
+    vec *v_a, *v_b;
+    p_a = malloc(tot_vec_size);
+    p_b = malloc(tot_vec_size);
+    v_a = malloc(tot_vec_size);
+    v_b = malloc(tot_vec_size);
+
+    /* we will need a second set of pointers to do pointer swaps */
+    vec *p_old = p_a, *p_new = p_b, *p_tmp;
+    vec *v_old = v_a, *v_new = v_b, *v_tmp;
+
+    /* copy in first step */
+    memcpy(p_old, p[0], tot_vec_size);
+    memcpy(v_old, v[0], tot_vec_size);
+
+    int counter=0;
+    for (i = 0; i < steps; i++) {
+        for (j = 0; j < n; j++) {
+            (*integration_func)(p_old, v_old, p_new, v_new, acc_buf, masses, dt,
+                                num_bodies);
+            /* pointer swapping */
+            p_tmp = p_old;
+            p_old = p_new;
+            p_new = p_tmp;
+            v_tmp = v_old;
+            v_old = v_new;
+            v_new = v_tmp;
+
+            counter++;
+        }
+
+        /* save result in array */
+        memcpy(p[i+1], p_old, tot_vec_size);
+        memcpy(v[i+1], v_old, tot_vec_size);
+    }
+
+    printf("%d iterations (saving every %d-th number)\n", counter, n);
+
+    free(acc_buf);
+    free(p_old);
+    free(p_new);
+    free(v_old);
+    free(v_new);
+}
+
 void python_interface(double* pos_flat, double* vel_flat, double* masses,
-                      int num_bodies, int steps, double dt,
+                      int num_bodies, int steps, double dt, int skip_saving,
                       enum integration_alg chosen_integration_alg,
                       enum acceleration_alg chosen_acceleration_alg) {
     /* handle options */
@@ -158,14 +211,19 @@ void python_interface(double* pos_flat, double* vel_flat, double* masses,
 
     int i;
 
-    vec** p = malloc(sizeof(vec*)*steps+1);
-    vec** v = malloc(sizeof(vec*)*steps+1);
+    vec** p = malloc(sizeof(vec*)*(steps+1));
+    vec** v = malloc(sizeof(vec*)*(steps+1));
     for (i = 0; i < steps+1; i++) {
         p[i] = p_flat + num_bodies*i;
         v[i] = v_flat + num_bodies*i;
     }
 
-    fill_arrays(p, v, masses, num_bodies, steps, dt, integration_func);
+    if (skip_saving) {
+        fill_arrays_every_nth_step(p, v, masses, num_bodies, steps, dt,
+                                   integration_func, skip_saving);
+    } else {
+        fill_arrays(p, v, masses, num_bodies, steps, dt, integration_func);
+    }
 
     free(p);
     free(v);
