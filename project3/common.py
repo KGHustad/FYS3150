@@ -141,7 +141,7 @@ class SolarSystem:
         pre = time.clock()
 
         # ctypes magic
-        lib_ss = np.ctypeslib.load_library("solar_system.so", "src/c")
+        lib_ss = np.ctypeslib.load_library("solar_system_lib.so", "src/c")
 
         float64_array = np.ctypeslib.ndpointer(dtype=ctypes.c_double, ndim=1,
                                                flags="contiguous")

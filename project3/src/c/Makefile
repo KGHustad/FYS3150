@@ -4,7 +4,7 @@ CC_FLAGS = -Wall -O3 -std=gnu89 -fpic -lm -march=native
 solar_system_sources = solar_system.c
 solar_system_headers = solar_system.h
 solar_system_object_files = solar_system.o
-solar_system_lib = solar_system.so
+solar_system_lib = solar_system_lib.so
 
 all: $(solar_system_lib)
 
