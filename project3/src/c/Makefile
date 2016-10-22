@@ -12,9 +12,9 @@ $(solar_system_lib): $(solar_system_object_files)
 	$(CC) -shared -Wl,-soname,solarsystem -o $(solar_system_lib) $(solar_system_object_files)
 $(solar_system_object_files): $(solar_system_headers) $(solar_system_sources)
 	$(CC) $(CC_FLAGS) $(solar_system_sources) -c
-test: test.c $(solar_system_object_files)
-	$(CC) -Wall -std=gnu89 -o test test.c solar_system.o -lm
-valgrind:
-	valgrind --track-origins=yes ./test
+test.o: test.c $(solar_system_object_files)
+	$(CC) -Wall -std=gnu89 -o test.o test.c solar_system.o -lm
+valgrind: test.o
+	valgrind --track-origins=yes ./test.o
 clean:
-	$(RM) $(solar_system_object_files) $(solar_system_lib)
+	$(RM) $(solar_system_object_files) $(solar_system_lib) test.o
