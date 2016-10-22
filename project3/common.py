@@ -12,7 +12,7 @@ class SolarSystem:
     def __init__(self):
         self.NumberOfObjects = 0
 
-    def CreateCelestialObject(self, x0, y0, vx0, vy0, mass):
+    def CreateCelestialObject(self, x0, y0, vx0, vy0, mass, adjust_sun=True):
         if self.NumberOfObjects == 0:
             self.ObjectPositions = np.array( [[x0, y0]] , dtype=np.float64)
             self.ObjectVelocities = np.array( [[vx0, vy0]] , dtype=np.float64)
@@ -21,7 +21,8 @@ class SolarSystem:
             self.ObjectPositions = np.append( self.ObjectPositions, [[x0, y0]], axis=0 )
             self.ObjectVelocities = np.append( self.ObjectVelocities, [[vx0, vy0]], axis=0 )
             self.ObjectMasses = np.append( self.ObjectMasses, mass )
-            self.AdjustSun()
+            if adjust_sun:
+                self.AdjustSun()
         self.NumberOfObjects += 1
 
 
