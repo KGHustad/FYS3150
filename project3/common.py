@@ -62,7 +62,7 @@ class SolarSystem:
                 y_distance = Positions[target,1] - Positions[i,1]
                 distance = math.sqrt( x_distance**2 + y_distance**2 )
 
-                l = np.sqrt( Velocity[0]**2 + Velocity[1]**2 )
+                l = math.sqrt( Velocity[0]**2 + Velocity[1]**2 )
                 rel_fac = 1 + ( (3*l**2) / (distance**2*c**2) )
 
                 x_acc -= G*Masses[i]*x_distance/distance**3*rel_fac
@@ -116,7 +116,7 @@ class SolarSystem:
         return p, v
 
     def fill_array_c(self, steps, years, int_method = None, acc_method = None,
-                     skip_saving=None):
+                     skip_saving=0):
         if int_method == None:
             int_method = self.VelocityVerlet
         if acc_method == None:
@@ -131,8 +131,8 @@ class SolarSystem:
         if (skip_saving != 0):
             dt /= skip_saving
 
-        p = np.zeros( shape = ( steps+1, num_bodies, 2 ), dtype=np.float64)
-        v = np.zeros( shape = ( steps+1, num_bodies, 2 ), dtype=np.float64)
+        p = np.empty( shape = ( steps+1, num_bodies, 2 ), dtype=np.float64)
+        v = np.empty( shape = ( steps+1, num_bodies, 2 ), dtype=np.float64)
 
         p[0] = self.ObjectPositions[:][:]
         v[0] = self.ObjectVelocities[:][:]
