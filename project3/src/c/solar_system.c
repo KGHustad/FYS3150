@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
+#include <signal.h>
+
 #include "solar_system.h"
 
 /* global variable specifying which acceleration algorithm to use */
@@ -171,6 +173,9 @@ void python_interface(double* pos_flat, double* vel_flat, double* masses,
                       int num_bodies, int steps, double dt, int skip_saving,
                       enum integration_alg chosen_integration_alg,
                       enum acceleration_alg chosen_acceleration_alg) {
+    /* handle signals */
+    signal(SIGINT, exit);
+
     /* handle options */
     integration_func_ptr integration_func;
     switch (chosen_integration_alg) {
