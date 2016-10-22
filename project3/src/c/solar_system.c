@@ -96,7 +96,7 @@ void velocity_verlet(vec* pos, vec* vel,
         pos_new[i].y = pos[i].y + vel[i].y*dt + 0.5*dt_sq*acc_buf[i].y;
     }
     for (i = 0; i < num_bodies; i++) {
-        (*acceleration_func)(pos_new, vel_new[i], masses, i, num_bodies, &acc_new, dt);
+        (*acceleration_func)(pos_new, vel[i], masses, i, num_bodies, &acc_new, dt);
         vel_new[i].x = vel[i].x + 0.5*(acc_buf[i].x + acc_new.x)*dt;
         vel_new[i].y = vel[i].y + 0.5*(acc_buf[i].y + acc_new.y)*dt;
     }
@@ -106,9 +106,9 @@ void velocity_verlet(vec* pos, vec* vel,
 /* utility functions */
 
 void fill_arrays(vec** p, vec** v, double* masses,
-                 int num_bodies, int steps, double dt,
+                 int num_bodies, long steps, double dt,
                  integration_func_ptr integration_func) {
-    int i;
+    long i;
     vec* acc_buf = malloc(sizeof(vec)*num_bodies);
     for (i = 0; i < steps; i++) {
         (*integration_func)(p[i], v[i], p[i+1], v[i+1], acc_buf, masses, dt,
@@ -118,7 +118,7 @@ void fill_arrays(vec** p, vec** v, double* masses,
 }
 
 void fill_arrays_every_nth_step(vec** p, vec** v, double* masses,
-                                int num_bodies, int steps, double dt,
+                                int num_bodies, long steps, double dt,
                                 integration_func_ptr integration_func, int n) {
     int i, j;
     size_t tot_vec_size = sizeof(vec)*num_bodies;
@@ -163,14 +163,14 @@ void fill_arrays_every_nth_step(vec** p, vec** v, double* masses,
     printf("%d iterations (saving every %d-th number)\n", counter, n);
 
     free(acc_buf);
-    free(p_old);
-    free(p_new);
-    free(v_old);
-    free(v_new);
+    free(p_a);
+    free(p_b);
+    free(v_a);
+    free(v_b);
 }
 
 void python_interface(double* pos_flat, double* vel_flat, double* masses,
-                      int num_bodies, int steps, double dt, int skip_saving,
+                      int num_bodies, long steps, double dt, int skip_saving,
                       enum integration_alg chosen_integration_alg,
                       enum acceleration_alg chosen_acceleration_alg) {
     /* handle signals */
@@ -214,7 +214,7 @@ void python_interface(double* pos_flat, double* vel_flat, double* masses,
     vec* p_flat = (vec*) pos_flat;
     vec* v_flat = (vec*) vel_flat;
 
-    int i;
+    long i;
 
     vec** p = malloc(sizeof(vec*)*(steps+1));
     vec** v = malloc(sizeof(vec*)*(steps+1));
