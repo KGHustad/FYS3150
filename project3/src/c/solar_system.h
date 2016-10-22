@@ -17,10 +17,7 @@ enum integration_alg {FORWARD_EULER, VELOCITY_VERLET};
 enum acceleration_alg {CLASSICAL, RELATIVISTIC};
 
 
-/* PHYSICAL CONSTANTS */
-#define SPEED_OF_LIGHT 63197.8
-const double c_squared = SPEED_OF_LIGHT * SPEED_OF_LIGHT;
-const double G = 4*M_PI*M_PI;
+
 
 
 /* FUNCTIONS */
@@ -42,13 +39,13 @@ void velocity_verlet(vec* pos, vec* vel,
 
 /* utility functions */
 void fill_arrays(vec** p, vec** v, double* masses,
-                 int num_bodies, int steps, double dt,
+                 int num_bodies, long steps, double dt,
                  integration_func_ptr integration_func);
 void fill_arrays_every_nth_step(vec** p, vec** v, double* masses,
-                                int num_bodies, int steps, double dt,
+                                int num_bodies, long steps, double dt,
                                 integration_func_ptr integration_func, int n);
 
 void python_interface(double* pos_flat, double* vel_flat, double* masses,
-                      int num_bodies, int steps, double dt, int skip_saving,
+                      int num_bodies, long steps, double dt, int skip_saving,
                       enum integration_alg chosen_integration_alg,
                       enum acceleration_alg chosen_acceleration_alg);
