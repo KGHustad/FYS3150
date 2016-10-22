@@ -6,6 +6,11 @@
 
 #include "solar_system.h"
 
+/* PHYSICAL CONSTANTS */
+#define SPEED_OF_LIGHT 63197.8
+const double c_squared = SPEED_OF_LIGHT * SPEED_OF_LIGHT;
+const double G = 4*M_PI*M_PI;
+
 /* global variable specifying which acceleration algorithm to use */
 acceleration_func_ptr acceleration_func;
 
