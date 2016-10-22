@@ -19,25 +19,28 @@ MySolarSystem = SolarSystem()
 MySolarSystem.CreateCelestialObject(0, 0, 0, 0, 1)
 MySolarSystem.CreateCelestialObject(mercury_perihelion_distance, 0, 0, mercuryspeed, mercurymass)
 
-N = int(1e7)    # total time steps stored
+N = int(1e8)    # total time steps stored
 years = 100
-p_newton, v_newton = MySolarSystem.fill_array_c(N, years#, skip_saving=10
-)
-
-p_einstein, v_einstein = MySolarSystem.fill_array_c(N, years, acc_method=MySolarSystem.AccRelativistic#, skip_saving=10
-)
-
 time_steps = np.linspace(0, years, N+1)
 
 
 # newton
+p_newton, v_newton = MySolarSystem.fill_array_c(N, years, skip_saving=1
+)
+v_newton = None # allow for garbage collection
 res_newton = find_perihelion(p_newton[:,0,:], p_newton[:,1,:])
 points_newton, angles_newton, indices_newton = res_newton
-plt.plot(time_steps[indices_newton], angles_newton)
+
 
 # einstein
+p_einstein, v_einstein = MySolarSystem.fill_array_c(N, years, acc_method=MySolarSystem.AccRelativistic, skip_saving=1
+)
+v_einstein = None # allow for garbage collection
 res_einstein = find_perihelion(p_einstein[:,0,:], p_einstein[:,1,:])
 points_einstein, angles_einstein, indices_einstein = res_einstein
+
+
+plt.plot(time_steps[indices_newton], angles_newton)
 plt.plot(time_steps[indices_einstein], angles_einstein)
 
 
