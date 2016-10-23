@@ -90,7 +90,8 @@ class SolarSystem:
         #return P, V
 
 
-    def fill_array( self, steps, years, int_method = None, acc_method = None ):
+    def fill_array(self, steps, years, int_method = None, acc_method = None,
+                   silent=False):
         if int_method == None:
             int_method = self.VelocityVerlet
         if acc_method == None:
@@ -113,11 +114,12 @@ class SolarSystem:
         sys.stdout.write("\n")
         post = time.clock()
         time_spent = post - pre
-        print "Time spent (pure Python): %g" % time_spent
+        if not silent:
+            print "Time spent (pure Python): %g" % time_spent
         return p, v
 
     def fill_array_c(self, steps, years, int_method = None, acc_method = None,
-                     skip_saving=0):
+                     skip_saving=0, silent=False):
         if int_method == None:
             int_method = self.VelocityVerlet
         if acc_method == None:
@@ -164,7 +166,8 @@ class SolarSystem:
 
         post = time.clock()
         time_spent = post - pre
-        print "Time spent (C): %g" % time_spent
+        if not silent:
+            print "Time spent (C): %g" % time_spent
         return p, v
 
     @staticmethod
