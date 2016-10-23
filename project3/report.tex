@@ -88,29 +88,37 @@ Here $v_{\alpha}$ is the velocity of $\alpha$ relative to the system's center of
 r_{\alpha \leftrightarrow \beta} = \norm{ \vec{x}_{\alpha} - \vec{x}_{\beta} }
 \end{equation}
 
-\subsection{Forward Euler}
-\subsection{Velocity Verlet}
-
-We can derive the Velocity Verlet method through a Taylor expansion of $x$ and $v$ around $t$
+\subsection{Taylor expansions}
+We will use the following Taylor expansions of $x$ and $v$ around $t$ to derive our numerical methods
 \begin{align}
-    x(t + h) &= x(t) + x'(t) h + \frac{x''(t)}{2} h^2 + O(h^3)\\
-    &= x(t) + v(t) h + \frac{a(t)}{2} h^2 + O(h^3) \\
-    v(t + h) &= v(t) + v'(t) h + \frac{v''(t)}{2} h^2 + O(h^3)\\
-    &= v(t) + a(t) h + \frac{a'(t)}{2} h^2 + O(h^3) \label{eq:verlet:taylor:vel2}
+    x(t + h) &= x(t) + x'(t) h + \frac{x''(t)}{2} h^2 + O(h^3) \label{eq:taylor:pos1}\\
+    &= x(t) + v(t) h + \frac{a(t)}{2} h^2 + O(h^3) \label{eq:taylor:pos2} \\
+    v(t + h) &= v(t) + v'(t) h + \frac{v''(t)}{2} h^2 + O(h^3) \label{eq:taylor:vel1} \\
+    &= v(t) + a(t) h + \frac{a'(t)}{2} h^2 + O(h^3) \label{eq:taylor:vel2}
 \end{align}
+
+\subsection{Forward Euler}
+Using the two leading terms of \eqref{eq:taylor:pos2} and \eqref{eq:taylor:vel2} and setting $\dt = h$, we obtain
+
+\begin{align}
+    \vec{x}(t + \dt) &= \vec{x}(t) + \vec{v}(t)\dt  \label{eq:forwardeuler:pos} \\
+    \vec{v}(t + \dt) &= \vec{v}(t) + \vec{a}(t)\dt \label{eq:forwardeuler:vel}
+\end{align}
+
+\subsection{Velocity Verlet}-
 
 By using a forward difference, we can approximate $a'(t)$ as
 \begin{align}
     a'(t) \approx \frac{a(t+h) - a(t)}{h} \label{eq:diffacc:approx}
 \end{align}
 
-Inserting \eqref{eq:diffacc:approx} into \eqref{eq:verlet:taylor:vel2} and introducing $\dt = h$, we arrive at
+Inserting \eqref{eq:diffacc:approx} into \eqref{eq:taylor:vel2} and introducing $\dt = h$, we arrive at
 
 %\todo{Need derivation of method}
 
 \begin{align}
 \vec{x}(t + \dt) &= \vec{x}(t) + \vec{v}(t)\dt + \half \vec{a}(t) \dt^2 \label{eq:velverlet:pos} \\
-\vec{v}(t + \dt) &= \vec{v}(t) + \frac{\vec{a}(t) + \vec{a}(t + \dt)}{2} \label{eq:velverlet:vel} \dt
+\vec{v}(t + \dt) &= \vec{v}(t) + \frac{\vec{a}(t) + \vec{a}(t + \dt)}{2} \dt \label{eq:velverlet:vel}
 \end{align}
 
 We need to choose a way to approximate $a(t + \dt)$. Since we are dealing only with gravitational forces, the acceleration depends only on the position, so we use \eqref{eq:velverlet:pos} to find $a(t + \dt)$, and then we can use \eqref{eq:velverlet:vel}.
