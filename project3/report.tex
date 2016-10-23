@@ -80,24 +80,42 @@ In this report, we aim to study the solar system and show \todo{Fill in introduc
 The laws of motion dictate that, for two celestial bodies, $\alpha$ and $\beta$, the force of attraction between the two is given by
 \begin{equation}
 F_G= \frac{m_{\alpha}v_{\alpha}^2}{r_{\alpha \leftrightarrow \beta}}
-=\frac{Gm_{\beta}m_{\alpha}}{r^2},
+=\frac{Gm_{\beta}m_{\alpha}}{r_{\alpha \leftrightarrow \beta}^2},
 \end{equation}
 
-Here $v_{\alpha}$ is the velocity of $\alpha$ relative to the system's center of mass, which we will keep in origo.
+Here $v_{\alpha}$ is the velocity of $\alpha$ relative to the system's center of mass, which we will keep in origo, and $r_{\alpha \leftrightarrow \beta}$ is the distance between $\alpha$ and $\beta$
 \begin{equation}
 r_{\alpha \leftrightarrow \beta} = \norm{ \vec{x}_{\alpha} - \vec{x}_{\beta} }
 \end{equation}
 
 \subsection{Forward Euler}
 \subsection{Velocity Verlet}
-\todo{Need derivation of method}
+
+We can derive the Velocity Verlet method through a Taylor expansion of $x$ and $v$ around $t$
+\begin{align}
+    x(t + h) &= x(t) + x'(t) h + \frac{x''(t)}{2} h^2 + O(h^3)\\
+    &= x(t) + v(t) h + \frac{a(t)}{2} h^2 + O(h^3) \\
+    v(t + h) &= v(t) + v'(t) h + \frac{v''(t)}{2} h^2 + O(h^3)\\
+    &= v(t) + a(t) h + \frac{a'(t)}{2} h^2 + O(h^3) \label{eq:verlet:taylor:vel2}
+\end{align}
+
+By using a forward difference, we can approximate $a'(t)$ as
+\begin{align}
+    a'(t) \approx \frac{a(t+h) - a(t)}{h} \label{eq:diffacc:approx}
+\end{align}
+
+Inserting \eqref{eq:diffacc:approx} into \eqref{eq:verlet:taylor:vel2} and introducing $\dt = h$, we arrive at
+
+%\todo{Need derivation of method}
 
 \begin{align}
 \vec{x}(t + \dt) &= \vec{x}(t) + \vec{v}(t)\dt + \half \vec{a}(t) \dt^2 \label{eq:velverlet:pos} \\
 \vec{v}(t + \dt) &= \vec{v}(t) + \frac{\vec{a}(t) + \vec{a}(t + \dt)}{2} \label{eq:velverlet:vel} \dt
 \end{align}
 
-We need to choose a way to approximate $a(t + \dt)$. Since we are in space, the acceleration depends only on the position, so we use \eqref{eq:velverlet:pos} to find $a(t + \dt)$, and then we can use \ref{eq:velverlet:vel}.
+We need to choose a way to approximate $a(t + \dt)$. Since we are dealing only with gravitational forces, the acceleration depends only on the position, so we use \eqref{eq:velverlet:pos} to find $a(t + \dt)$, and then we can use \eqref{eq:velverlet:vel}.
+
+
 
 We have the two second order ordinary differential equations
 \begin{align}
