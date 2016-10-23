@@ -81,10 +81,10 @@ void forward_euler(vec* pos, vec* vel,
     int i;
     for (i = 0; i < num_bodies; i++) {
         (*acceleration_func)(pos, vel[i], masses, i, num_bodies, &acc, dt);
+        pos_new[i].x = pos[i].x + vel[i].x*dt;
+        pos_new[i].y = pos[i].y + vel[i].y*dt;
         vel_new[i].x = vel[i].x + acc.x*dt;
         vel_new[i].y = vel[i].y + acc.y*dt;
-        pos_new[i].x = pos[i].x + vel_new[i].x*dt;
-        pos_new[i].y = pos[i].y + vel_new[i].y*dt;
     }
 }
 
@@ -104,6 +104,20 @@ void velocity_verlet(vec* pos, vec* vel,
         (*acceleration_func)(pos_new, vel[i], masses, i, num_bodies, &acc_new, dt);
         vel_new[i].x = vel[i].x + 0.5*(acc_buf[i].x + acc_new.x)*dt;
         vel_new[i].y = vel[i].y + 0.5*(acc_buf[i].y + acc_new.y)*dt;
+    }
+}
+
+void euler_cromer(vec* pos, vec* vel,
+                  vec* pos_new, vec* vel_new, vec* acc_buf,
+                  double* masses, double dt, int num_bodies) {
+    vec acc;
+    int i;
+    for (i = 0; i < num_bodies; i++) {
+        (*acceleration_func)(pos, vel[i], masses, i, num_bodies, &acc, dt);
+        vel_new[i].x = vel[i].x + acc.x*dt;
+        vel_new[i].y = vel[i].y + acc.y*dt;
+        pos_new[i].x = pos[i].x + vel_new[i].x*dt;
+        pos_new[i].y = pos[i].y + vel_new[i].y*dt;
     }
 }
 

@@ -73,9 +73,8 @@ class SolarSystem:
     def ForwardEuler(self, P, V, P_new, V_new, dt, acc_method):
         length = len(P)
         for n in xrange(length):
+            P_new[n] = P[n] + V[n]*dt
             V_new[n] = V[n] + acc_method(P, V[n], n, self.ObjectMasses)*dt
-            P_new[n] = P[n] + V_new[n]*dt
-        #return P, V
 
 
     def VelocityVerlet(self, P, V, P_new, V_new, dt, acc_method):
@@ -87,7 +86,12 @@ class SolarSystem:
         for n in xrange(length):
             acc_P_new = acc_method(P_new, V[n], n, self.ObjectMasses)
             V_new[n] = V[n] + 0.5*(acc_P[n] + acc_P_new)*dt
-        #return P, V
+
+    def EulerCromer(self, P, V, P_new, V_new, dt, acc_method):
+        length = len(P)
+        for n in xrange(length):
+            V_new[n] = V[n] + acc_method(P, V[n], n, self.ObjectMasses)*dt
+            P_new[n] = P[n] + V_new[n]*dt
 
 
     def fill_array(self, steps, years, int_method = None, acc_method = None,

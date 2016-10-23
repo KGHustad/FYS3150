@@ -13,7 +13,7 @@ typedef void (*acceleration_func_ptr)(vec*, vec, double*, int, int, vec*,
                                       double);
 
 /* ENUMS FOR ALGORITHM OPTIONS */
-enum integration_alg {FORWARD_EULER, VELOCITY_VERLET};
+enum integration_alg {FORWARD_EULER, VELOCITY_VERLET, EULER_CROMER};
 enum acceleration_alg {CLASSICAL, RELATIVISTIC};
 
 
@@ -36,6 +36,9 @@ void forward_euler(vec* pos, vec* vel,
 void velocity_verlet(vec* pos, vec* vel,
                      vec* pos_new, vec* vel_new, vec* acc_buf,
                      double* masses, double dt, int num_bodies);
+void euler_cromer(vec* pos, vec* vel,
+                  vec* pos_new, vec* vel_new, vec* acc_buf,
+                  double* masses, double dt, int num_bodies);
 
 /* utility functions */
 void fill_arrays(vec** p, vec** v, double* masses,
