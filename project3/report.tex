@@ -153,7 +153,12 @@ y'(i+1) &= y'(i) + 0.5(y''(i) + y''(i+1))h
 
 
 \section{Implementation and results}\label{sec:implementation_and_results}
+\subsection{Program structure}
+Since we are of the opinion that an object oriented program structure generally is poorly suited for scientific programming, we perform all of our computations on arrays, without the notion of objects.
 
+Operating on arrays is also optimal for accessing memory efficiently. Our program has two backends for carrying out the computations. One is done in Python with use of numpy's array arithmetic where possible, and the other is done in C.
+
+We have, however, created a \todo{make terrible OO Python program}
 
 
 \section{Conclusion}\label{sec:conclusion}
