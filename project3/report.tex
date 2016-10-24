@@ -226,7 +226,7 @@ We have, however, created a \textbf{make terrible OO Python program}
 \\
 \subsection{Unit Tests}
 \subsubsection{Integration Stability}
-We see that with the great Velocity Verlet integration method, the orbits quickly converge into a correct eliptical shape at timesteps as large as $\frac{1}{1000}$ of a year. Our code uses timesteps several orders of magnitude smaller than this agian, so we should expect rather accurate results.\\
+We see that with the great Velocity Verlet integration method, the orbits quickly converge into a correct eliptical shape at timesteps as large as $\frac{1}{100}$ of a year, while the Forward Euler algorithm is just terrible. Our code uses Velocity Verlet, and timesteps several orders of magnitude smaller than used in this test, so we should expect rather accurate results.\\
 \textbf{dt test plot thingy}
 \subsubsection{Escape Velocity}
 The analytical escape velocity at a distance $r$ from an object with mass $M$ is given as $\sqrt{\frac{2GM}{r}}$. Inserting the mass of the sun(1 Solar Mass), and the Earth-Sun distance(1 AU), we arrive at the escape velocity
@@ -240,7 +240,9 @@ Because we have an isolated system without external forces, we expect the total 
 \textbf{we have a print showing the low relative error in angular momentum. we also have a plot, but it's kinda boring, but use it if you want. it shows the angular momentum is conserved.}
 
 \section{Conclusion}\label{sec:conclusion}
-
+We have shown the extreme precision of the Velocity Verlet algorithm in regard to position-dependent forces, far outranking the Forward Euler method.
+We then observed that the precession of Mercurys perhelion can only be accurately explained with the introduction of general relativity.
+We have observed the large stability of ordinary planitary orbits, and increadible unstability of a planitary system with several massive objects, like our Sun-Jupiter system.
 
 %\bibliographystyle{plain}
 %\bibliographystyle{siam}
