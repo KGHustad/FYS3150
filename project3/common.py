@@ -35,6 +35,7 @@ class SolarSystem:
         self.ObjectVelocities[0,:] -= self.ObjectVelocities[-1,:]*mass_ratio
 
     def Acc(self, Positions, Velocity, target, Masses ):
+        "Classical acceleration"
         x_acc = 0
         y_acc = 0
         for i in xrange(self.NumberOfObjects):
@@ -44,16 +45,11 @@ class SolarSystem:
                 distance = math.sqrt( x_distance**2 + y_distance**2 )
                 x_acc -= G*Masses[i]*x_distance/distance**3
                 y_acc -= G*Masses[i]*y_distance/distance**3
-                """
-                if target == 0:
-                    print "Sun acc: (%15E, %15E) from %d" % (G*Masses[i]*x_distance/distance**3, G*Masses[i]*y_distance/distance**3, i)
-        if target == 0:
-            print "Sun acc: (%15E, %15E) TOTAL\n" % (x_acc, y_acc)
-            """
         return np.array( [x_acc, y_acc] )
 
 
     def AccRelativistic(self, Positions, Velocity, target, Masses):
+        "Relativistic acceleration"
         x_acc = 0
         y_acc = 0
         for i in xrange(self.NumberOfObjects):
@@ -128,10 +124,15 @@ class SolarSystem:
             int_method = self.VelocityVerlet
         if acc_method == None:
             acc_method = self.Acc
-        # only a single acc_method has been implemented yet
-        integration_alg = 1 if int_method == self.VelocityVerlet else 0
-        acceleration_alg = 1 if acc_method == self.AccRelativistic else 0
 
+        int_methods = [self.ForwardEuler, self.VelocityVerlet,
+                       self.EulerCromer]
+        acc_methods = [self.Acc, self.AccRelativistic]
+
+        integration_alg = int_methods.index(int_method)
+        acceleration_alg = acc_methods.index(acc_method)
+
+        # minima for perihelion
         minima = np.zeros(shape=(perihelion_minima, 6), dtype=np.float64)
 
         num_bodies = self.NumberOfObjects

@@ -19,7 +19,7 @@ static inline double norm(vec *v) {
     return sqrt(v->x * v->x + v->y * v->y);
 }
 
-/* acceleration algorithms */
+/*** ACCELERATION ALGORITHMS ***/
 
 void acceleration_classical(vec* pos, vec vel, double* masses,
                             int target_body, int num_bodies,
@@ -76,7 +76,7 @@ void acceleration_relativistic(vec* pos, vec vel, double* masses,
 }
 
 
-/* integration algorithms */
+/*** INTEGRATION ALGORITHMS ***/
 
 void forward_euler(vec* pos, vec* vel,
                    vec* pos_new, vec* vel_new, vec* acc_buf,
@@ -126,7 +126,7 @@ void euler_cromer(vec* pos, vec* vel,
 }
 
 
-/* utility functions */
+/*** UTILITY FUNCTIONS ***/
 
 void fill_arrays(vec** p, vec** v, double* masses,
                  int num_bodies, long steps, double dt,
@@ -301,6 +301,7 @@ int python_interface(double* pos_flat, double* vel_flat, double* masses,
         minima = (planet_state*) minima_flat;
     }
 
+    /* call the right function */
     if (skip_saving) {
         fill_arrays_every_nth_step(p, v, masses, num_bodies, steps, dt,
                                    integration_func, skip_saving,
