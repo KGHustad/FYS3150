@@ -192,22 +192,26 @@ and the Velocity Verlet scheme, \eqref{eq:velverlet:pos} - \eqref{eq:velverlet:v
 
 
 %We discretize $F_x(x(t),y(t))$ and $F_y(x(t),y(t))$ at n+1 equally spaced points $t_0, t_1,..., t_n$, such that $t_i - t_{i-1} = h$....blablabla\\
-\\
-\subsection{Arriving at integration methods}
-Arriving at the Forward Euler method
-\begin{align}
-x'(i+1) &= x'(i) + x''(x(t_i), y(t_i))h\\
-y'(i+1) &= y'(i) + y''(x(t_i), y(t_i))h\\
-x(i+1) &= x(i) + v_x(i)h\\
-y(i+1) &= y(i) + v_y(i)h
-\end{align}
-and the Velocity Verlet method
-\begin{align}
-x(i+1) &= x(i) + x'(i)h + 0.5x''(i)h^2\\
-y(i+1) &= y(i) + y'(i)h + 0.5y''(i)h^2\\
-x'(i+1) &= x'(i) + 0.5(x''(i) + x''(i+1))h\\
-y'(i+1) &= y'(i) + 0.5(y''(i) + y''(i+1))h
-\end{align}
+
+% \subsection{Arriving at integration methods}
+% Arriving at the Forward Euler method
+% \begin{align}
+% x'(i+1) &= x'(i) + x''(x(t_i), y(t_i))h\\
+% y'(i+1) &= y'(i) + y''(x(t_i), y(t_i))h\\
+% x(i+1) &= x(i) + v_x(i)h\\
+% y(i+1) &= y(i) + v_y(i)h
+% \end{align}
+% and the Velocity Verlet method
+% \begin{align}
+% x(i+1) &= x(i) + x'(i)h + 0.5x''(i)h^2\\
+% y(i+1) &= y(i) + y'(i)h + 0.5y''(i)h^2\\
+% x'(i+1) &= x'(i) + 0.5(x''(i) + x''(i+1))h\\
+% y'(i+1) &= y'(i) + 0.5(y''(i) + y''(i+1))h
+% \end{align}
+
+
+
+
 
 
 \section{Implementation and results}\label{sec:implementation_and_results}
