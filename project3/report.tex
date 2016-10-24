@@ -7,14 +7,13 @@
 \usepackage{amsmath, amssymb}
 \usepackage{tikz}
 \usepackage{graphicx}
-\usepackage{subcaption}
+%\usepackage{subcaption}
 \usepackage{parskip}
 \usepackage{lmodern}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{epigraph}
 \usepackage{listings}
-\usepackage{todonotes}
 \usepackage{physics}
 
 
@@ -47,7 +46,8 @@
 \begin{abstract}
 \noindent
 In this report, ...
-\todo{Fill in abstract}
+
+\textbf{Fill in abstract}
 \end{abstract}
 
 \vfill
@@ -71,7 +71,9 @@ In this report, ...
 %\subsection*{Description of the nature of the problem}
 \cite{mhj_lecture_notes} % must cite something to avoid compilation error when using bibtex
 
-In this report, we aim to study the solar system and show \todo{Fill in introduction}
+In this report, we aim to study the solar system and show
+
+\textbf{Fill in introduction}
 
 
 
@@ -113,8 +115,6 @@ By using a forward difference, we can approximate $a'(t)$ as
 \end{align}
 
 Inserting \eqref{eq:diffacc:approx} into \eqref{eq:taylor:vel2} and introducing $\dt = h$, we arrive at
-
-%\todo{Need derivation of method}
 
 \begin{align}
 \vec{x}(t + \dt) &= \vec{x}(t) + \vec{v}(t)\dt + \half \vec{a}(t) \dt^2 \label{eq:velverlet:pos} \\
@@ -158,7 +158,7 @@ Since we are of the opinion that an object oriented program structure generally 
 
 Operating on arrays is also optimal for accessing memory efficiently. Our program has two backends for carrying out the computations. One is done in Python with use of numpy's array arithmetic where possible, and the other is done in C.
 
-We have, however, created a \todo{make terrible OO Python program}
+We have, however, created a \textbf{make terrible OO Python program}
 
 
 \section{Conclusion}\label{sec:conclusion}
