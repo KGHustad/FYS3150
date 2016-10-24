@@ -76,6 +76,8 @@ In this report, ...
 \newcommand{\dx}{{\Delta x}}
 \newcommand{\bigO}{{\mathcal{O}}}
 
+\newcommand{\arrnew}{{_{\mathrm{new}}}}
+
 
 
 \section{Introduction}\label{sec:intro}
@@ -138,10 +140,10 @@ We know the initial positions $\vec{x}$ and speeds $\vec{v}$ of all celestial bo
 \subsection{Taylor expansions}
 We will use the following Taylor expansions of $x$ and $v$ around $t$ to derive our numerical methods
 \begin{align}
-    x(t + h) &= x(t) + x'(t) h + \frac{x''(t)}{2} h^2 + O(h^3) \label{eq:taylor:pos1}\\
-    &= x(t) + v(t) h + \frac{a(t)}{2} h^2 + O(h^3) \label{eq:taylor:pos2} \\
-    v(t + h) &= v(t) + v'(t) h + \frac{v''(t)}{2} h^2 + O(h^3) \label{eq:taylor:vel1} \\
-    &= v(t) + a(t) h + \frac{a'(t)}{2} h^2 + O(h^3) \label{eq:taylor:vel2}
+    x(t + h) &= x(t) + x'(t) h + \frac{x''(t)}{2} h^2 + \bigO(h^3) \label{eq:taylor:pos1}\\
+    &= x(t) + v(t) h + \frac{a(t)}{2} h^2 + \bigO(h^3) \label{eq:taylor:pos2} \\
+    v(t + h) &= v(t) + v'(t) h + \frac{v''(t)}{2} h^2 + \bigO(h^3) \label{eq:taylor:vel1} \\
+    &= v(t) + a(t) h + \frac{a'(t)}{2} h^2 + \bigO(h^3) \label{eq:taylor:vel2}
 \end{align}
 
 \subsection{Forward Euler}
@@ -209,6 +211,18 @@ and the Velocity Verlet scheme, \eqref{eq:velverlet:pos} - \eqref{eq:velverlet:v
 % y'(i+1) &= y'(i) + 0.5(y''(i) + y''(i+1))h
 % \end{align}
 
+
+\subsection{Algorithms}
+\begin{algorithm}
+\caption{Forward Euler} \label{alg:forward_euler}
+\begin{algorithmic}[1]
+  \Procedure{ForwardEuler}{$p, v, p\arrnew, v\arrnew, m, \dt, \mathrm{num\_bodies}$}
+
+
+
+  \EndProcedure
+\end{algorithmic}
+\end{algorithm}
 
 
 
