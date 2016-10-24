@@ -117,6 +117,7 @@ F_G
 \label{eq:grav:einstein}
 \end{equation}
 
+where $l = \norm{\vec{x} \times \vec{v}}$
 
 We will study both the Newton's equation, \eqref{eq:grav:newton}, from classical mechanics and its relativistic revision, \eqref{eq:grav:einstein}. For the sake of simplicity, we will limit ourselves to solving these equations in two dimensions.
 
@@ -167,13 +168,30 @@ Inserting \eqref{eq:diffacc:approx} into \eqref{eq:taylor:vel2} and introducing 
 
 \subsection{Adapting the methods to motion in a gravitational field}
 
-We need to choose a way to approximate $a(t + \dt)$ in \eqref{eq:velverlet:vel}. Since we are dealing only with gravitational forces, the acceleration depends only on the position, so we use \eqref{eq:velverlet:pos} to find $a(t + \dt)$, and then we can use \eqref{eq:velverlet:vel}.
+We need to choose a way to approximate $a(t + \dt)$ in \eqref{eq:velverlet:vel}. Since we are dealing only with gravitational forces, the acceleration in the classical case depends only on the position, so we use \eqref{eq:velverlet:pos} to find $a(t + \dt)$, and then we can use \eqref{eq:velverlet:vel}.
 
-
+With the relativistic case, however, the acceleration also depends on the velocity. We will just cheat a bit here and use $\vec{v}(t)$ instead of $\vec{v}(t + \dt)$.
 
 
 \subsection{Discretization}
-We discretize $F_x(x(t),y(t))$ and $F_y(x(t),y(t))$ at n+1 equally spaced points $t_0, t_1,..., t_n$, such that $t_i - t_{i-1} = h$....blablabla\\
+In astronomy, one usually deals with astronomical units, with the unit distance being the mean radius of Earth's orbit around the Sun and the unit time being a year. We will study the system for a period of $T$ years, and values of $t \in [0, T]$. We write $\vec{x}(i \dt)$ as $x_i$, where $x_i$ is a vector of length two, and likewise for velocity and acceleration.
+
+We discretize the Forward Euler scheme, \eqref{eq:forwardeuler:pos} - \eqref{eq:forwardeuler:vel}, as
+
+\begin{align}
+    x_{i+1} &= x_{i} + v_{i}\dt \\
+    v_{i+1} &= v_{i} + a_{i}\dt
+\end{align}
+
+and the Velocity Verlet scheme, \eqref{eq:velverlet:pos} - \eqref{eq:velverlet:vel} as
+
+\begin{align}
+    x_{i+1} &= x_{i} + v_{i}\dt + a_{i} \frac{\dt^2}{2} \\
+    v_{i+1} &= v_{i} + \frac{a_{i} + a_{i+1}}{2}\dt
+\end{align}
+
+
+%We discretize $F_x(x(t),y(t))$ and $F_y(x(t),y(t))$ at n+1 equally spaced points $t_0, t_1,..., t_n$, such that $t_i - t_{i-1} = h$....blablabla\\
 \\
 \subsection{Arriving at integration methods}
 Arriving at the Forward Euler method
