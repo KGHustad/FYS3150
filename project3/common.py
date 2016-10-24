@@ -132,8 +132,7 @@ class SolarSystem:
         integration_alg = 1 if int_method == self.VelocityVerlet else 0
         acceleration_alg = 1 if acc_method == self.AccRelativistic else 0
 
-        if perihelion_minima != 0:
-            minima = np.zeros(shape=(perihelion_minima, 6), dtype=np.float64)
+        minima = np.zeros(shape=(perihelion_minima, 6), dtype=np.float64)
 
         num_bodies = self.NumberOfObjects
         masses = self.ObjectMasses
