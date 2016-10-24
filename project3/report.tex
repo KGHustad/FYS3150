@@ -221,8 +221,13 @@ Since we are of the opinion that an object oriented program structure generally 
 Operating on arrays is also optimal for accessing memory efficiently. Our program has two backends for carrying out the computations. One is done in Python with use of numpy's array arithmetic where possible, and the other is done in C.
 
 We have, however, created a \textbf{make terrible OO Python program}
-
+\\
+\textbf{we can mention our ajust-sun function and our constant origo center of mass (which we have a print that shows doesn't move from there). idk where it fits tho.}
+\\
 \subsection{Unit Tests}
+\subsubsection{Integration Stability}
+We see that with the great Velocity Verlet integration method, the orbits quickly converge into a correct eliptical shape at timesteps as large as $\frac{1}{1000}$ of a year. Our code uses timesteps several orders of magnitude smaller than this agian, so we should expect rather accurate results.\\
+\textbf{dt test plot thingy}
 \subsubsection{Escape Velocity}
 The analytical escape velocity at a distance $r$ from an object with mass $M$ is given as $\sqrt{\frac{2GM}{r}}$. Inserting the mass of the sun(1 Solar Mass), and the Earth-Sun distance(1 AU), we arrive at the escape velocity
 \begin{equation}
