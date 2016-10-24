@@ -37,6 +37,9 @@ parser.add_argument('-p', '--perihelion_minima',
                     dest='perihelion_minima', metavar='perihelion_minima',
                     type=int, default=1000,
                     help="max number of minima to store")
+parser.add_argument('--show',
+                    action='store_true', default=False,
+                    help='show plot')
 
 args = parser.parse_args()
 N = int(args.N)
@@ -44,6 +47,8 @@ years = args.years
 skip_saving=args.skip_saving
 perihelion_minima = args.perihelion_minima
 # set to a number larger than expected minima
+show = args.show
+
 
 #time_steps = np.linspace(0, years, N+1)
 dt = years/float(N*skip_saving)
@@ -94,7 +99,8 @@ plt.legend(["Classical Mechanics case", "Relativistic case"], loc="best")
 plt.xlabel("time in years")
 plt.ylabel("angle in radians")
 plt.savefig("fig/perihelion_%03dyears_dt=%g.pdf" % (years, dt))
-plt.show()
+if show:
+    plt.show()
 
 plt.axes(aspect='equal')
 plt.plot(0,0, "yo")
@@ -103,7 +109,8 @@ plt.plot(p_einstein[::100,1,0], p_einstein[::100,1,1], "b-")
 plt.plot(p_newton[-1,1,0], p_newton[-1,1,1], "ro")
 plt.plot(p_einstein[-1,1,0], p_einstein[-1,1,1], "bo")
 plt.plot(points_einstein[:,0], points_einstein[:,1], "ko")
-plt.show()
+if show:
+    plt.show()
 #"""
 
 try:
