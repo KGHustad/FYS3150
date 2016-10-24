@@ -15,6 +15,16 @@
 \usepackage{epigraph}
 \usepackage{listings}
 \usepackage{physics}
+\usepackage{varioref}
+
+% varioref stuff from Anders
+\labelformat{section}{section~#1}
+\labelformat{subsection}{section~#1}
+\labelformat{subsubsection}{paragraph~#1}
+\labelformat{equation}{#1}
+\labelformat{figure}{figure~#1}
+\labelformat{table}{table~#1}
+
 
 
 \begin{document}
@@ -27,6 +37,7 @@
 %\date{}    % if commented out, the date is set to the current date
 
 \maketitle
+
 
 
 
@@ -71,7 +82,9 @@ In this report, ...
 %\subsection*{Description of the nature of the problem}
 \cite{mhj_lecture_notes} % must cite something to avoid compilation error when using bibtex
 
-In this report, we aim to study the solar system and show
+In this report, we aim to study the solar system and the motion of celestial bodies in a gravitational field.
+
+
 
 \textbf{Fill in introduction}
 
@@ -79,16 +92,47 @@ In this report, we aim to study the solar system and show
 
 
 \section{Discussion of methods}\label{sec:methods}
-The laws of motion dictate that, for two celestial bodies, $\alpha$ and $\beta$, the force of attraction between the two is given by
+Newton's law of universal gravitation dictate that, for two celestial bodies, $\alpha$ and $\beta$, the force of attraction between the two is given by
 \begin{equation}
-F_G= \frac{m_{\alpha}v_{\alpha}^2}{r_{\alpha \leftrightarrow \beta}}
-=\frac{Gm_{\beta}m_{\alpha}}{r_{\alpha \leftrightarrow \beta}^2},
+F_G
+=\frac{Gm_{\beta}m_{\alpha}}{r_{\alpha \leftrightarrow \beta}^2}
+\label{eq:grav:newton}
 \end{equation}
+
+%For circular orbits, we additionally have
+%\begin{equation}
+%    F_G= \frac{m_{\alpha}v_{\alpha}^2}{r_{\alpha \leftrightarrow \beta}}
+%\end{equation}
 
 Here $v_{\alpha}$ is the velocity of $\alpha$ relative to the system's center of mass, which we will keep in origo, and $r_{\alpha \leftrightarrow \beta}$ is the distance between $\alpha$ and $\beta$
 \begin{equation}
 r_{\alpha \leftrightarrow \beta} = \norm{ \vec{x}_{\alpha} - \vec{x}_{\beta} }
 \end{equation}
+
+\eqref{eq:grav:newton} can be adjusted to account for Einstein's theory of relativity, yielding
+\begin{equation}
+F_G
+=\frac{Gm_{\beta}m_{\alpha}}{r_{\alpha \leftrightarrow \beta}^2}
+\left[1 + \frac{3l^2}{r^2c^2}\right]
+\label{eq:grav:einstein}
+\end{equation}
+
+
+We will study both the Newton's equation, \eqref{eq:grav:newton}, from classical mechanics and its relativistic revision, \eqref{eq:grav:einstein}. For the sake of simplicity, we will limit ourselves to solving these equations in two dimensions.
+
+
+
+To determine the motion of a celestial body, $\alpha$, we need to solve the following two second order ordinary differential equations
+\begin{align}
+\frac{d^2x}{dt^2} &= \frac{F_x(x,y)}{m_{\alpha}} \label{eq:acc:x}\\
+\frac{d^2y}{dt^2} &= \frac{F_y(x,y)}{m_{\alpha}} \label{eq:acc:y}
+\end{align}
+where $m_{\alpha}$ is the mass of $\alpha$.\\
+
+We know the initial positions $\vec{x}$ and speeds $\vec{v}$ of all celestial bodies. By combining that information with \eqref{eq:acc:x} - \eqref{eq:acc:y}, we can solve the system, but first we need a numerical method!
+
+
+
 
 \subsection{Taylor expansions}
 We will use the following Taylor expansions of $x$ and $v$ around $t$ to derive our numerical methods
@@ -107,7 +151,7 @@ Using the two leading terms of \eqref{eq:taylor:pos2} and \eqref{eq:taylor:vel2}
     \vec{v}(t + \dt) &= \vec{v}(t) + \vec{a}(t)\dt \label{eq:forwardeuler:vel}
 \end{align}
 
-\subsection{Velocity Verlet}-
+\subsection{Velocity Verlet}
 
 By using a forward difference, we can approximate $a'(t)$ as
 \begin{align}
@@ -121,16 +165,12 @@ Inserting \eqref{eq:diffacc:approx} into \eqref{eq:taylor:vel2} and introducing 
 \vec{v}(t + \dt) &= \vec{v}(t) + \frac{\vec{a}(t) + \vec{a}(t + \dt)}{2} \dt \label{eq:velverlet:vel}
 \end{align}
 
-We need to choose a way to approximate $a(t + \dt)$. Since we are dealing only with gravitational forces, the acceleration depends only on the position, so we use \eqref{eq:velverlet:pos} to find $a(t + \dt)$, and then we can use \eqref{eq:velverlet:vel}.
+\subsection{Adapting the methods to motion in a gravitational field}
+
+We need to choose a way to approximate $a(t + \dt)$ in \eqref{eq:velverlet:vel}. Since we are dealing only with gravitational forces, the acceleration depends only on the position, so we use \eqref{eq:velverlet:pos} to find $a(t + \dt)$, and then we can use \eqref{eq:velverlet:vel}.
 
 
 
-We have the two second order ordinary differential equations
-\begin{align}
-\frac{d^2x}{dt^2} &= \frac{F_x(x,y)}{M_E} \\
-\frac{d^2y}{dt^2} &= \frac{F_y(x,y)}{M_E}
-\end{align}
-where $M_E$ is the earth's mass.\\
 
 \subsection{Discretization}
 We discretize $F_x(x(t),y(t))$ and $F_y(x(t),y(t))$ at n+1 equally spaced points $t_0, t_1,..., t_n$, such that $t_i - t_{i-1} = h$....blablabla\\
