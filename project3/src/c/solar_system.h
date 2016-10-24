@@ -5,6 +5,11 @@ typedef struct {
     double x, y;
 } vec;
 
+typedef struct {
+    vec pos, vel;
+    double dist, time;
+} planet_state;
+
 /* type for a function pointer to one of the integration_algorithms */
 typedef void (*integration_func_ptr)(vec*, vec*, vec*, vec*, vec*,
                                      double*, double, int);
@@ -46,9 +51,11 @@ void fill_arrays(vec** p, vec** v, double* masses,
                  integration_func_ptr integration_func);
 void fill_arrays_every_nth_step(vec** p, vec** v, double* masses,
                                 int num_bodies, long steps, double dt,
-                                integration_func_ptr integration_func, int n);
+                                integration_func_ptr integration_func, int n,
+                                int *perihelion, planet_state* minima);
 
-void python_interface(double* pos_flat, double* vel_flat, double* masses,
-                      int num_bodies, long steps, double dt, int skip_saving,
-                      enum integration_alg chosen_integration_alg,
-                      enum acceleration_alg chosen_acceleration_alg);
+int python_interface(double* pos_flat, double* vel_flat, double* masses,
+                     double* minima_flat, int num_bodies, long steps,
+                     double dt, int skip_saving, int perihelion_capacity,
+                     enum integration_alg chosen_integration_alg,
+                     enum acceleration_alg chosen_acceleration_alg);

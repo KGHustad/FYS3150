@@ -123,7 +123,7 @@ class SolarSystem:
         return p, v
 
     def fill_array_c(self, steps, years, int_method = None, acc_method = None,
-                     skip_saving=0, silent=False):
+                     skip_saving=0, silent=False, perihelion_minima=0):
         if int_method == None:
             int_method = self.VelocityVerlet
         if acc_method == None:
@@ -131,6 +131,9 @@ class SolarSystem:
         # only a single acc_method has been implemented yet
         integration_alg = 1 if int_method == self.VelocityVerlet else 0
         acceleration_alg = 1 if acc_method == self.AccRelativistic else 0
+
+        if perihelion_minima != 0:
+            minima = np.zeros(shape=(perihelion_minima, 6), dtype=np.float64)
 
         num_bodies = self.NumberOfObjects
         masses = self.ObjectMasses
@@ -152,19 +155,28 @@ class SolarSystem:
 
         float64_array = np.ctypeslib.ndpointer(dtype=ctypes.c_double, ndim=1,
                                                flags="contiguous")
-        lib_ss.python_interface.argstypes = [float64_array, float64_array,
-                                             float64_array, ctypes.c_int,
-                                             ctypes.c_int, ctypes.c_double,
-                                             ctypes.c_int, ctypes.c_int,
+        lib_ss.python_interface.argstypes = [float64_array,
+                                             float64_array,
+                                             float64_array,
+                                             float64_array,
+                                             ctypes.c_int,
+                                             ctypes.c_int,
+                                             ctypes.c_double,
+                                             ctypes.c_int,
+                                             ctypes.c_int,
+                                             ctypes.c_int,
                                              ctypes.c_int]
 
-        lib_ss.python_interface(np.ctypeslib.as_ctypes(p),
+        recorded_minima = lib_ss.python_interface(
+                                np.ctypeslib.as_ctypes(p),
                                 np.ctypeslib.as_ctypes(v),
                                 np.ctypeslib.as_ctypes(masses),
+                                np.ctypeslib.as_ctypes(minima),
                                 ctypes.c_int(num_bodies),
                                 ctypes.c_int(steps),
                                 ctypes.c_double(dt),
                                 ctypes.c_int(skip_saving),
+                                ctypes.c_int(perihelion_minima),
                                 ctypes.c_int(integration_alg),
                                 ctypes.c_int(acceleration_alg))
 
@@ -172,6 +184,9 @@ class SolarSystem:
         time_spent = post - pre
         if not silent:
             print "Time spent (C): %g" % time_spent
+        if perihelion_minima != 0:
+            minima = minima[:recorded_minima].copy()
+            return p, v, minima
         return p, v
 
     @staticmethod

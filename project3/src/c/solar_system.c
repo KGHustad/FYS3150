@@ -49,7 +49,7 @@ void acceleration_relativistic(vec* pos, vec vel, double* masses,
     double x_dist;
     double y_dist;
     double distance, distance_squared, distance_cubed;
-    double v_squared;
+    double l;
     double rel_fac;
     int body;
     for (body = 0; body < num_bodies; body++) {
@@ -60,8 +60,8 @@ void acceleration_relativistic(vec* pos, vec vel, double* masses,
             distance_squared = distance * distance;
             distance_cubed = distance_squared * distance;
 
-            v_squared = vel.x*vel.x + vel.y*vel.y;
-            rel_fac = 1 + (3*v_squared) / (distance_squared*c_squared);
+            l = pos[target_body].x*vel.y - pos[target_body].y*vel.x;
+            rel_fac = 1 + (3*l*l) / (distance_squared*c_squared);
 
             x_acc -= G*masses[body]*x_dist/distance_cubed*rel_fac;
             y_acc -= G*masses[body]*y_dist/distance_cubed*rel_fac;
@@ -136,9 +136,31 @@ void fill_arrays(vec** p, vec** v, double* masses,
     free(acc_buf);
 }
 
+static inline double norm(vec *v) {
+    return sqrt(v->x * v->x + v->y * v->y);
+}
+
 void fill_arrays_every_nth_step(vec** p, vec** v, double* masses,
                                 int num_bodies, long steps, double dt,
-                                integration_func_ptr integration_func, int n) {
+                                integration_func_ptr integration_func, int n,
+                                int *recorded_minima, planet_state* minima) {
+    const int perihelion = *recorded_minima;
+    if (perihelion && num_bodies < 2) {
+        printf("Two bodies are required for there to be a perihelion");
+        exit(1);
+    }
+
+    planet_state prev_prev, prev, curr;
+    const int PERIHELION_BODY = 1;
+    int minima_counter = 0;
+
+    /* initialize planet states */
+    curr.pos = p[0][PERIHELION_BODY];
+    curr.vel = v[0][PERIHELION_BODY];
+    curr.time = 0;
+    curr.dist = norm(&(curr.pos));
+    prev_prev = prev = curr;
+
     int i, j;
     size_t tot_vec_size = sizeof(vec)*num_bodies;
     vec* acc_buf = malloc(tot_vec_size);
@@ -158,11 +180,32 @@ void fill_arrays_every_nth_step(vec** p, vec** v, double* masses,
     memcpy(p_old, p[0], tot_vec_size);
     memcpy(v_old, v[0], tot_vec_size);
 
-    int counter=0;
+    long counter=0;
     for (i = 0; i < steps; i++) {
         for (j = 0; j < n; j++) {
+            counter++;
             (*integration_func)(p_old, v_old, p_new, v_new, acc_buf, masses, dt,
                                 num_bodies);
+
+            if (perihelion) {
+                prev_prev = prev;
+                prev = curr;
+                curr.pos = p_new[PERIHELION_BODY];
+                curr.vel = v_new[PERIHELION_BODY];
+                curr.time = counter*dt;
+                curr.dist = norm(&(curr.pos));
+
+                if (prev_prev.dist > prev.dist && prev.dist < curr.dist) {
+                    if (minima_counter < perihelion) {
+                        minima[minima_counter++] = prev;
+                    } else if (minima_counter++ == perihelion) {
+                        printf("WARNING: Minima buffer is full! "
+                               "Remaining minima will not be recorded.\n");
+                    }
+                }
+            }
+
+
             /* pointer swapping */
             p_tmp = p_old;
             p_old = p_new;
@@ -170,8 +213,6 @@ void fill_arrays_every_nth_step(vec** p, vec** v, double* masses,
             v_tmp = v_old;
             v_old = v_new;
             v_new = v_tmp;
-
-            counter++;
         }
 
         /* save result in array */
@@ -179,7 +220,13 @@ void fill_arrays_every_nth_step(vec** p, vec** v, double* masses,
         memcpy(v[i+1], v_old, tot_vec_size);
     }
 
-    printf("%d iterations (saving every %d-th number)\n", counter, n);
+    printf("%ld iterations (saving every %d-th number)\n", counter, n);
+    if (perihelion) {
+        printf("Found %d minima\n", minima_counter);
+        if (minima_counter < perihelion) {
+            *recorded_minima = minima_counter;
+        }
+    }
 
     free(acc_buf);
     free(p_a);
@@ -187,11 +234,25 @@ void fill_arrays_every_nth_step(vec** p, vec** v, double* masses,
     free(v_a);
     free(v_b);
 }
+/*
+void fill_arrays_perihelion(vec** p, vec** v, double* masses,
+                                int num_bodies, long steps, double dt,
+                                integration_func_ptr integration_func, int n,
+                                planet_state* minima) {
+    //a
+    if (num_bodies < 2) {
+        printf("Two bodies are required for there to be a perihelion");
+        exit(1);
+    }
 
-void python_interface(double* pos_flat, double* vel_flat, double* masses,
-                      int num_bodies, long steps, double dt, int skip_saving,
-                      enum integration_alg chosen_integration_alg,
-                      enum acceleration_alg chosen_acceleration_alg) {
+    f
+}
+*/
+int python_interface(double* pos_flat, double* vel_flat, double* masses,
+                     double* minima_flat, int num_bodies, long steps,
+                     double dt, int skip_saving, int minima_capacity,
+                     enum integration_alg chosen_integration_alg,
+                     enum acceleration_alg chosen_acceleration_alg) {
     /* handle signals */
     signal(SIGINT, exit);
 
@@ -242,13 +303,21 @@ void python_interface(double* pos_flat, double* vel_flat, double* masses,
         v[i] = v_flat + num_bodies*i;
     }
 
+    int perihelion = minima_capacity;
+    planet_state *minima = NULL;
+    if (perihelion) {
+        minima = (planet_state*) minima_flat;
+    }
+
     if (skip_saving) {
         fill_arrays_every_nth_step(p, v, masses, num_bodies, steps, dt,
-                                   integration_func, skip_saving);
+                                   integration_func, skip_saving,
+                                   &perihelion, minima);
     } else {
         fill_arrays(p, v, masses, num_bodies, steps, dt, integration_func);
     }
 
     free(p);
     free(v);
+    return perihelion;
 }
