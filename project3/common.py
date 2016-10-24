@@ -233,19 +233,19 @@ class SolarSystem:
         TestSolarSystem.CreateCelestialObject(0, 0, 0, 0, 1)
         TestSolarSystem.CreateCelestialObject(1, 0, 0, 29.8*0.210805, 3.003e-6)
 
-        P10 = TestSolarSystem.fill_array_c(10, 1)[0]
-        P20 = TestSolarSystem.fill_array_c(20, 1)[0]
-        P40 = TestSolarSystem.fill_array_c(40, 1)[0]
-        P1000 = TestSolarSystem.fill_array_c(1000, 1,)[0]
+        P20FE = TestSolarSystem.fill_array_c(20, 1, int_method=TestSolarSystem.ForwardEuler)[0]
+        P20VV = TestSolarSystem.fill_array_c(20, 1)[0]
+        P100FE = TestSolarSystem.fill_array_c(100, 1, int_method=TestSolarSystem.ForwardEuler)[0]
+        P100VV = TestSolarSystem.fill_array_c(100, 1,)[0]
         plt.axes(aspect = 'equal')
-        plt.plot(P10[:,1,0], P10[:,1,1], "g-")
-        plt.plot(P20[:,1,0], P20[:,1,1], "r-")
-        plt.plot(P40[:,1,0], P40[:,1,1], "b-")
-        plt.plot(P1000[:,1,0], P1000[:,1,1], "k-")
-        plt.plot(P1000[:,0,0], P1000[:,0,1], "yo")
-        plt.axis([-1.5,1.5,-1.5,1.5])
+        plt.plot(P20FE[:,1,0], P20FE[:,1,1], "g-")
+        plt.plot(P20VV[:,1,0], P20VV[:,1,1], "r-")
+        plt.plot(P100FE[:,1,0], P100VV[:,1,1], "b-")
+        plt.plot(P100VV[:,1,0], P100VV[:,1,1], "k-")
+        plt.plot(0,0,"yo")
+        plt.axis([-2,2,-2,2])
         plt.xlabel("AU")
         plt.ylabel("AU")
-        plt.title("Comparing timesteps with Velocity Verlet")
-        plt.legend(["dt=1/10 year","dt=1/20 year","dt=1/40 year","dt=1/1000 year"])
+        plt.title("Comparing timesteps with Velocity Verlet and Forward Euler")
+        plt.legend(["dt=1/20year,FE","dt=1/20 year,VV","dt=1/100 yearFE","dt=1/100 year,VV"])
         plt.show()
