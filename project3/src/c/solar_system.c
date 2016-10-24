@@ -15,6 +15,10 @@ const double G = 4*M_PI*M_PI;
 acceleration_func_ptr acceleration_func;
 
 
+static inline double norm(vec *v) {
+    return sqrt(v->x * v->x + v->y * v->y);
+}
+
 /* acceleration algorithms */
 
 void acceleration_classical(vec* pos, vec vel, double* masses,
@@ -136,10 +140,6 @@ void fill_arrays(vec** p, vec** v, double* masses,
     free(acc_buf);
 }
 
-static inline double norm(vec *v) {
-    return sqrt(v->x * v->x + v->y * v->y);
-}
-
 void fill_arrays_every_nth_step(vec** p, vec** v, double* masses,
                                 int num_bodies, long steps, double dt,
                                 integration_func_ptr integration_func, int n,
@@ -165,6 +165,7 @@ void fill_arrays_every_nth_step(vec** p, vec** v, double* masses,
     size_t tot_vec_size = sizeof(vec)*num_bodies;
     vec* acc_buf = malloc(tot_vec_size);
 
+    /* allocate buffers for current and previous step */
     vec *p_a, *p_b;
     vec *v_a, *v_b;
     p_a = malloc(tot_vec_size);
@@ -234,20 +235,7 @@ void fill_arrays_every_nth_step(vec** p, vec** v, double* masses,
     free(v_a);
     free(v_b);
 }
-/*
-void fill_arrays_perihelion(vec** p, vec** v, double* masses,
-                                int num_bodies, long steps, double dt,
-                                integration_func_ptr integration_func, int n,
-                                planet_state* minima) {
-    //a
-    if (num_bodies < 2) {
-        printf("Two bodies are required for there to be a perihelion");
-        exit(1);
-    }
 
-    f
-}
-*/
 int python_interface(double* pos_flat, double* vel_flat, double* masses,
                      double* minima_flat, int num_bodies, long steps,
                      double dt, int skip_saving, int minima_capacity,
@@ -265,6 +253,10 @@ int python_interface(double* pos_flat, double* vel_flat, double* masses,
 
         case VELOCITY_VERLET:
             integration_func = &velocity_verlet;
+            break;
+
+        case EULER_CROMER:
+            integration_func = &euler_cromer;
             break;
 
         default:
