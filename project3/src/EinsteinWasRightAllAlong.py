@@ -53,6 +53,7 @@ show = args.show
 #time_steps = np.linspace(0, years, N+1)
 dt = years/float(N*skip_saving)
 print "dt = %g" % dt
+radians_to_arcseconds = 360*60*60 /(2*math.pi)
 
 mercurymass = 0.1652e-6
 mercuryspeed = 12.44
@@ -90,17 +91,19 @@ points_einstein, angles_einstein, times_einstein = find_perihelion_alt(minima_ei
 plt.plot(time_steps[indices_newton], angles_newton, 'o-')
 plt.plot(time_steps[indices_einstein], angles_einstein, 'o-')
 """
-plt.plot(times_newton, angles_newton, '-')
-plt.plot(times_einstein, angles_einstein, '-')
+plt.plot(times_newton, angles_newton*radians_to_arcseconds, '-')
+plt.plot(times_einstein, angles_einstein*radians_to_arcseconds, '-')
 
 
 plt.title("Change in perihelion angle over a century\n$\Delta t$ = %g" % dt)
 plt.legend(["Classical Mechanics case", "Relativistic case"], loc="best")
 plt.xlabel("time in years")
-plt.ylabel("angle in radians")
+plt.ylabel("angle in seconds of arc")
+plt.tight_layout()
 plt.savefig("fig/perihelion_%03dyears_dt=%g.pdf" % (years, dt))
 if show:
     plt.show()
+plt.clf()
 
 plt.axes(aspect='equal')
 plt.plot(0,0, "yo")
@@ -114,17 +117,16 @@ if show:
 #"""
 
 try:
-
-    print points_newton[0]
-    print points_newton[-1]
-    print angles_newton[-1]
-    print points_einstein[0]
-    print points_einstein[-1]
-    print angles_einstein[-1]
-    print len(points_newton)
-    print len(points_einstein)
-except :
-    print "*** ERROR"
+    precession_newton = angles_newton[-1]*100/times_newton[-1]
+    precession_newton *= radians_to_arcseconds
+    precession_einstein = angles_einstein[-1]*100/times_einstein[-1]
+    precession_einstein *= radians_to_arcseconds
+    print "Precession per 100 years (Newton):   %g" % (precession_newton)
+    print "Precession per 100 years (Einstein): %g" % (precession_einstein)
+    print "Observed perihelions (Newton):   %d" % len(points_newton)
+    print "Observed perihelions (Einstein): %d" % len(points_einstein)
+except IndexError:
+    print "*** ERROR: No minima (perihelions) found"
     print "Isaac"
     print p_newton[:10,:,:]
     print "Albert"

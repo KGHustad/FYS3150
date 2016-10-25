@@ -24,7 +24,7 @@ solar_system_lib_file=src/c/solar_system.so
 # table_program_opts=--only_table --latex
 # tables = table_non_interacting_rho-max=5.dat
 
-all: report
+all: report solar_system_lib
 
 #solar_system_lib: $(solar_system_lib_file)
 #$(solar_system_lib_file):
@@ -40,6 +40,8 @@ $(report_pdf): $(report_texdoc) $(bibliography)# $(plots) $(tables)
 	bibtex report
 	$(LATEX) $(LATEX_OPTS) $(report_texdoc)
 	$(LATEX) $(LATEX_OPTS) $(report_texdoc)
+reference_test: solar_system_lib
+	python src/EinsteinWasRightAllAlong.py -y 20
 # benchmarks: $(benchmarks)
 # $(benchmarks): $(benchmark_programs) $(solar_system_lib_file) $(util_programs)
 # 	python src/benchmark.py

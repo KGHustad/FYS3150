@@ -56,9 +56,7 @@
 
 \begin{abstract}
 \noindent
-In this report, ...
-
-\textbf{Fill in abstract}
+In this report, we study the motion of planets in the solar system. We find that the solar system is stable, we determine an escape speed for the Earth, and we show that the perihelion precession of Mercury can only be explained with the relativistic laws of gravity.
 \end{abstract}
 
 \vfill
@@ -86,9 +84,7 @@ In this report, ...
 
 In this report, we aim to study the solar system and the motion of celestial bodies in a gravitational field.
 
-
-
-\textbf{Fill in introduction}
+Methods are derived in \ref{sec:methods}, implementation considerations and results are given in \ref{sec:implementation_and_results}, and finally conclusions are drawn in \ref{sec:conclusion}.
 
 
 
@@ -212,12 +208,15 @@ and the Velocity Verlet scheme, \ref{eq:velverlet:pos} - \ref{eq:velverlet:vel} 
 
 
 \subsection{Algorithms}
+\label{subsec:alg}
 
 Before writing up the algorithms, some notation must be introduced.
 $n$ equals the number of celestial bodies in the system.
 The single letter variables $p$, $v$, $p\supnew$, $v\supnew$, $m$ are arrays of length $n$ (the latter being an array of floating-point numbers, and the others being arrays of vectors), while the three letter variables $pos$, $vel$, $acc$, $pos\supnew$, $vel\supnew$, $acc\supnew$ are used to denote a single vector.
 
 To save space, vector arithmetic is not written out.
+
+Also note that \textsc{Acceleration} refers to either of the two acceleration algorithms.
 
 \begin{algorithm}
 \caption{Forward Euler} \label{alg:forward_euler}
@@ -243,13 +242,13 @@ To save space, vector arithmetic is not written out.
     \EndFor
     \For {$i \gets 0, \dots, n-1$}
         \State $a\supnew_{i} \gets $ \textsc{Acceleration}$(p\supnew, v_{i}, m, i, n, dt)$
-        \State $p\supnew_{i} \gets p_{i} + v_{i} \dt$
         \State $v\supnew_{i} \gets v_{i} + \frac{a_{i} + a\supnew_{i}}{2} \dt$
     \EndFor
   \EndProcedure
 \end{algorithmic}
 \end{algorithm}
 
+In addition to Forward Euler and Velocity Verlet, we also implemented Euler-Cromer, algorithm \vref{alg:euler_cromer}.
 \begin{algorithm}
 \caption{Euler-Cromer} \label{alg:euler_cromer}
 \begin{algorithmic}[1]
@@ -262,6 +261,9 @@ To save space, vector arithmetic is not written out.
   \EndProcedure
 \end{algorithmic}
 \end{algorithm}
+
+We see that Forward Euler requires $4n$ vector OPs (i.e. $8n$ FLOPs with vectors of length two) and a single call to the acceleration function, while Velocity Verlet requires $6n$ vector OPS and $3n$ FLOPs, which translates to $15n$ FLOPs, and two calls to the acceleration function. We would then expect Velocity Verlet to require twice the time of Forward Euler.
+
 
 %%% ACCELERATION ALGORITHMS
 \begin{algorithm}
@@ -304,6 +306,12 @@ To save space, vector arithmetic is not written out.
 \end{algorithmic}
 \end{algorithm}
 
+When computing $\norm{p_{\mathrm{target}} \cross vel}$ in algorithm \vref{alg:acceleration_relativistic}, we extend our two-dimensional vectors into three-dimensional space, in which the z-axis becomes zero. This has the consequence of the cross product being zero on the x- and y-axis, which means we only need to take the absolute value of the z-axis to find the norm, but since we're squaring $l$ later, that too can be skipped, so we use
+\begin{equation}
+    l \gets {p_{target}}_{x}\cdot vel_y - {p_{target}}_{y}\cdot vel_x
+\end{equation}
+
+
 
 \section{Implementation and results}\label{sec:implementation_and_results}
 \subsection{Program structure}
@@ -313,11 +321,24 @@ Operating on arrays is also optimal for accessing memory efficiently. Our progra
 
 We have, however, created a single class which contains all of our methods. This design is clearly suboptimal\footnote{as is any object oriented software design}, but at least everything is in the same place and therefore easy to find.
 
+\subsection{Comparing the runtime of the algorithms}
+It is trivial to see that the program runs linearly with the number of time steps and as the square of the number of celestial bodies.
+
+\begin{lstlisting}[basicstyle=\footnotesize, frame=single, label={lst:runtime},caption=Runtime for various combinations of algorithms]
+1.11039 s with    Forward Euler  AND        Classical acc.
+1.60994 s with    Forward Euler  AND     Relativistic acc.
+2.17882 s with  Velocity Verlet  AND        Classical acc.
+3.07383 s with  Velocity Verlet  AND     Relativistic acc.
+\end{lstlisting}
+
+We see from listing \ref{lst:runtime} that Velocity Verlet runs in twice the time of Forward Euler, which is in alignment with the FLOPs derivations made in \vref{subsec:alg}.
+
+
 \subsection{Preservation of centre of mass and linear momentum}
 Our program assumes that the first celestial body added to the system is the Sun, and that it is added at the origin without any speed. When the rest of the bodies are added, the Sun is adjusted so that the centre of mass lies in the origin and the total linear momentum is zero.
 
+Note also that we simplified the initial states by placing all planets along the x-axis at their respective mean distance to the Sun and gave them a velocity along the y-axis equal to the average orbital velocity.
 
-\textbf{we can mention our ajust-sun function and our constant origo center of mass (which we have a print that shows doesn't move from there). idk where it fits tho.}
 
 \subsection{Unit Tests}
 \subsubsection{Integration Stability}
@@ -373,11 +394,17 @@ Relative error in angular momentum over 15 years: -6.105258e-14
 From listing \vref{lst:preservation}, we see that the center of mass does remain in the origin (within machine precision). We also note that the relative error in angular momentum is very small.
 
 \subsection{Three-body system}
-Throwing Jupiter into the party, we can play around with the masses to see the effect on the orbits.
+Throwing Jupiter into the party, we can play around with the masses how a supermassive planet affects the system.
 
 Note that for these simulations, we disable the automatic adjustment of the Sun, as that depends on the other celestial bodies having masses that are several orders of magnitude smaller.
 
-With Jupiter having 10 times its real mass, we see from \vref{fig:jupiter:10times} that the Earth's orbit is slightly affected, deviating from the circular orbit we would expect.
+With Jupiter having 10 times its real mass, we see from \vref{fig:jupiter:10times} that the Earth's orbit is slightly affected, deviating from the circular orbit we would expect. Increasing Jupiter's mass to 1000 times its real mass, we see the sun being pulled out towards Jupiter while the Earth sees highly irregular orbits and at the end being headed straight past the Sun \footnote{If we let the simulation run longer, Earth would receive a massive gravity assist and escape the Solar system}.
+
+\begin{figure}[htb]
+\includegraphics[width=\textwidth]{fig/jupitermass_1.pdf}
+\caption{Jupiter with its ordinary mass}
+\label{fig:jupiter:10times}
+\end{figure}
 
 \begin{figure}[htb]
 \includegraphics[width=\textwidth]{fig/jupitermass_10.pdf}
@@ -389,6 +416,38 @@ With Jupiter having 10 times its real mass, we see from \vref{fig:jupiter:10time
 \includegraphics[width=\textwidth]{fig/jupitermass_1000.pdf}
 \caption{Jupiter with 1000 times its real mass}
 \label{fig:jupiter:1000times}
+\end{figure}
+
+
+\subsection{The full solar system}
+Adding the rest of the planets in the solar system, we can run our simulations for a century, and we see from \vref{fig:solar_system} that the solar system is indeed quite stable.
+
+\begin{figure}[htb]
+\includegraphics[width=\textwidth]{fig/solar_system.pdf}
+\caption{Simulation for all of the planets in the solar system}
+\label{fig:solar_system}
+\end{figure}
+
+
+\subsection{The perihelion precession of Mercury}
+In a system with only the Sun and Mercury, there is a precession in the perihelion which cannot be explained by classical mechanics, but is explained by the relativistic laws of gravity. We therefore simulate such a system using both acceleration algorithms to show how there is a signicant difference between the two in this case. Over 100 years the precession is expected to be 43 arc seconds
+
+Using $\dt=2 \cdot 10^{-8}$, we get the following
+
+\begin{lstlisting}[basicstyle=\footnotesize, frame=single, label={lst:precession},caption=Perihelion precession of Mercury]
+Precession per 100 years (Newton):   -0.0546876
+Precession per 100 years (Einstein): 43.0378
+Observed perihelions (Newton):   415
+Observed perihelions (Einstein): 414
+\end{lstlisting}
+
+It seems that choosing $\dt$ any smaller than $10^{-8}$ yields significant rounding errors. Even with $\dt=2 \cdot 10^{-8}$, a Mercury year is lost in the relativistic case.
+
+
+\begin{figure}[htb]
+\includegraphics[width=\textwidth]{{fig/perihelion_100years_dt=2e-08}.pdf}
+\caption{Perihelion precession of Mercury}
+\label{fig:perihelion}
 \end{figure}
 
 \section{Conclusion}\label{sec:conclusion}

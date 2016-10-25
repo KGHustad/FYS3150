@@ -27,7 +27,7 @@ for key in sorted_bodies:
 
 #p, v = MySolarSystem.fill_array(4, 1E-2, int_method = MySolarSystem.ForwardEuler, acc_method = MySolarSystem.Acc)
 #p, v = MySolarSystem.fill_array(20000, 100, int_method = MySolarSystem.VelocityVerlet, acc_method = MySolarSystem.Acc)
-p, v = MySolarSystem.fill_array_c(int(1e6), 100, int_method = MySolarSystem.VelocityVerlet, acc_method = MySolarSystem.Acc)
+p, v = MySolarSystem.fill_array_c(int(1e3), 100, int_method = MySolarSystem.VelocityVerlet, acc_method = MySolarSystem.Acc, skip_saving=1000)
 
 """
 print "\nInitial values:"
@@ -53,6 +53,7 @@ for i in range(len(masses)+1):
     plt.plot(p[:,i,0], p[:,i,1])
 #plt.axis([-10,10,-10,10])
 plt.title("Solar System simulated over 100 years")
-plt.legend(bodies)
+plt.legend(bodies, loc='best')
+plt.savefig("fig/solar_system.pdf")
 plt.show()
 #"""
