@@ -76,7 +76,7 @@ In this report, ...
 \newcommand{\dx}{{\Delta x}}
 \newcommand{\bigO}{{\mathcal{O}}}
 
-\newcommand{\arrnew}{{_{\mathrm{new}}}}
+\newcommand{\supnew}{^{\mathrm{new}}}
 
 
 
@@ -213,19 +213,97 @@ and the Velocity Verlet scheme, \eqref{eq:velverlet:pos} - \eqref{eq:velverlet:v
 
 
 \subsection{Algorithms}
+
+Before writing up the algorithms, some notation must be introduced.
+$n$ equals the number of celestial bodies in the system.
+The single letter variables $p$, $v$, $p\supnew$, $v\supnew$, $m$ are arrays of length $n$ (the latter being an array of floating-point numbers, and the others being arrays of vectors), while the three letter variables $pos$, $vel$, $acc$, $pos\supnew$, $vel\supnew$, $acc\supnew$ are used to denote a single vector.
+
+To save space, vector arithmetic is not written out.
+
 \begin{algorithm}
 \caption{Forward Euler} \label{alg:forward_euler}
 \begin{algorithmic}[1]
-  \Procedure{ForwardEuler}{$p, v, p\arrnew, v\arrnew, m, \dt, \mathrm{num\_bodies}$}
-
-
-
+  \Procedure{ForwardEuler}{$p, v, p\supnew, v\supnew, m, \dt, n$}
+    \For {$i \gets 0, \dots, n-1$}
+        \State $acc \gets $ \textsc{Acceleration}$(p, v_{i}, m, i, n, dt)$
+        \State $p\supnew_{i} \gets p_{i} + v_{i} \dt$
+        \State $v\supnew_{i} \gets v_{i} + acc \dt$
+    \EndFor
   \EndProcedure
 \end{algorithmic}
 \end{algorithm}
 
+\begin{algorithm}
+\caption{Velocity Verlet} \label{alg:velocity_verlet}
+\begin{algorithmic}[1]
+  \Procedure{VelocityVerlet}{$p, v, p\supnew, v\supnew, m, \dt, n$}
+    \For {$i \gets 0, \dots, n-1$}
+        \State $a_{i} \gets $ \textsc{Acceleration}$(p, v_{i}, m, i, n, \dt)$
+        \State $p\supnew_{i} \gets p_{i} + v_{i} \dt + \half a_{i} \dt^2$
+        %\State $v\supnew_{i} \gets v_{i} + acc \dt$
+    \EndFor
+    \For {$i \gets 0, \dots, n-1$}
+        \State $a\supnew_{i} \gets $ \textsc{Acceleration}$(p\supnew, v_{i}, m, i, n, dt)$
+        \State $p\supnew_{i} \gets p_{i} + v_{i} \dt$
+        \State $v\supnew_{i} \gets v_{i} + \frac{a_{i} + a\supnew_{i}}{2} \dt$
+    \EndFor
+  \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\caption{Euler-Cromer} \label{alg:euler_cromer}
+\begin{algorithmic}[1]
+  \Procedure{EulerCromer}{$p, v, p\supnew, v\supnew, m, \dt, n$}
+    \For {$i \gets 0, \dots, n-1$}
+        \State $acc \gets $ \textsc{Acceleration}$(p, v_{i}, m, i, n, dt)$
+        \State $v\supnew_{i} \gets v_{i} + acc \dt$
+        \State $p\supnew_{i} \gets p_{i} + v\supnew_{i} \dt$
+    \EndFor
+  \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+%%% ACCELERATION ALGORITHMS
+\begin{algorithm}
+\caption{Classical acceleration} \label{alg:acceleration_classical}
+\begin{algorithmic}[1]
+  \Function{ClassicalAcceleration}{$p, vel, m, \mathrm{target}, n, \dt$}
+    \Statex \Comment{Computes the acceleration of target}
+    \State $acc \gets \bf{0}$ \Comment{$\bf{0}$ is the zero vector}
+    \For {$i \gets 0, \dots, n-1$}
+        \If {$i \neq \mathrm{target}$}
+            \State $dist \gets p_{\mathrm{target}} - p_{i}$
+            \State $d \gets \norm{dist}$ \Comment{$d$ is the absolute distance}
+            \State $acc \gets acc - \frac{G m_{i} dist}{d^3}$
+        \EndIf
+    \EndFor
+    \State \textbf{return} $acc$
+  \EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\caption{Relativistic acceleration} \label{alg:acceleration_relativistic}
+\begin{algorithmic}[1]
+  \Function{RelativisticAcceleration}{$p, vel, m, \mathrm{target}, n, \dt$}
+    \Statex \Comment{Computes the acceleration of target}
+    \State $acc \gets \bf{0}$ \Comment{$\bf{0}$ is the zero vector}
+    \For {$i \gets 0, \dots, n-1$}
+        \If {$i \neq \mathrm{target}$}
+            \State $dist \gets p_{\mathrm{target}} - p_{i}$
+            \State $d \gets \norm{dist}$ \Comment{$d$ is the absolute distance}
+
+            \State $l \gets \norm{p_{\mathrm{target}} \cross vel}$
 
 
+            \State $acc \gets acc - \frac{G m_{i} dist}{d^3} \left[1 + \frac{3l^2}{d^2c^2}\right]$
+        \EndIf
+    \EndFor
+    \State \textbf{return} $acc$
+  \EndFunction
+\end{algorithmic}
+\end{algorithm}
 
 
 \section{Implementation and results}\label{sec:implementation_and_results}
@@ -234,20 +312,32 @@ Since we are of the opinion that an object oriented program structure generally 
 
 Operating on arrays is also optimal for accessing memory efficiently. Our program has two backends for carrying out the computations. One is done in Python with use of numpy's array arithmetic where possible, and the other is done in C.
 
-We have, however, created a \textbf{make terrible OO Python program}
+We have, however, created a single class which contains all of our methods. This design is clearly suboptimal\footnote{as is any object oriented software design}, but at least everything is in the same place and therefore easy to find.
+
+\subsection{Preservation of centre of mass and linear momentum}
+Our program assumes that the first celestial body added to the system is the Sun, and that it is added at the origin without any speed. When the rest of the bodies are added, the Sun is adjusted so that the centre of mass lies in the origin and the total linear momentum is zero.
+
 \\
 \textbf{we can mention our ajust-sun function and our constant origo center of mass (which we have a print that shows doesn't move from there). idk where it fits tho.}
 \\
 \subsection{Unit Tests}
 \subsubsection{Integration Stability}
 We see that with the great Velocity Verlet integration method, the orbits quickly converge into a correct eliptical shape at timesteps as large as $\frac{1}{100}$ of a year, while the Forward Euler algorithm is just terrible. Our code uses Velocity Verlet, and timesteps several orders of magnitude smaller than used in this test, so we should expect rather accurate results.\\
-\textbf{dt test plot thingy}
+
+
+\begin{figure}[ht]
+\includegraphics[width=\textwidth]{fig/timestep_test.pdf}
+\caption{Comparing Forward Euler and Velocity Verlet with the same time steps for an Earth-Sun system}
+\label{fig:timestep_test}
+\end{figure}
+
+
 \subsubsection{Escape Velocity}
 The analytical escape velocity at a distance $r$ from an object with mass $M$ is given as $\sqrt{\frac{2GM}{r}}$. Inserting the mass of the sun(1 Solar Mass), and the Earth-Sun distance(1 AU), we arrive at the escape velocity
 \begin{equation}
 v_{esc} = \sqrt{\frac{2\cdot 4\pi^2 \cdot 1}{1}} = \sqrt{8}\pi = 2.8284\pi AU/year
 \end{equation}
-\bftext{Insert escape velocity graphic and talk about how it matches analytical results.}
+\textbf{Insert escape velocity graphic and talk about how it matches analytical results.}
 \subsubsection{Conservation of Energy and Angular Momentum}
 Because we have an isolated system without external forces, we expect the total mechanical energy and angular momentum of the system to be conserved. In addition, if the planets orbit is circular, we expect the kinetic and potential energy to be respectively conserved. This is because the gravitational force from the sun always stays orthogonal on the planets velocity, meaning no work is done on the planet, and potential and kinetic energy stays unchanged.\\
 \textbf{insert the two plots showing energy in the eliptical and spherical orbits(velocities are 2pi and 2.5pi. should prolly say that somewhere)}\\

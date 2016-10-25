@@ -236,16 +236,17 @@ class SolarSystem:
         P20FE = TestSolarSystem.fill_array_c(20, 1, int_method=TestSolarSystem.ForwardEuler)[0]
         P20VV = TestSolarSystem.fill_array_c(20, 1)[0]
         P100FE = TestSolarSystem.fill_array_c(100, 1, int_method=TestSolarSystem.ForwardEuler)[0]
-        P100VV = TestSolarSystem.fill_array_c(100, 1,)[0]
+        P100VV = TestSolarSystem.fill_array_c(100, 1)[0]
         plt.axes(aspect = 'equal')
-        plt.plot(P20FE[:,1,0], P20FE[:,1,1], "g-")
-        plt.plot(P20VV[:,1,0], P20VV[:,1,1], "r-")
-        plt.plot(P100FE[:,1,0], P100VV[:,1,1], "b-")
+        plt.plot(P20FE[:,1,0],  P20FE[:,1,1], "g-")
+        plt.plot(P20VV[:,1,0],  P20VV[:,1,1], "r-")
+        plt.plot(P100FE[:,1,0], P100FE[:,1,1], "b-")
         plt.plot(P100VV[:,1,0], P100VV[:,1,1], "k-")
         plt.plot(0,0,"yo")
         plt.axis([-2,2,-2,2])
         plt.xlabel("AU")
         plt.ylabel("AU")
-        plt.title("Comparing timesteps with Velocity Verlet and Forward Euler")
-        plt.legend(["dt=1/20year,FE","dt=1/20 year,VV","dt=1/100 yearFE","dt=1/100 year,VV"])
+        #plt.title("Comparing timesteps with Velocity Verlet and Forward Euler")
+        plt.legend(["dt=1/20year,FE","dt=1/20 year,VV","dt=1/100 year,FE","dt=1/100 year,VV"], loc='best')
+        plt.savefig("fig/timestep_test.pdf")
         plt.show()
