@@ -21,7 +21,7 @@
 \labelformat{section}{section~#1}
 \labelformat{subsection}{section~#1}
 \labelformat{subsubsection}{paragraph~#1}
-\labelformat{equation}{#1}
+\labelformat{equation}{(#1)}
 \labelformat{figure}{figure~#1}
 \labelformat{table}{table~#1}
 
@@ -92,7 +92,6 @@ In this report, we aim to study the solar system and the motion of celestial bod
 
 
 
-
 \section{Discussion of methods}\label{sec:methods}
 Newton's law of universal gravitation dictate that, for two celestial bodies, $\alpha$ and $\beta$, the force of attraction between the two is given by
 \begin{equation}
@@ -111,7 +110,7 @@ Here $v_{\alpha}$ is the velocity of $\alpha$ relative to the system's center of
 r_{\alpha \leftrightarrow \beta} = \norm{ \vec{x}_{\alpha} - \vec{x}_{\beta} }
 \end{equation}
 
-\eqref{eq:grav:newton} can be adjusted to account for Einstein's theory of relativity, yielding
+\ref{eq:grav:newton} can be adjusted to account for Einstein's theory of relativity, yielding
 \begin{equation}
 F_G
 =\frac{Gm_{\beta}m_{\alpha}}{r_{\alpha \leftrightarrow \beta}^2}
@@ -121,7 +120,7 @@ F_G
 
 where $l = \norm{\vec{x} \times \vec{v}}$
 
-We will study both the Newton's equation, \eqref{eq:grav:newton}, from classical mechanics and its relativistic revision, \eqref{eq:grav:einstein}. For the sake of simplicity, we will limit ourselves to solving these equations in two dimensions.
+We will study both the Newton's equation, \ref{eq:grav:newton}, from classical mechanics and its relativistic revision, \ref{eq:grav:einstein}. For the sake of simplicity, we will limit ourselves to solving these equations in two dimensions.
 
 
 
@@ -132,7 +131,7 @@ To determine the motion of a celestial body, $\alpha$, we need to solve the foll
 \end{align}
 where $m_{\alpha}$ is the mass of $\alpha$.\\
 
-We know the initial positions $\vec{x}$ and speeds $\vec{v}$ of all celestial bodies. By combining that information with \eqref{eq:acc:x} - \eqref{eq:acc:y}, we can solve the system, but first we need a numerical method!
+We know the initial positions $\vec{x}$ and speeds $\vec{v}$ of all celestial bodies. By combining that information with \ref{eq:acc:x} - \ref{eq:acc:y}, we can solve the system, but first we need a numerical method!
 
 
 
@@ -147,7 +146,7 @@ We will use the following Taylor expansions of $x$ and $v$ around $t$ to derive 
 \end{align}
 
 \subsection{Forward Euler}
-Using the two leading terms of \eqref{eq:taylor:pos2} and \eqref{eq:taylor:vel2} and setting $\dt = h$, we obtain
+Using the two leading terms of \ref{eq:taylor:pos2} and \ref{eq:taylor:vel2} and setting $\dt = h$, we obtain
 
 \begin{align}
     \vec{x}(t + \dt) &= \vec{x}(t) + \vec{v}(t)\dt  \label{eq:forwardeuler:pos} \\
@@ -161,7 +160,7 @@ By using a forward difference, we can approximate $a'(t)$ as
     a'(t) \approx \frac{a(t+h) - a(t)}{h} \label{eq:diffacc:approx}
 \end{align}
 
-Inserting \eqref{eq:diffacc:approx} into \eqref{eq:taylor:vel2} and introducing $\dt = h$, we arrive at
+Inserting \ref{eq:diffacc:approx} into \ref{eq:taylor:vel2} and introducing $\dt = h$, we arrive at
 
 \begin{align}
 \vec{x}(t + \dt) &= \vec{x}(t) + \vec{v}(t)\dt + \half \vec{a}(t) \dt^2 \label{eq:velverlet:pos} \\
@@ -170,7 +169,7 @@ Inserting \eqref{eq:diffacc:approx} into \eqref{eq:taylor:vel2} and introducing 
 
 \subsection{Adapting the methods to motion in a gravitational field}
 
-We need to choose a way to approximate $a(t + \dt)$ in \eqref{eq:velverlet:vel}. Since we are dealing only with gravitational forces, the acceleration in the classical case depends only on the position, so we use \eqref{eq:velverlet:pos} to find $a(t + \dt)$, and then we can use \eqref{eq:velverlet:vel}.
+We need to choose a way to approximate $a(t + \dt)$ in \ref{eq:velverlet:vel}. Since we are dealing only with gravitational forces, the acceleration in the classical case depends only on the position, so we use \ref{eq:velverlet:pos} to find $a(t + \dt)$, and then we can use \ref{eq:velverlet:vel}.
 
 With the relativistic case, however, the acceleration also depends on the velocity. We will just cheat a bit here and use $\vec{v}(t)$ instead of $\vec{v}(t + \dt)$.
 
@@ -178,14 +177,14 @@ With the relativistic case, however, the acceleration also depends on the veloci
 \subsection{Discretization}
 In astronomy, one usually deals with astronomical units, with the unit distance being the mean radius of Earth's orbit around the Sun and the unit time being a year. We will study the system for a period of $T$ years, and values of $t \in [0, T]$. We write $\vec{x}(i \dt)$ as $x_i$, where $x_i$ is a vector of length two, and likewise for velocity and acceleration.
 
-We discretize the Forward Euler scheme, \eqref{eq:forwardeuler:pos} - \eqref{eq:forwardeuler:vel}, as
+We discretize the Forward Euler scheme, \ref{eq:forwardeuler:pos} - \ref{eq:forwardeuler:vel}, as
 
 \begin{align}
     x_{i+1} &= x_{i} + v_{i}\dt \\
     v_{i+1} &= v_{i} + a_{i}\dt
 \end{align}
 
-and the Velocity Verlet scheme, \eqref{eq:velverlet:pos} - \eqref{eq:velverlet:vel} as
+and the Velocity Verlet scheme, \ref{eq:velverlet:pos} - \ref{eq:velverlet:vel} as
 
 \begin{align}
     x_{i+1} &= x_{i} + v_{i}\dt + a_{i} \frac{\dt^2}{2} \\
@@ -317,12 +316,12 @@ We have, however, created a single class which contains all of our methods. This
 \subsection{Preservation of centre of mass and linear momentum}
 Our program assumes that the first celestial body added to the system is the Sun, and that it is added at the origin without any speed. When the rest of the bodies are added, the Sun is adjusted so that the centre of mass lies in the origin and the total linear momentum is zero.
 
-\\
+
 \textbf{we can mention our ajust-sun function and our constant origo center of mass (which we have a print that shows doesn't move from there). idk where it fits tho.}
-\\
+
 \subsection{Unit Tests}
 \subsubsection{Integration Stability}
-We see that with the great Velocity Verlet integration method, the orbits quickly converge into a correct eliptical shape at timesteps as large as $\frac{1}{100}$ of a year, while the Forward Euler algorithm is just terrible. Our code uses Velocity Verlet, and timesteps several orders of magnitude smaller than used in this test, so we should expect rather accurate results.\\
+From \vref{fig:timestep_test} we see that with the great Velocity Verlet integration method, the orbits quickly converge into a correct eliptical shape at timesteps as large as $\frac{1}{100}$ of a year, while the Forward Euler algorithm is just terrible. Our code uses Velocity Verlet, and timesteps several orders of magnitude smaller than used in this test, so we should expect rather accurate results.\\
 
 
 \begin{figure}[ht]
@@ -335,13 +334,62 @@ We see that with the great Velocity Verlet integration method, the orbits quickl
 \subsubsection{Escape Velocity}
 The analytical escape velocity at a distance $r$ from an object with mass $M$ is given as $\sqrt{\frac{2GM}{r}}$. Inserting the mass of the sun(1 Solar Mass), and the Earth-Sun distance(1 AU), we arrive at the escape velocity
 \begin{equation}
-v_{esc} = \sqrt{\frac{2\cdot 4\pi^2 \cdot 1}{1}} = \sqrt{8}\pi = 2.8284\pi AU/year
+v_{\mathrm{esc}} = \sqrt{\frac{2\cdot 4\pi^2 \cdot 1}{1}} = \sqrt{8}\pi = 2.8284\pi \mathrm{AU}/\mathrm{year} \label{eq:escape_velocity}
 \end{equation}
-\textbf{Insert escape velocity graphic and talk about how it matches analytical results.}
+
+\begin{figure}[ht]
+\includegraphics[width=\textwidth]{fig/escape_velocity.pdf}
+\caption{Planets 1-3 stay in orbit, while planet 4 escapes the solar system.}
+\label{fig:escape_velocity}
+\end{figure}
+
+From \vref{fig:escape_velocity}, we see that the escape velocity of the Earth, $v_{\mathrm{esc}} \in (2.8\pi, 2.85\pi)$, which is in alignment with \ref{eq:escape_velocity}
+
+
 \subsubsection{Conservation of Energy and Angular Momentum}
-Because we have an isolated system without external forces, we expect the total mechanical energy and angular momentum of the system to be conserved. In addition, if the planets orbit is circular, we expect the kinetic and potential energy to be respectively conserved. This is because the gravitational force from the sun always stays orthogonal on the planets velocity, meaning no work is done on the planet, and potential and kinetic energy stays unchanged.\\
-\textbf{insert the two plots showing energy in the eliptical and spherical orbits(velocities are 2pi and 2.5pi. should prolly say that somewhere)}\\
-\textbf{we have a print showing the low relative error in angular momentum. we also have a plot, but it's kinda boring, but use it if you want. it shows the angular momentum is conserved.}
+Because we have an isolated system without external forces, we expect the total mechanical energy and angular momentum of the system to be conserved. In addition, if the planets orbit is circular, we expect the kinetic and potential energy to be respectively conserved. This is because the gravitational force from the sun always stays orthogonal on the planets velocity, meaning no work is done on the planet, and potential and kinetic energy stays unchanged.
+
+\begin{figure}[ht]
+\includegraphics[width=\textwidth]{fig/energy_conservation_v=2pi.pdf}
+\caption{Energy conservation with $v = 2\pi$}
+\label{fig:energy_conservation_circular}
+\end{figure}
+
+\begin{figure}[htb]
+\includegraphics[width=\textwidth]{{fig/energy_conservation_v=2.5pi}.pdf}
+\caption{Energy conservation with $v = 2.5\pi$}
+\label{fig:energy_conservation_elliptical}
+\end{figure}
+
+From \vref{fig:energy_conservation_circular} and \vref{fig:energy_conservation_elliptical}, we see that the energy is indeed conserved.
+
+\begin{lstlisting}[basicstyle=\footnotesize, frame=single, label={lst:preservation},caption=Preservation of center of mass and angular momentum]
+Center of mass at beginning of simulation, and after 15 years:
+[ 0.  0.]
+[ -3.58083178e-18  -8.47472594e-19]
+Relative error in angular momentum over 15 years: -6.105258e-14
+\end{lstlisting}
+
+From listing \vref{lst:preservation}, we see that the center of mass does remain in the origin (within machine precision). We also note that the relative error in angular momentum is very small.
+
+\subsection{Three-body system}
+Throwing Jupiter into the party, we can play around with the masses to see the effect on the orbits.
+
+Note that for these simulations, we disable the automatic adjustment of the Sun, as that depends on the other celestial bodies having masses that are several orders of magnitude smaller.
+
+With Jupiter having 10 times its real mass, we see from \vref{fig:jupiter:10times} that the Earth's orbit is slightly affected, deviating from the circular orbit we would expect.
+
+\begin{figure}[htb]
+\includegraphics[width=\textwidth]{fig/jupitermass_10.pdf}
+\caption{Jupiter with 10 times its real mass}
+\label{fig:jupiter:10times}
+\end{figure}
+
+\begin{figure}[htb]
+\includegraphics[width=\textwidth]{fig/jupitermass_1000.pdf}
+\caption{Jupiter with 1000 times its real mass}
+\label{fig:jupiter:1000times}
+\end{figure}
 
 \section{Conclusion}\label{sec:conclusion}
 We have shown the extreme precision of the Velocity Verlet algorithm in regard to position-dependent forces, far outranking the Forward Euler method.
