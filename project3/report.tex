@@ -80,7 +80,7 @@ In this report, we study the motion of planets in the solar system. We find that
 
 \section{Introduction}\label{sec:intro}
 %\subsection*{Description of the nature of the problem}
-\cite{mhj_lecture_notes} % must cite something to avoid compilation error when using bibtex
+%\cite{mhj_lecture_notes} % must cite something to avoid compilation error when using bibtex
 
 In this report, we aim to study the solar system and the motion of celestial bodies in a gravitational field.
 
@@ -398,12 +398,13 @@ Throwing Jupiter into the party, we can play around with the masses how a superm
 
 Note that for these simulations, we disable the automatic adjustment of the Sun, as that depends on the other celestial bodies having masses that are several orders of magnitude smaller.
 
+With Jupiter having its real mass, the system is nice and stable, as we see in \vref{fig:jupiter}. Earth's orbit looks very circular.
 With Jupiter having 10 times its real mass, we see from \vref{fig:jupiter:10times} that the Earth's orbit is slightly affected, deviating from the circular orbit we would expect. Increasing Jupiter's mass to 1000 times its real mass, we see the sun being pulled out towards Jupiter while the Earth sees highly irregular orbits and at the end being headed straight past the Sun \footnote{If we let the simulation run longer, Earth would receive a massive gravity assist and escape the Solar system}.
 
 \begin{figure}[htb]
 \includegraphics[width=\textwidth]{fig/jupitermass_1.pdf}
 \caption{Jupiter with its ordinary mass}
-\label{fig:jupiter:10times}
+\label{fig:jupiter}
 \end{figure}
 
 \begin{figure}[htb]
@@ -430,7 +431,7 @@ Adding the rest of the planets in the solar system, we can run our simulations f
 
 
 \subsection{The perihelion precession of Mercury}
-In a system with only the Sun and Mercury, there is a precession in the perihelion which cannot be explained by classical mechanics, but is explained by the relativistic laws of gravity. We therefore simulate such a system using both acceleration algorithms to show how there is a signicant difference between the two in this case. Over 100 years the precession is expected to be 43 arc seconds
+In a system with only the Sun and Mercury, there is a precession in the perihelion which cannot be explained by classical mechanics, but is explained by the relativistic laws of gravity. We therefore simulate such a system using both acceleration algorithms to show how there is a signicant difference between the two in this case. According to \cite{fys3150_project3}, over the span of a century, the precession is expected to be 43 arc seconds
 
 Using $\dt=2 \cdot 10^{-8}$, we get the following
 
@@ -440,6 +441,8 @@ Precession per 100 years (Einstein): 43.0378
 Observed perihelions (Newton):   415
 Observed perihelions (Einstein): 414
 \end{lstlisting}
+
+We see that with classical acceleration, the precession of the perihelion is negligible, while with relativistic acceleration, we see a precession of about 43 arc seconds per century, as expected.
 
 It seems that choosing $\dt$ any smaller than $10^{-8}$ yields significant rounding errors. Even with $\dt=2 \cdot 10^{-8}$, a Mercury year is lost in the relativistic case.
 
