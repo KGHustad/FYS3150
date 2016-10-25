@@ -190,45 +190,56 @@ class SolarSystem:
         return p, v
 
     @staticmethod
-    def EnergyConservation_test():
-        TestSolarSystem = SolarSystem()
-        TestSolarSystem.CreateCelestialObject(0, 0, 0, 0, 1)
-        TestSolarSystem.CreateCelestialObject(1, 0, 0, 2*np.pi, 3.003e-6)
+    def EnergyConservation_test(show=False):
+        cases = [(2, "circular"), (2.5, "elliptical")]
+        for vel_fac, shape in cases:
+            TestSolarSystem = SolarSystem()
+            TestSolarSystem.CreateCelestialObject(0, 0, 0, 0, 1)
+            TestSolarSystem.CreateCelestialObject(1, 0, 0, vel_fac*np.pi,
+                                                  3.003e-6)
 
-        P, V = TestSolarSystem.fill_array_c(int(1e6), 15)
-        t = np.linspace(0,15,int(1e6)+1)
-        KineticEnergyEarth = 0.5*TestSolarSystem.ObjectMasses[1] * (V[:,1,0]**2 + V[:,1,1]**2) #SolarMasses*AU**2/yr**2
-        KineticEnergySun = 0.5*TestSolarSystem.ObjectMasses[0] * (V[:,0,0]**2 + V[:,0,1]**2)
-        KineticEnergy = KineticEnergySun + KineticEnergyEarth
+            P, V = TestSolarSystem.fill_array_c(int(1e6), 15)
+            t = np.linspace(0,15,int(1e6)+1)
+            KineticEnergyEarth = 0.5*TestSolarSystem.ObjectMasses[1] * (V[:,1,0]**2 + V[:,1,1]**2) #SolarMasses*AU**2/yr**2
+            KineticEnergySun = 0.5*TestSolarSystem.ObjectMasses[0] * (V[:,0,0]**2 + V[:,0,1]**2)
+            KineticEnergy = KineticEnergySun + KineticEnergyEarth
 
-        CenterOfMass = P[:,0,:]*TestSolarSystem.ObjectMasses[0] + P[:,1,:]*TestSolarSystem.ObjectMasses[1]
-        distance = np.sqrt( (P[:,1,0] - P[:,0,0])**2 + (P[:,0,1] - P[:,1,1])**2 )
-        PotentialEnergy = -G*TestSolarSystem.ObjectMasses[0]*TestSolarSystem.ObjectMasses[1]/distance
+            CenterOfMass = P[:,0,:]*TestSolarSystem.ObjectMasses[0] + P[:,1,:]*TestSolarSystem.ObjectMasses[1]
+            distance = np.sqrt( (P[:,1,0] - P[:,0,0])**2 + (P[:,0,1] - P[:,1,1])**2 )
+            PotentialEnergy = -G*TestSolarSystem.ObjectMasses[0]*TestSolarSystem.ObjectMasses[1]/distance
 
-        plt.plot(t, KineticEnergy)
-        plt.plot(t, PotentialEnergy)
-        plt.plot(t, KineticEnergy+PotentialEnergy)
-        plt.axis([0,15,-1.5e-4,1.5e-4])
-        plt.title("Energy of circular Planet-Sun system over 15 years")
-        plt.legend(["Kinetic Energy","Potential Energy","Total Energy"])
-        plt.xlabel("time in years")
-        plt.ylabel("energy in SolarMasses*AU^2/Year^2")
-        plt.show()
+            plt.plot(t, KineticEnergy)
+            plt.plot(t, PotentialEnergy)
+            plt.plot(t, KineticEnergy+PotentialEnergy)
+            plt.axis([0,15,-1.5e-4,1.5e-4])
+            plt.title("Energy of %s Planet-Sun system over 15 years" % shape)
+            plt.legend(["Kinetic Energy","Potential Energy","Total Energy"])
+            plt.xlabel("time in years")
+            plt.ylabel("energy in SolarMasses*AU^2/Year^2")
+            plt.tight_layout()
+            plt.savefig("fig/energy_conservation_v=%gpi.pdf" % vel_fac)
+            if show:
+                plt.show()
+            plt.clf()
 
-        print "Center of mass at beginning of simulation, and after 15 years:"
-        print CenterOfMass[0], "\n", CenterOfMass[-1]
+            print "Center of mass at beginning of simulation, and after 15 years:"
+            print CenterOfMass[0], "\n", CenterOfMass[-1]
 
-        AngularMomentum = TestSolarSystem.ObjectMasses[1]*np.cross(P[:,1], V[:,1])
-        plt.plot(t, AngularMomentum)
-        plt.title("Angular Momentum of Planet over 15 years")
-        plt.xlabel("time in years")
-        plt.ylabel("Angular Momentum")
-        print "Relative error in angular momentum over 15 years: %e" % (( np.min(AngularMomentum) - np.max(AngularMomentum) ) / np.min(AngularMomentum))
-        plt.axis([0,15,0,4e-5])
-        plt.show()
+            AngularMomentum = TestSolarSystem.ObjectMasses[1]*np.cross(P[:,1], V[:,1])
+            plt.plot(t, AngularMomentum)
+            plt.title("Angular Momentum of Planet over 15 years")
+            plt.xlabel("time in years")
+            plt.ylabel("Angular Momentum")
+            print "Relative error in angular momentum over 15 years: %e" % (( np.min(AngularMomentum) - np.max(AngularMomentum) ) / np.min(AngularMomentum))
+            plt.axis([0,15,0,4e-5])
+            plt.tight_layout()
+            plt.savefig("fig/angular_momentum_v=%gpi.pdf" % vel_fac)
+            if show:
+                plt.show()
+            plt.clf()
 
     @staticmethod
-    def TimeStep_test():
+    def TimeStep_test(show=False):
         TestSolarSystem = SolarSystem()
         TestSolarSystem.CreateCelestialObject(0, 0, 0, 0, 1)
         TestSolarSystem.CreateCelestialObject(1, 0, 0, 29.8*0.210805, 3.003e-6)
@@ -249,4 +260,6 @@ class SolarSystem:
         #plt.title("Comparing timesteps with Velocity Verlet and Forward Euler")
         plt.legend(["dt=1/20year,FE","dt=1/20 year,VV","dt=1/100 year,FE","dt=1/100 year,VV"], loc='best')
         plt.savefig("fig/timestep_test.pdf")
-        plt.show()
+        if show:
+            plt.show()
+        plt.clf()
