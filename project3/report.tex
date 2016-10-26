@@ -82,7 +82,7 @@ In this report, we study the motion of planets in the solar system. We find that
 %\subsection*{Description of the nature of the problem}
 %\cite{mhj_lecture_notes} % must cite something to avoid compilation error when using bibtex
 
-In this report, we aim to study the solar system and the motion of celestial bodies in a gravitational field.
+We aim to study the solar system and the motion of celestial bodies in a gravitational field. We will look at different numerical method of integration, finding the one best suited for our problem by looking at their accuracy and run-time. By simulating different Solar Systems over time, we will hopefully gain some insight into the behavior and stability of different many-body systems.
 
 Methods are derived in \ref{sec:methods}, implementation considerations and results are given in \ref{sec:implementation_and_results}, and finally conclusions are drawn in \ref{sec:conclusion}.
 
@@ -337,23 +337,23 @@ We see from listing \ref{lst:runtime} that Velocity Verlet runs in twice the tim
 \subsection{Preservation of centre of mass and linear momentum}
 Our program assumes that the first celestial body added to the system is the Sun, and that it is added at the origin without any speed. When the rest of the bodies are added, the Sun is adjusted so that the centre of mass lies in the origin and the total linear momentum is zero.
 
-Note also that we simplified the initial states by placing all planets along the x-axis at their respective mean distance to the Sun and gave them a velocity along the y-axis equal to the average orbital velocity.
+Note also that we simplified the initial states by placing all planets along the x-axis at their respective mean distance to the Sun and gave them a velocity along the y-axis equal to the average orbital velocity. Considering that the orbits of the planets are almost planar, this simplification shouldn't impact the results we are looking for.
 
 
 \subsection{Unit Tests}
 \subsubsection{Integration Stability}
-From \vref{fig:timestep_test} we see that with the great Velocity Verlet integration method, the orbits quickly converge into a correct eliptical shape at timesteps as large as $\frac{1}{100}$ of a year, while the Forward Euler algorithm is just terrible. Our code uses Velocity Verlet, and timesteps several orders of magnitude smaller than used in this test, so we should expect rather accurate results.\\
+From \vref{fig:timestep_test} we see that with the Velocity Verlet integration method, the orbits quickly converge into a correct eliptical shape at timesteps as large as $\frac{1}{100}$ of a year, while the Forward Euler algorithm is just terrible. Our code uses Velocity Verlet, and timesteps many orders of magnitude smaller than used in this test, so we should expect rather accurate results.\\
 
 
 \begin{figure}[ht]
 \includegraphics[width=\textwidth]{fig/timestep_test.pdf}
-\caption{Comparing Forward Euler and Velocity Verlet with the same time steps for an Earth-Sun system}
+\caption{Comparing Forward Euler and Velocity Verlet with the same time steps for an Earth-Sun system over a year}
 \label{fig:timestep_test}
 \end{figure}
 
 
 \subsubsection{Escape Velocity}
-The analytical escape velocity at a distance $r$ from an object with mass $M$ is given as $\sqrt{\frac{2GM}{r}}$. Inserting the mass of the sun(1 Solar Mass), and the Earth-Sun distance(1 AU), we arrive at the escape velocity
+The analytical escape velocity at a distance $r$ from an object with a mass $M$, is given as $\sqrt{\frac{2GM}{r}}$. Inserting the mass of the sun(1 Solar Mass), and the Earth-Sun distance(1 AU), we arrive at the escape velocity
 \begin{equation}
 v_{\mathrm{esc}} = \sqrt{\frac{2\cdot 4\pi^2 \cdot 1}{1}} = \sqrt{8}\pi = 2.8284\pi \mathrm{AU}/\mathrm{year} \label{eq:escape_velocity}
 \end{equation}
@@ -368,7 +368,7 @@ From \vref{fig:escape_velocity}, we see that the escape velocity of the Earth, $
 
 
 \subsubsection{Conservation of Energy and Angular Momentum}
-Because we have an isolated system without external forces, we expect the total mechanical energy and angular momentum of the system to be conserved. In addition, if the planets orbit is circular, we expect the kinetic and potential energy to be respectively conserved. This is because the gravitational force from the sun always stays orthogonal on the planets velocity, meaning no work is done on the planet, and potential and kinetic energy stays unchanged.
+Because we have an isolated system without external forces, we expect the total mechanical energy and angular momentum of the system to be conserved. In addition, if the orbit of our planet is circular, we expect the kinetic and potential energy to be respectively conserved. This is because the gravitational force from the sun always stays orthogonal on the planets velocity, meaning no work is done on the planet, and potential and kinetic energy stays unchanged.
 
 \begin{figure}[ht]
 \includegraphics[width=\textwidth]{fig/energy_conservation_v=2pi.pdf}
@@ -399,7 +399,7 @@ Throwing Jupiter into the party, we can play around with the masses how a superm
 Note that for these simulations, we disable the automatic adjustment of the Sun, as that depends on the other celestial bodies having masses that are several orders of magnitude smaller.
 
 With Jupiter having its real mass, the system is nice and stable, as we see in \vref{fig:jupiter}. Earth's orbit looks very circular.
-With Jupiter having 10 times its real mass, we see from \vref{fig:jupiter:10times} that the Earth's orbit is slightly affected, deviating from the circular orbit we would expect. Increasing Jupiter's mass to 1000 times its real mass, we see the sun being pulled out towards Jupiter while the Earth sees highly irregular orbits and at the end being headed straight past the Sun \footnote{If we let the simulation run longer, Earth would receive a massive gravity assist and escape the Solar system}.
+With Jupiter having 10 times its real mass, we see from \vref{fig:jupiter:10times} that the Earth's orbit is slightly affected, deviating from the circular orbit we would expect. Increasing Jupiter's mass to 1000 times its real mass, making it comparable to the sun's mass, we see that the Sun and Jupiter starts orbiting each other. The Earth sees a highly unstable orbit, and at the end being headed straight past the Sun \footnote{If we let the simulation run longer, Earth would receive a massive gravity assist and escape the Solar system}. This illustrates that a Solar System with two domminant masses is much more chaotic than an ordinary case.
 
 \begin{figure}[htb]
 \includegraphics[width=\textwidth]{fig/jupitermass_1.pdf}
@@ -454,9 +454,7 @@ It seems that choosing $\dt$ any smaller than $10^{-8}$ yields significant round
 \end{figure}
 
 \section{Conclusion}\label{sec:conclusion}
-We have shown the extreme precision of the Velocity Verlet algorithm in regard to position-dependent forces, far outranking the Forward Euler method.
-We then observed that the precession of Mercurys perhelion can only be accurately explained with the introduction of general relativity.
-We have observed the large stability of ordinary planitary orbits, and increadible unstability of a planitary system with several massive objects, like our Sun-Jupiter system.
+We have shown the extreme precision of the Velocity Verlet algorithm in regard to position-dependent forces, far outranking the Forward Euler method. We have observed the large stability of ordinary planitary orbits, and increadible unstability of a planitary system with several massive objects. We then observed that the precession of Mercurys perhelion can only be accurately explained with the introduction of general relativity.
 
 %\bibliographystyle{plain}
 %\bibliographystyle{siam}
