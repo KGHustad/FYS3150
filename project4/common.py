@@ -1,30 +1,25 @@
 import numpy as np
 
-array = np.array( [ [-1,1], [1,-1] ] )
-
-def EnergyConfig(J, A, L):
+def EnergyConfig(A, L, J):
     Ei = 0
-    for i in range(L-1):
-        Ei += A[i,L-1]*A[i+1,L-1]
-        Ei += A[i,L-1]*A[i, L-2]
-        Ei += A[i,L-1]*A[i-1, L-1]
-        Ei += A[i,L-1]*A[i, 0]
-        print Ei
-        Ei += A[L-1,i]*A[L-1, i+1]
-        Ei += A[L-1,i]*A[L-2, i]
-        Ei += A[L-1,i]*A[ L-1, i-1]
-        Ei += A[L-1,i]*A[0, i]
-        print Ei
-        for j in range(L-1):
-            Ei += A[i,j]*A[i+1,j]
-            Ei += A[i,j]*A[i,j+1]
-            Ei += A[i,j]*A[i-1,j]
-            Ei += A[i,j]*A[i,j-1]
-            print Ei
-    Ei += A[-1,-1]*A[-2,-1]
-    Ei += A[-1,-1]*A[-1,-2]
-    Ei += A[-1,-1]*A[-1,0]
-    Ei += A[-1,-1]*A[0,-1]
+    for i in range(L):
+        for j in range(L):
+            Ei += A[i,j] * A[i-1,j]
+            Ei += A[i,j] * A[i,j-1]
     return -J*Ei
 
-print EnergyConfig(1, array, 2)
+def deltaE(A, L, J, i, j):
+    E_old_right = A[i,j] * A[(i+1)%L, j]
+    E_old_left = A[i,j] * A[i-1, j]
+    E_old_up = A[i,j] * A[i, (j+1)%L]
+    E_old_down = A[i,j] * A[i, j-1]
+
+    A[i,j] *= -1
+
+    E_new_right = A[i,j] * A[(i+1)%L, j]
+    E_new_left = A[i,j] * A[i-1, j]
+    E_new_up = A[i,j] * A[i, (j+1)%L]
+    E_new_down = A[i,j] * A[i, j-1]
+
+    diff = -J*(E_new_right + E_new_left + E_new_up + E_new_down) - (E_old_right + E_old_left + E_old_up + E_old_down)
+    return diff
