@@ -1,6 +1,8 @@
 import numpy as np
+import random
 
-def EnergyConfig(A, L, J):
+def EnergyConfig(A, J):
+    L = A.shape[0]
     Ei = 0
     for i in range(L):
         for j in range(L):
@@ -8,18 +10,28 @@ def EnergyConfig(A, L, J):
             Ei += A[i,j] * A[i,j-1]
     return -J*Ei
 
-def deltaE(A, L, J, i, j):
+def deltaE(A, J, i, j):
+    L = A.shape[0]
     E_old_right = A[i,j] * A[(i+1)%L, j]
     E_old_left = A[i,j] * A[i-1, j]
     E_old_up = A[i,j] * A[i, (j+1)%L]
     E_old_down = A[i,j] * A[i, j-1]
+    E_old = (E_old_right + E_old_left + E_old_up + E_old_down)
 
-    A[i,j] *= -1
-
-    E_new_right = A[i,j] * A[(i+1)%L, j]
-    E_new_left = A[i,j] * A[i-1, j]
-    E_new_up = A[i,j] * A[i, (j+1)%L]
-    E_new_down = A[i,j] * A[i, j-1]
-
-    diff = -J*(E_new_right + E_new_left + E_new_up + E_new_down) - (E_old_right + E_old_left + E_old_up + E_old_down)
+    diff = J*2*E_old
     return diff
+
+def Metropolis(A, J, steps):
+    L = A.shape[0]
+    Energy = np.zeros(steps+1)
+    Energy[0] = EnergyConfig(A, J)
+    for k in range(steps):
+        i = random.randint(0,L-1)
+        j = random.randint(0,L-1)
+        dE = deltaE(A, J, i, j)
+        print dE
+        if dE <= 0:
+            A[i,j] *= -1
+            print A
+        Energy[k+1] = EnergyConfig(A, J)
+    return A, Energy

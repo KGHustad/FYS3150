@@ -1,10 +1,13 @@
 import numpy as np
 from common import EnergyConfig, deltaE
 
-array = np.array( [ [-1,1], [1,-1] ] )
+J = 1
 
-print "Energy of array:", EnergyConfig(array, 2, -1)
+array = np.array( [ [1,-1], [-1,1] ] )
 
-print "Delta E for flipping one spin:", deltaE(array, 2, -1, 0, 0)
+print "Energy of array:", EnergyConfig(array, J)
 
-print "New energy of array:", EnergyConfig(np.array([[1,1],[1,-1]]), 2, -1)
+print "Delta E for flipping one spin:", deltaE(array, J, 0, 0)
+
+array[0,0] *= -1
+print "New energy of array:", EnergyConfig(np.array([[1,1],[1,-1]]), J)
