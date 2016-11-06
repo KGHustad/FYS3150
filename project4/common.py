@@ -29,9 +29,11 @@ def Metropolis(A, J, steps):
         i = random.randint(0,L-1)
         j = random.randint(0,L-1)
         dE = deltaE(A, J, i, j)
-        print dE
         if dE <= 0:
             A[i,j] *= -1
-            print A
-        Energy[k+1] = EnergyConfig(A, J)
+            Energy[k+1] = dE
+        Energy[k+1] += Energy[k]
     return A, Energy
+
+def Magnetization(A):
+    return abs(np.sum(A))
