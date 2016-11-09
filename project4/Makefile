@@ -1,4 +1,4 @@
-.PHONY: clean libising report_kgh show_kgh clean_kgh
+.PHONY: clean clean-all clean-c clean-python clean-latex clean-plots libising report_kgh show_kgh clean_kgh
 
 LATEX=pdflatex
 LATEX_OPTS=
