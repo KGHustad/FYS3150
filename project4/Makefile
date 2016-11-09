@@ -1,4 +1,4 @@
-.PHONY: clean report_kgh show_kgh
+.PHONY: clean libising report_kgh show_kgh
 
 LATEX=pdflatex
 LATEX_OPTS=
@@ -13,14 +13,12 @@ clean_latex_ext=*.aux *.bbl *.blg *.log *.out
 # pytest_opts=--doctest-modules --doctest-report=none -v
 #
 libising_dir=src/c
-libising=src/c/libising.so
 
 
 all: report libising
 
 
-libising: $(libising_file)
-$(libising_file):
+libising:
 	$(MAKE) -C $(libising_dir)
 
 # kgh's report in separate directory

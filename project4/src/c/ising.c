@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <math.h>
+#include <signal.h>
 
 #include <gsl/gsl_const_mksa.h>
 
@@ -8,6 +9,15 @@
 #include "random.h"
 
 const double boltzmann = GSL_CONST_MKSA_BOLTZMANN;
+
+void abort_execution(int sig) {
+    fprintf(stderr, "Aborted execution\n");
+    exit(EXIT_SUCCESS);
+}
+
+inline int wraparound(int i, int offset, int len) {
+    return (len + (i + offset)) % len;
+}
 
 void find_energy(lattice *lat_ptr, double J) {
     int L = lat_ptr->L;
@@ -46,9 +56,9 @@ int relative_change_of_energy(lattice* lat_ptr, int i, int j) {
     int E_old_up, E_old_down, E_old_left, E_old_right, E_old;
 
     E_old_right =   A[i][j] * A[(i+1)%L][j];
-    E_old_left =    A[i][j] * A[(i-1)%L][j];
+    E_old_left =    A[i][j] * A[(L+i-1)%L][j];
     E_old_up =      A[i][j] * A[i][(j+1)%L];
-    E_old_down =    A[i][j] * A[i][(j-1)%L];
+    E_old_down =    A[i][j] * A[i][(L+j-1)%L];
     E_old = E_old_right + E_old_left + E_old_up + E_old_down;
 
     /*
@@ -64,7 +74,6 @@ int relative_change_of_energy(lattice* lat_ptr, int i, int j) {
     Since, only the relative value (scaled by a positive factor) is of
     importance, it is sufficient to return E_old
     */
-
     return E_old;
 }
 
@@ -119,6 +128,9 @@ void python_interface(int8_t *spin_flat, int L, int mc_cycles, double J,
                       double T, double *energy_ptr,
                       long *mean_magnetization_ptr,
                       long *accepted_configurations_ptr) {
+    /* set signal handler */
+    signal(SIGINT, abort_execution);
+
     lattice lat = alloc_lattice(spin_flat, L);
     find_energy(&lat, J);
     find_mean_magnetization(&lat);
