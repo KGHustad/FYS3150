@@ -1,8 +1,8 @@
 
 CC_FLAGS = -Wall -O3 -std=gnu89 -fpic -march=native
 LDFLAGS= -lm -lgsl
-ising_sources = ising.c
-ising_headers = ising.h
+ising_sources = ising.c lattice.c random.c
+ising_headers = ising.h lattice.h random.h
 ising_object_files = ising.o
 ising_lib = libising.so
 

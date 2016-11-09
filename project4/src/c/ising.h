@@ -1,10 +1,7 @@
-typedef struct {
-    signed char **spin; /* spin values (may be +1 or -1) */
-    int L; /* dimension of lattice */
-    double energy;
-    long mean_magnetization;
-} lattice;
+#include <stdint.h>
+
+#include "lattice.h"
 
 
-double find_energy(lattice* lat, double J);
-int relative_change_of_energy(lattice* lat, int i, int j);
+void find_energy(lattice *lat_ptr, double J);
+int relative_change_of_energy(lattice *lat_ptr, int i, int j);
