@@ -80,7 +80,10 @@ int relative_change_of_energy(lattice* lat_ptr, int i, int j) {
 void metropolis(lattice *lat_ptr, int mc_cycles, gsl_rng *r,
                 double *dE_cache) {
     int L = lat_ptr->L;
+    lattice lat = *lat_ptr;
+    int8_t **spin = lat_ptr->spin;
 
+    double ran;
     int relative_dE;
     int mc_cycle, accepted_configurations=0;
     int i, j;
@@ -90,14 +93,18 @@ void metropolis(lattice *lat_ptr, int mc_cycles, gsl_rng *r,
 
         relative_dE = relative_change_of_energy(lat_ptr, i, j);
         double dE = dE_cache[relative_dE];
-        if (dE < gsl_rng_uniform(r)) {
+        ran = gsl_rng_uniform(r);
+        /*printf("random: %g\n", ran);*/
+        if (dE < ran) {
             /* ACCEPT */
-            lat_ptr->spin[i][j] *= -1;
-            lat_ptr->energy += dE_cache[relative_dE];
+            spin[i][j] *= -1;
+            lat.energy += dE_cache[relative_dE];
+            lat.mean_magnetization += 2*spin[i][j];
             accepted_configurations++;
         }
     }
-    lat_ptr->accepted_configurations = accepted_configurations;
+    lat.accepted_configurations = accepted_configurations;
+    *lat_ptr = lat;
 }
 
 void solve(lattice *lat_ptr, int mc_cycles, double T) {

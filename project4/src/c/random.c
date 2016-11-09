@@ -1,13 +1,32 @@
+#include <stdlib.h>
+#include <stdio.h>
 #include "random.h"
+
+unsigned long get_unix_seed(void) {
+    FILE *file = fopen("/dev/urandom", "r");
+    unsigned long seed;
+    int items_read = 0;
+    items_read = fread(&seed, sizeof(unsigned long), 1, file);
+    if (items_read != 1) {
+        fprintf(stderr, "ERROR: Could not retrieve unix seed\n");
+        exit(EXIT_FAILURE);
+    }
+    fclose(file);
+    /*printf("seed: %lu\n", seed);*/
+    return seed;
+}
 
 gsl_rng* initialize_rng() {
     const gsl_rng_type * T; /* specifies the type of random number generator */
     gsl_rng * r; /* pointer to random number generator */
 
-    gsl_rng_env_setup();
+    unsigned long seed = get_unix_seed();
+
+    /*gsl_rng_env_setup();*/
 
     T = gsl_rng_default;
     r = gsl_rng_alloc(T);
+    gsl_rng_set(r, seed);
     return r;
 }
 
