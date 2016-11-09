@@ -87,7 +87,7 @@ def metropolis_c(spin, J, T, mc_cycles, silent=False):
     if not silent:
         print "Time spent (C): %g" % time_spent
 
-    return energy, mean_magnetization, accepted_configurations, time_spent
+    return energy.value, mean_magnetization.value, accepted_configurations.value, time_spent
 
 def Magnetization(A):
     return abs(np.sum(A))
