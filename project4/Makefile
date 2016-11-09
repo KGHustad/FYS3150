@@ -1,4 +1,4 @@
-.PHONY: clean libising report_kgh show_kgh
+.PHONY: clean libising report_kgh show_kgh clean_kgh
 
 LATEX=pdflatex
 LATEX_OPTS=
@@ -15,7 +15,7 @@ clean_latex_ext=*.aux *.bbl *.blg *.log *.out
 libising_dir=src/c
 
 
-all: report libising
+all: libising
 
 
 libising:
