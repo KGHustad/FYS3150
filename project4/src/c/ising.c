@@ -108,7 +108,7 @@ void metropolis(lattice *lat_ptr, int mc_cycles, gsl_rng *r,
 }
 
 void solve(lattice *lat_ptr, int mc_cycles, double T) {
-    double beta = 1 / (boltzmann*T);
+    double beta = 1 / (/*boltzmann**/T);
 
     /* allocate a buffer where the few possible values of dE can be
     precalculated and stored */
