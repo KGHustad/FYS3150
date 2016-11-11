@@ -29,7 +29,7 @@ void find_energy(lattice *lat_ptr, double J) {
     for (i = 0; i < L; i++) {
         for (j = 0; j < L; j++) {
             E += A[i][j] * A[(i+1) % L][j];     /* horizontal neighbour */
-            E += A[i][j] * A[i][(j-1) % L];     /* vertical neighbour */
+            E += A[i][j] * A[i][(j+1) % L];     /* vertical neighbour */
         }
     }
     lat_ptr->energy = -J*E;

@@ -1,7 +1,7 @@
 import numpy as np
 from common import *
 
-L = 20
+L = 2
 spin = np.ones(shape=(L, L), dtype=np.int8)
 J = 1
 T = 1
