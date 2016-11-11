@@ -4,7 +4,7 @@ typedef struct {
     int8_t **spin; /* spin values (may be +1 or -1) */
     int L; /* dimension of lattice */
     double energy;
-    long mean_magnetization;
+    long tot_magnetization;
     long accepted_configurations;
 } lattice;
 

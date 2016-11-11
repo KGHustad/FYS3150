@@ -30,6 +30,10 @@ gsl_rng* initialize_rng() {
     return r;
 }
 
+void destroy_rng(gsl_rng *r) {
+    gsl_rng_free(r);
+}
+
 inline int8_t rand_plus_minus(gsl_rng *r) {
     /*
     bitwise AND with 2 can yield 2 or 0, subtracting 1,
@@ -38,6 +42,11 @@ inline int8_t rand_plus_minus(gsl_rng *r) {
     return ((int8_t) (gsl_rng_get(r) & 2)) - 1;
 }
 
-void destroy_rng(gsl_rng *r) {
-    gsl_rng_free(r);
+void fill_random(int8_t *spin, int L) {
+    int i;
+    gsl_rng *r = initialize_rng();
+    for (i = 0; i < L*L; i++) {
+        spin[i] = rand_plus_minus(r);
+    }
+    destroy_rng(r);
 }

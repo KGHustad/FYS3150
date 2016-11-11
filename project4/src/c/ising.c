@@ -35,17 +35,17 @@ void find_energy(lattice *lat_ptr, double J) {
     lat_ptr->energy = -J*E;
 }
 
-void find_mean_magnetization(lattice *lat_ptr) {
+void find_tot_magnetization(lattice *lat_ptr) {
     int L = lat_ptr->L;
     int8_t **spin = lat_ptr->spin;
     int i, j;
-    long mean_magnetization = 0;
+    long tot_magnetization = 0;
     for (i=0; i < L; i++) {
         for (j=0; j < L; j++) {
-            mean_magnetization += spin[i][j];
+            tot_magnetization += spin[i][j];
         }
     }
-    lat_ptr->mean_magnetization = mean_magnetization;
+    lat_ptr->tot_magnetization = tot_magnetization;
 }
 
 /* function to compute the change of energy, given that lat.data[i][j] is flipped */
@@ -95,17 +95,18 @@ void metropolis(lattice *lat_ptr, int sweeps, double J, double *energies,
             relative_dE = relative_change_of_energy(lat_ptr, i, j);
             double dE = dE_cache[relative_dE];
             ran = gsl_rng_uniform(r);
-            //printf("rel_dE: %d     dE: %g     exp(-8/T): %g\n", relative_dE, dE, exp(-relative_dE/2.4));
-            /*printf("random: %g\n", ran);*/
+
             if (dE > ran) {
                 /* ACCEPT */
                 spin[i][j] *= -1;
-                //lat.energy -= 2*J*relative_dE;
                 lat.energy += 2*J*relative_dE;
-                lat.mean_magnetization += 2*spin[i][j];
+                lat.tot_magnetization += 2*spin[i][j];
                 accepted_configurations++;
             }
         }
+        energies[sweep+1] = lat.energy;
+        tot_magnetization[sweep+1] = lat.tot_magnetization;
+
     }
     lat.accepted_configurations = accepted_configurations;
     *lat_ptr = lat;
@@ -114,7 +115,7 @@ void metropolis(lattice *lat_ptr, int sweeps, double J, double *energies,
 void solve(lattice *lat_ptr, int sweeps, double J, double T,
            double *energies, long *tot_magnetization) {
     double beta = 1 / (/*boltzmann**/T);
-    printf("T=%g\n", T);
+
     /* allocate a buffer where the few possible values of dE can be
     precalculated and stored */
     double *dE_buf = malloc(sizeof(double)*(4*2 + 1));
@@ -126,7 +127,6 @@ void solve(lattice *lat_ptr, int sweeps, double J, double T,
     }
     for (i = -4; i <= 4; i += 2) {
         dE_cache[i] = exp(-beta*2*i);
-        printf("de[%d] = %g\n", i, dE_cache[i]);
     }
 
     gsl_rng *r = initialize_rng();
@@ -146,13 +146,13 @@ void python_interface(int8_t *spin_flat, int L, int sweeps, double J,
 
     lattice lat = alloc_lattice(spin_flat, L);
     find_energy(&lat, J);
-    find_mean_magnetization(&lat);
+    find_tot_magnetization(&lat);
 
     solve(&lat, sweeps, J, T, energies, tot_magnetization);
 
 
     *energies = lat.energy;
-    *tot_magnetization = lat.mean_magnetization;
+    *tot_magnetization = lat.tot_magnetization;
 
     *accepted_configurations_ptr = lat.accepted_configurations;
 
