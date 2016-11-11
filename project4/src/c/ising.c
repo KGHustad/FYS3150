@@ -74,7 +74,7 @@ int relative_change_of_energy(lattice* lat_ptr, int i, int j) {
     Since, only the relative value (scaled by a positive factor) is of
     importance, it is sufficient to return E_old
     */
-    return E_old;
+    return -E_old;
 }
 
 void metropolis(lattice *lat_ptr, int mc_cycles, double J, double *energies,
@@ -98,7 +98,7 @@ void metropolis(lattice *lat_ptr, int mc_cycles, double J, double *energies,
         if (dE < ran) {
             /* ACCEPT */
             spin[i][j] *= -1;
-            lat.energy += 2*J*relative_dE;
+            lat.energy -= 2*J*relative_dE;
             lat.mean_magnetization += 2*spin[i][j];
             accepted_configurations++;
         }
