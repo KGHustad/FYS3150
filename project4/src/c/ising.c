@@ -98,7 +98,7 @@ void metropolis(lattice *lat_ptr, int mc_cycles, gsl_rng *r,
         if (dE < ran) {
             /* ACCEPT */
             spin[i][j] *= -1;
-            lat.energy += dE_cache[relative_dE];
+            lat.energy += relative_dE;
             lat.mean_magnetization += 2*spin[i][j];
             accepted_configurations++;
         }
