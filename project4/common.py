@@ -5,6 +5,22 @@ import time
 import ctypes
 from math import sqrt, exp
 
+def random_spin_matrix(L):
+    a = np.random.randint(0, 2, size=(L, L), dtype=np.int8)
+    return np.ones(shape=(L, L), dtype=np.int8) - 2*a
+
+def random_spin_matrix_c(L):
+    spin = np.empty(shape=(L, L), dtype=np.int8)
+
+    from ctypes import c_int8, c_int
+    int8_array = np.ctypeslib.ndpointer(dtype=c_int8, ndim=1,
+                                        flags="contiguous")
+    libising = np.ctypeslib.load_library("libising.so", "src/c")
+    libising.fill_random.argstypes = [int8_array, c_int]
+    libising.fill_random(np.ctypeslib.as_ctypes(spin),
+                         c_int(L))
+    return spin
+
 def EnergyConfig(A, J):
     L = A.shape[0]
     Ei = 0
@@ -39,12 +55,15 @@ def Metropolis(A, J, steps):
         Energy[k+1] += Energy[k]
     return A, Energy
 
-def metropolis_c(spin, J, T, mc_cycles, silent=False):
+def metropolis_c(spin, J, T, sweeps, silent=False):
     if not spin.dtype == np.int8:
         print "Wrong usage! Spin array must be of dtype np.int8"
         return
 
     L = spin.shape[0]
+
+    energies = np.empty(sweeps+1, dtype=np.float64)
+    tot_magnetization = np.empty(sweeps+1, dtype=np.int64)
 
     # fill in ctypes magic
     # import and create the needed types
@@ -52,6 +71,10 @@ def metropolis_c(spin, J, T, mc_cycles, silent=False):
     c_long_ptr = ctypes.POINTER(c_long)
     c_double_ptr = ctypes.POINTER(c_double)
     int8_array = np.ctypeslib.ndpointer(dtype=c_int8, ndim=1,
+                                        flags="contiguous")
+    int64_array = np.ctypeslib.ndpointer(dtype=c_long, ndim=1,
+                                        flags="contiguous")
+    float64_array = np.ctypeslib.ndpointer(dtype=c_double, ndim=1,
                                         flags="contiguous")
 
     # load library
@@ -66,8 +89,8 @@ def metropolis_c(spin, J, T, mc_cycles, silent=False):
                                            c_long_ptr]
 
     # make c primitives to pass by reference
-    energy = c_double(0)
-    mean_magnetization = c_long(0)
+    #energy = c_double(0)
+    #mean_magnetization = c_long(0)
     accepted_configurations = c_long(0)
 
 
@@ -75,11 +98,13 @@ def metropolis_c(spin, J, T, mc_cycles, silent=False):
     pre = time.clock()
     libising.python_interface(np.ctypeslib.as_ctypes(spin),
                               c_int(L),
-                              c_long(mc_cycles),
+                              c_long(sweeps),
                               c_double(J),
                               c_double(T),
-                              ctypes.byref(energy),
-                              ctypes.byref(mean_magnetization),
+                              #ctypes.byref(energy),
+                              #ctypes.byref(mean_magnetization),
+                              np.ctypeslib.as_ctypes(energies),
+                              np.ctypeslib.as_ctypes(tot_magnetization),
                               ctypes.byref(accepted_configurations)
                               )
     post = time.clock()
@@ -88,7 +113,8 @@ def metropolis_c(spin, J, T, mc_cycles, silent=False):
     if not silent:
         print "Time spent (C): %g" % time_spent
 
-    return energy.value, mean_magnetization.value, accepted_configurations.value, time_spent
+    #return energy.value, mean_magnetization.value, accepted_configurations.value, time_spent
+    return energies, tot_magnetization, accepted_configurations.value, time_spent
 
 def Magnetization(A):
     return abs(np.sum(A))
