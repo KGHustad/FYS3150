@@ -1,4 +1,5 @@
 import numpy as np
+import scipy.stats
 import matplotlib.pyplot as plt
 import random
 import time
@@ -114,7 +115,16 @@ def metropolis_c(spin, J, T, sweeps, silent=False):
         print "Time spent (C): %g" % time_spent
 
     #return energy.value, mean_magnetization.value, accepted_configurations.value, time_spent
-    return energies, tot_magnetization, accepted_configurations.value, time_spent
+    mean_magnetization = tot_magnetization / L**2
+    return energies, mean_magnetization, accepted_configurations.value, time_spent
+
+def extract_expectation_values(energies, mean_magnetization):
+    mu_E = np.mean(energies)
+    mu_M = np.mean(mean_magnetization)
+    mu_abs_M = np.mean(abs(mean_magnetization))
+    mu_E_sq = scipy.stats.moment(energies, moment=2)
+    mu_M_sq = scipy.stats.moment(mean_magnetization, moment=2)
+    return mu_E, mu_M, mu_abs_M, mu_E_sq, mu_M_sq
 
 def Magnetization(A):
     return abs(np.sum(A))
