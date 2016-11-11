@@ -74,10 +74,10 @@ int relative_change_of_energy(lattice* lat_ptr, int i, int j) {
     Since, only the relative value (scaled by a positive factor) is of
     importance, it is sufficient to return E_old
     */
-    return 2*E_old;
+    return E_old;
 }
 
-void metropolis(lattice *lat_ptr, int mc_cycles, double J, double *energies,
+void metropolis(lattice *lat_ptr, int sweeps, double J, double *energies,
                 long *tot_magnetization, gsl_rng *r, double *dE_cache) {
     int L = lat_ptr->L;
     lattice lat = *lat_ptr;
@@ -85,57 +85,59 @@ void metropolis(lattice *lat_ptr, int mc_cycles, double J, double *energies,
 
     double ran;
     int relative_dE;
-    int mc_cycle, accepted_configurations=0;
+    long sweep, count, accepted_configurations=0;
     int i, j;
-    for (mc_cycle=0; mc_cycle < mc_cycles; mc_cycle++) {
-        i = gsl_rng_uniform_int(r, L);
-        j = gsl_rng_uniform_int(r, L);
+    for (sweep=0; sweep < sweeps; sweep++) {
+        for (count=0; count < L*L; count++) {
+            i = gsl_rng_uniform_int(r, L);
+            j = gsl_rng_uniform_int(r, L);
 
-        relative_dE = relative_change_of_energy(lat_ptr, i, j);
-        double dE = dE_cache[relative_dE];
-        ran = gsl_rng_uniform(r);
-        //printf("rel_dE: %d     dE: %g     exp(-8/T): %g\n", relative_dE, dE, exp(-relative_dE/2.4));
-        /*printf("random: %g\n", ran);*/
-        if (dE > ran) {
-            /* ACCEPT */
-            spin[i][j] *= -1;
-            //lat.energy -= 2*J*relative_dE;
-            lat.energy += relative_dE;
-            lat.mean_magnetization += 2*spin[i][j];
-            accepted_configurations++;
+            relative_dE = relative_change_of_energy(lat_ptr, i, j);
+            double dE = dE_cache[relative_dE];
+            ran = gsl_rng_uniform(r);
+            //printf("rel_dE: %d     dE: %g     exp(-8/T): %g\n", relative_dE, dE, exp(-relative_dE/2.4));
+            /*printf("random: %g\n", ran);*/
+            if (dE > ran) {
+                /* ACCEPT */
+                spin[i][j] *= -1;
+                //lat.energy -= 2*J*relative_dE;
+                lat.energy += 2*J*relative_dE;
+                lat.mean_magnetization += 2*spin[i][j];
+                accepted_configurations++;
+            }
         }
     }
     lat.accepted_configurations = accepted_configurations;
     *lat_ptr = lat;
 }
 
-void solve(lattice *lat_ptr, int mc_cycles, double J, double T,
+void solve(lattice *lat_ptr, int sweeps, double J, double T,
            double *energies, long *tot_magnetization) {
     double beta = 1 / (/*boltzmann**/T);
     printf("T=%g\n", T);
     /* allocate a buffer where the few possible values of dE can be
     precalculated and stored */
-    double *dE_buf = malloc(sizeof(double)*17);
-    double *dE_cache = dE_buf + 8; /* allow for negative indexing */
+    double *dE_buf = malloc(sizeof(double)*(4*2 + 1));
+    double *dE_cache = dE_buf + 4; /* allow for negative indexing */
     int i;
-    for (i = -8; i <= 8; i++) {
+    for (i = -4; i <= 4; i++) {
         /* set to NaN so that the error will propagate if there is a bug */
         dE_cache[i] = NAN;
     }
-    for (i = -8; i <= 8; i += 4) {
-        dE_cache[i] = exp(-beta*i);
+    for (i = -4; i <= 4; i += 2) {
+        dE_cache[i] = exp(-beta*2*i);
         printf("de[%d] = %g\n", i, dE_cache[i]);
     }
 
     gsl_rng *r = initialize_rng();
-    metropolis(lat_ptr, mc_cycles, J, energies, tot_magnetization, r, dE_cache);
+    metropolis(lat_ptr, sweeps, J, energies, tot_magnetization, r, dE_cache);
 
     /* freeing */
     destroy_rng(r);
     free(dE_buf);
 }
 
-void python_interface(int8_t *spin_flat, int L, int mc_cycles, double J,
+void python_interface(int8_t *spin_flat, int L, int sweeps, double J,
                       double T, double *energies,
                       long *tot_magnetization,
                       long *accepted_configurations_ptr) {
@@ -146,7 +148,7 @@ void python_interface(int8_t *spin_flat, int L, int mc_cycles, double J,
     find_energy(&lat, J);
     find_mean_magnetization(&lat);
 
-    solve(&lat, mc_cycles, J, T, energies, tot_magnetization);
+    solve(&lat, sweeps, J, T, energies, tot_magnetization);
 
 
     *energies = lat.energy;
