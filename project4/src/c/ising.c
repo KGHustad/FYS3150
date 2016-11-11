@@ -55,10 +55,10 @@ int relative_change_of_energy(lattice* lat_ptr, int i, int j) {
 
     int E_old_up, E_old_down, E_old_left, E_old_right, E_old;
 
-    E_old_right =   A[i][j] * A[(i+1)%L][j];
-    E_old_left =    A[i][j] * A[(L+i-1)%L][j];
-    E_old_up =      A[i][j] * A[i][(j+1)%L];
-    E_old_down =    A[i][j] * A[i][(L+j-1)%L];
+    E_old_down =    A[i][j] * A[(i+1)%L][j];
+    E_old_up =      A[i][j] * A[(L+i-1)%L][j];
+    E_old_right =   A[i][j] * A[i][(j+1)%L];
+    E_old_left =    A[i][j] * A[i][(L+j-1)%L];
     E_old = E_old_right + E_old_left + E_old_up + E_old_down;
 
     /*
@@ -74,7 +74,7 @@ int relative_change_of_energy(lattice* lat_ptr, int i, int j) {
     Since, only the relative value (scaled by a positive factor) is of
     importance, it is sufficient to return E_old
     */
-    return -E_old;
+    return 2*E_old;
 }
 
 void metropolis(lattice *lat_ptr, int mc_cycles, double J, double *energies,
@@ -94,11 +94,13 @@ void metropolis(lattice *lat_ptr, int mc_cycles, double J, double *energies,
         relative_dE = relative_change_of_energy(lat_ptr, i, j);
         double dE = dE_cache[relative_dE];
         ran = gsl_rng_uniform(r);
+        //printf("rel_dE: %d     dE: %g     exp(-8/T): %g\n", relative_dE, dE, exp(-relative_dE/2.4));
         /*printf("random: %g\n", ran);*/
-        if (dE < ran) {
+        if (dE > ran) {
             /* ACCEPT */
             spin[i][j] *= -1;
-            lat.energy -= 2*J*relative_dE;
+            //lat.energy -= 2*J*relative_dE;
+            lat.energy += relative_dE;
             lat.mean_magnetization += 2*spin[i][j];
             accepted_configurations++;
         }
@@ -110,7 +112,7 @@ void metropolis(lattice *lat_ptr, int mc_cycles, double J, double *energies,
 void solve(lattice *lat_ptr, int mc_cycles, double J, double T,
            double *energies, long *tot_magnetization) {
     double beta = 1 / (/*boltzmann**/T);
-
+    printf("T=%g\n", T);
     /* allocate a buffer where the few possible values of dE can be
     precalculated and stored */
     double *dE_buf = malloc(sizeof(double)*17);
@@ -122,6 +124,7 @@ void solve(lattice *lat_ptr, int mc_cycles, double J, double T,
     }
     for (i = -8; i <= 8; i += 4) {
         dE_cache[i] = exp(-beta*i);
+        printf("de[%d] = %g\n", i, dE_cache[i]);
     }
 
     gsl_rng *r = initialize_rng();
