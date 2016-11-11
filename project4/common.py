@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import random
 import time
 import ctypes
+from math import sqrt, exp
 
 def EnergyConfig(A, J):
     L = A.shape[0]
@@ -95,3 +96,7 @@ def Magnetization(A):
 def show_spins(spin):
     plt.imshow(spin, cmap=plt.cm.gray, vmin=-1, vmax=1, interpolation='none')
     plt.show()
+
+def analytical_energy(J, T):
+    beta = 1./T
+    return -(-16*J*exp(-8*J*beta) + 16*J*exp(8*beta*J)) / (2*exp(-8*beta*J) + 2*exp(8*beta*J))
