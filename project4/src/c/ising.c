@@ -77,8 +77,8 @@ int relative_change_of_energy(lattice* lat_ptr, int i, int j) {
     return E_old;
 }
 
-void metropolis(lattice *lat_ptr, int mc_cycles, gsl_rng *r,
-                double *dE_cache) {
+void metropolis(lattice *lat_ptr, int mc_cycles, double J, double *energies,
+                long *tot_magnetization, gsl_rng *r, double *dE_cache) {
     int L = lat_ptr->L;
     lattice lat = *lat_ptr;
     int8_t **spin = lat_ptr->spin;
@@ -98,7 +98,7 @@ void metropolis(lattice *lat_ptr, int mc_cycles, gsl_rng *r,
         if (dE < ran) {
             /* ACCEPT */
             spin[i][j] *= -1;
-            lat.energy += relative_dE;
+            lat.energy += 2*J*relative_dE;
             lat.mean_magnetization += 2*spin[i][j];
             accepted_configurations++;
         }
@@ -107,7 +107,8 @@ void metropolis(lattice *lat_ptr, int mc_cycles, gsl_rng *r,
     *lat_ptr = lat;
 }
 
-void solve(lattice *lat_ptr, int mc_cycles, double T) {
+void solve(lattice *lat_ptr, int mc_cycles, double J, double T,
+           double *energies, long *tot_magnetization) {
     double beta = 1 / (/*boltzmann**/T);
 
     /* allocate a buffer where the few possible values of dE can be
@@ -124,7 +125,7 @@ void solve(lattice *lat_ptr, int mc_cycles, double T) {
     }
 
     gsl_rng *r = initialize_rng();
-    metropolis(lat_ptr, mc_cycles, r, dE_cache);
+    metropolis(lat_ptr, mc_cycles, J, energies, tot_magnetization, r, dE_cache);
 
     /* freeing */
     destroy_rng(r);
@@ -132,8 +133,8 @@ void solve(lattice *lat_ptr, int mc_cycles, double T) {
 }
 
 void python_interface(int8_t *spin_flat, int L, int mc_cycles, double J,
-                      double T, double *energy_ptr,
-                      long *mean_magnetization_ptr,
+                      double T, double *energies,
+                      long *tot_magnetization,
                       long *accepted_configurations_ptr) {
     /* set signal handler */
     signal(SIGINT, abort_execution);
@@ -142,10 +143,12 @@ void python_interface(int8_t *spin_flat, int L, int mc_cycles, double J,
     find_energy(&lat, J);
     find_mean_magnetization(&lat);
 
-    solve(&lat, mc_cycles, T);
+    solve(&lat, mc_cycles, J, T, energies, tot_magnetization);
 
-    *energy_ptr = lat.energy;
-    *mean_magnetization_ptr = lat.mean_magnetization;
+
+    *energies = lat.energy;
+    *tot_magnetization = lat.mean_magnetization;
+
     *accepted_configurations_ptr = lat.accepted_configurations;
 
     free_lattice(lat);
