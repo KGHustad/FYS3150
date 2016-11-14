@@ -93,8 +93,6 @@ def metropolis_c(spin, J, T, sweeps, save_every_nth=1, silent=False):
                                            c_long]
 
     # make c primitives to pass by reference
-    #energy = c_double(0)
-    #mean_magnetization = c_long(0)
     accepted_configurations = c_long(0)
 
 
@@ -105,8 +103,6 @@ def metropolis_c(spin, J, T, sweeps, save_every_nth=1, silent=False):
                               c_long(sweeps),
                               c_double(J),
                               c_double(T),
-                              #ctypes.byref(energy),
-                              #ctypes.byref(mean_magnetization),
                               np.ctypeslib.as_ctypes(energies),
                               np.ctypeslib.as_ctypes(tot_magnetization),
                               ctypes.byref(accepted_configurations),
@@ -118,7 +114,6 @@ def metropolis_c(spin, J, T, sweeps, save_every_nth=1, silent=False):
     if not silent:
         print "Time spent (C): %g" % time_spent
 
-    #return energy.value, mean_magnetization.value, accepted_configurations.value, time_spent
     mean_magnetization = tot_magnetization / float(L**2)
     return energies, mean_magnetization, accepted_configurations.value, time_spent
 
