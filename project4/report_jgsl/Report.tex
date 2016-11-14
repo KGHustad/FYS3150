@@ -1,0 +1,160 @@
+\documentclass[10pt,a4paper]{article}
+
+%__Fonts and layout__
+\usepackage[utf8]{inputenc}	%Allows input of unusual characters
+\usepackage[T1]{fontenc,url}	%Helps correctly display unusual characters
+\usepackage{parskip}	%Something about paragraph spacing
+\usepackage{lmodern}	%Makes your font prettier or something
+\usepackage{microtype}	%Makes text look prettier
+\usepackage{verbatim}
+
+%__math__
+\usepackage{amsmath, amssymb}	%Improved math syntax and symbols
+\usepackage{tikz}	%Graph drawing
+\usepackage{physics}	%Mathematical physics notation
+\usepackage{mathtools}	%Matrixes and shit
+
+%__algorithms and programming__
+\usepackage{algorithm}	%Allows writing of pretty algorithm. Perfect for desplaying code-syntax
+\usepackage{algpseudocode}	%Similar to algorithm, just different layout
+\usepackage{listings}	%Listing-enviroment, perfect for code or terminal output
+\usepackage{enumerate}	%For listing of stuff
+
+%__graphs and pictures__
+\usepackage{graphicx}	%Includegraphics
+\usepackage{float}	%Allows the [H] option, to force graphics in place
+
+%__quotes and refrencing__
+\usepackage{epigraph}	%Allows epigraph enviroment, for quotes
+\usepackage{hyperref}	%Allows hyperreferences in pdf
+\usepackage[backend=biber]{biblatex}	%Citations
+\addbibresource{cites.bib}	%Reference to citation file
+
+
+\begin{document}
+
+
+
+%__Making a first-page__
+\title{FYS3150 - Project 4}
+\author{
+	\begin{tabular}{rl}
+		Jonas Gahr Sturtzel Lunde - (\textit{jonassl})\\
+	\end{tabular}}
+\date{10.11.2016}
+\maketitle
+
+
+
+%__Epigraph__
+\setlength{\epigraphwidth}{0.75\textwidth}
+\renewcommand{\epigraphflush}{center}
+\renewcommand{\beforeepigraphskip}{50pt}
+\renewcommand{\afterepigraphskip}{100pt}
+\renewcommand{\epigraphsize}{\normalsize}
+\epigraph{This is a quote}
+	{\textit{By this guy}}
+
+
+
+%__Abstract__
+\begin{abstract}
+\noindent
+This is an abstract
+\end{abstract}
+\pagebreak
+
+
+
+This is a cite\cite{lecture_notes}
+
+\[
+\begin{matrix*}
+\uparrow & \downarrow \\
+\downarrow & \uparrow
+\end{matrix*}
+\]
+
+\[
+\begin{matrix*}[r]
+\uparrow & \downarrow \\
+\downarrow & \uparrow
+\end{matrix*}
+\]
+
+
+The partition function is given as
+\begin{equation}
+Z = \sum\limits_{i=1}^Q e^{\beta E_i}
+\end{equation}
+
+where the energy $E_i$ of a state $i$ is given as, and Q is the total possible number of states, $2^N$
+\begin{equation}
+E_i = -J \sum\limits_{<kl>}^N s_k s_l
+\end{equation}
+
+For our case we have a total of $Q = 16$ possible states. Of these states,
+\begin{itemize}
+\item 12 have an energy $E_i = 0$
+\item 2 have an energy $E_i = -8J$
+\item 2 have an energy $E_i = 8J$.
+\end{itemize}
+This gives a partition function
+\begin{equation}
+Z = \sum\limits_{i=1}^16 e^{\beta E_i} = 2e^{-8\beta J} + 2e^{8\beta J} + 12
+\end{equation}
+
+The expectation value for the energy $E$ is given by
+\begin{equation}\begin{split}
+\langle E \rangle &= -\frac{1}{Z}\frac{\partial Z}{\partial\beta} = -\frac{1}{2e^{-8\beta J} + 2e^{8\beta J} + 12} \frac{\partial (2e^{-8\beta J} + 2e^{8\beta J} + 12)}{\partial \beta}\\\\
+&= -\frac{-16Je^{-8\beta J} + 16Je^{8\beta J}}{2e^{-8\beta J} + 2e^{8\beta J} + 12} = -\frac{-8Je^{-8\beta J} + 8Je^{8\beta J}}{e^{-8\beta J} + e^{8\beta J} + 6}
+\end{split}\end{equation}
+
+\begin{equation}\begin{split}
+\langle E^2 \rangle &= \frac{1}{Z}\frac{\partial^2 Z}{\partial\beta^2} = \frac{1}{Z}\frac{\partial}{\partial\beta}\left(-16Je^{-8\beta J} + 16Je^{8\beta J} \right)\\\\
+&= \frac{128J^2e^{-8\beta J} + 128J^2e^{8\beta J}}{2e^{-8\beta J}+2e^{8\beta J} + 12} = \frac{64J^2e^{-8\beta J} + 64J^2e^{8\beta J}}{e^{-8\beta J}+e^{8\beta J} + 6}
+\end{split}\end{equation}
+
+
+\begin{equation}\begin{split}
+\langle E \rangle ^2 = \frac{\left(-8Je^{-8\beta J} + 8Je^{8\beta J}\right)^2}{\left(e^{-8\beta J} + e^{8\beta J} + 6\right)^2}
+\end{split}\end{equation}
+
+\begin{equation}
+\langle C_v \rangle = \frac{\langle E^2 \rangle - \langle E \rangle ^2}{k_B T^2} = \frac{\frac{\left(-8Je^{-8\beta J} + 8Je^{8\beta J}\right)^2}{\left(e^{-8\beta J} + e^{8\beta J} + 6\right)^2} - \frac{64J^2e^{-8\beta J} + 64J^2e^{8\beta J}}{e^{-8\beta J}+e^{8\beta J} + 6}}{k_B T^2}
+\end{equation}
+
+
+\begin{equation}
+\langle |M| \rangle = \frac{1}{Z} \sum\limits_{i=1}^Q |M_i| e^{-\beta E_i}
+\end{equation}
+Of the total possible states $Q = 16$, we have
+\begin{itemize}
+\item 8 states with absolute magnetizaton $|M| = 2$ and energy $E = 0$
+\item 2 states with absolute magnetization $|M| = 4$ and energy $E = -8J$
+\item 6 states with no magnetization.
+\end{itemize}
+This results in a mean magnetization
+\begin{equation}
+\langle |M| \rangle = \frac{1}{2e^{-8\beta J} + 2e^{8\beta J} + 12} (16+8e^{-8\beta J}) = \frac{8+4e^{-8\beta J}}{e^{-8\beta J} + e^{8\beta J} + 6}
+\end{equation}
+
+\begin{equation}
+\langle M \rangle = \frac{1}{2e^{-8\beta J} + 2e^{8\beta J} + 12} (0) = 0
+\end{equation}
+
+\begin{equation}
+\langle M^2 \rangle = \frac{1}{2e^{-8\beta J} + 2e^{8\beta J} + 12} (24) = \frac{12}{e^{-8\beta J} + e^{8\beta J} + 6}
+\end{equation}
+
+
+
+
+
+
+
+
+
+\printbibliography %Prints citations. Should be at the bottom of document
+
+\end{document}
