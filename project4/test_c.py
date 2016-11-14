@@ -19,7 +19,7 @@ print mu_E, mu_M, mu_abs_M, mu_E_sq, mu_M_sq
 
 exact_mean_energy = analytical_mean_energy(J, T)
 exact_mean_energy_sq = analytical_mean_energy_squared(J, T)
-exact_mean_magnetization = analytical_mean_magnetization(J, T)
+exact_mean_abs_magnetization = analytical_mean_abs_magnetization(J, T)
 
 print "Mean energy:             %8g" % mu_E
 print "Analytical mean energy:  %8g" % exact_mean_energy
@@ -32,9 +32,9 @@ print "Error in mean energy sq.:    %8g" % ((mu_E_sq - exact_mean_energy_sq)
                                             /exact_mean_energy_sq)
 print
 print "Mean abs. magnetization: %8g" % mu_abs_M
-print "Analytical mean mag.:    %8g" % exact_mean_magnetization
-print "Error in mean mag..:     %8g" % ((mu_M - exact_mean_magnetization)
-                                        /exact_mean_magnetization)
+print "Analytical mean mag.:    %8g" % exact_mean_abs_magnetization
+print "Error in mean mag..:     %8g" % ((mu_abs_M - exact_mean_abs_magnetization)
+                                        /exact_mean_abs_magnetization)
 print
 print "Mean magnetization: %8g" % mu_M
 print "Mean magnetization sq.:  %8g" % mu_M_sq
