@@ -138,8 +138,11 @@ def show_spins(spin):
     plt.imshow(spin, cmap=plt.cm.gray, vmin=-1, vmax=1, interpolation='none')
     plt.show()
 
+def expectation_values(values_array, save_every_nth, mc_cycles):
+    return np.cumsum(values_array) / np.arange(1, (mc_cycles/save_every_nth+2), dtype=np.float64)
 
-#Analytical expressions for 2x2 lattice.
+
+#Analytical expressions for expectations values of 2x2 lattice.
 
 def analytical_mean_energy(J, T):
     beta = 1./T

@@ -53,7 +53,12 @@ print "Accepted configurations: %8g" % accepted_configurations
 
 show_spins(spin)
 
-expectation_value_for_energy = np.cumsum(energies[1:]) / np.arange(1, (mc_cycles/save_every_nth+1))
+expectation_value_for_energy = expectation_values( energies, save_every_nth, mc_cycles )
 plt.plot(expectation_value_for_energy)
-#plt.ylim(-8.1, -7.9)
+plt.axhline(analytical_mean_energy(J,T))
+plt.show()
+
+expectation_value_for_magnetization = expectation_values( mean_magnetization, save_every_nth, mc_cycles )
+plt.plot(expectation_value_for_magnetization)
+plt.axhline(analytical_mean_abs_magnetization(J,T))
 plt.show()
