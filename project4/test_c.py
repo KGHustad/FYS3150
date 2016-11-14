@@ -1,17 +1,19 @@
 import numpy as np
 from common import *
 
+seed = 3150
+
 L = 2
 spin = np.ones(shape=(L, L), dtype=np.int8)
-spin = random_spin_matrix(L)
+spin = random_spin_matrix(L, seed=seed)
 J = 1
-T = 2
+T = 1
 save_every_nth = 1
 
 #show_spins(spin)
 
 mc_cycles = int(1E7)
-energies, mean_magnetization, accepted_configurations, time_spent = metropolis_c(spin, J, T, mc_cycles, save_every_nth=save_every_nth)
+energies, mean_magnetization, accepted_configurations, time_spent = metropolis_c(spin, J, T, mc_cycles, save_every_nth=save_every_nth, seed=seed)
 mu_E, mu_M, mu_abs_M, mu_E_sq, mu_M_sq = extract_expectation_values(energies, mean_magnetization)
 
 print mu_E, mu_M, mu_abs_M, mu_E_sq, mu_M_sq
