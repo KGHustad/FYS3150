@@ -77,10 +77,18 @@ plt.ylabel("Expectation value for magnetization")
 plt.title("Converge of expectation values\nfor %.1e Monte-Carlo cycles" % (mc_cycles))
 plt.show()
 
-expectation_value_for_energy = expectation_values( mean_magnetization, save_every_nth, mc_cycles )
-plt.plot( np.abs(expectation_value_for_energy - exact_mean_abs_magnetization) )
+expectation_value_for_magnetization = expectation_values( mean_magnetization, save_every_nth, mc_cycles )
+plt.plot( np.abs(expectation_value_for_magnetization - exact_mean_abs_magnetization) )
 plt.xlabel("Monte-Carlo cycles")
 plt.ylabel("Absolute Error")
 plt.title("Error of expectation values\nfor %.1e Monte-Carlo cycles" % (mc_cycles))
 plt.ylim(0, 0.001)
 plt.show()
+
+exact_susceptibility = susceptibility(J, T)
+computed_susceptibility = (mu_M_sq - mu_abs_M**2)/T
+error_susceptibility = (computed_susceptibility - exact_susceptibility)/exact_susceptibility
+
+print "Analytical susceptibility:   %g" % exact_susceptibility
+print "Computed susceptibility:     %g" % computed_susceptibility
+print "Error susceptibility:        %g" % error_susceptibility
