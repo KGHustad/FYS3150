@@ -120,8 +120,8 @@ def extract_expectation_values(energies, mean_magnetization):
     mu_E = np.mean(energies)
     mu_M = np.mean(mean_magnetization)
     mu_abs_M = np.mean(abs(mean_magnetization))
-    mu_E_sq = scipy.stats.moment(energies, moment=2)
-    mu_M_sq = scipy.stats.moment(mean_magnetization, moment=2)
+    mu_E_sq = np.mean(energies**2)
+    mu_M_sq = np.mean(mean_magnetization**2)
     return mu_E, mu_M, mu_abs_M, mu_E_sq, mu_M_sq
 
 def Magnetization(A):
