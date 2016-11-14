@@ -4,7 +4,6 @@ from common import *
 seed = 3150
 
 L = 2
-spin = np.ones(shape=(L, L), dtype=np.int8)
 spin = random_spin_matrix(L, seed=seed)
 J = 1
 T = 1
@@ -56,7 +55,7 @@ show_spins(spin)
 expectation_value_for_energy = expectation_values( energies, save_every_nth, mc_cycles )
 plt.plot(expectation_value_for_energy, 'r')
 plt.axhline(exact_mean_energy, color = 'k')
-plt.legend(["Analytical Solution","Numerical Solution"])
+plt.legend(["Numerical Solution","Analytical Solution"])
 plt.xlabel("Monte-Carlo cycles")
 plt.ylabel("Expectation value for energy")
 plt.title("Converge of expectation values\nfor %.1e Monte-Carlo cycles" % (mc_cycles))
@@ -73,7 +72,7 @@ plt.show()
 expectation_value_for_magnetization = expectation_values( mean_magnetization, save_every_nth, mc_cycles )
 plt.plot(expectation_value_for_magnetization, 'r')
 plt.axhline(exact_mean_abs_magnetization, color = 'k' )
-plt.legend(["Analytical Solution","Numerical Solution"])
+plt.legend(["Numerical Solution", "Analytical Solution"])
 plt.xlabel("Monte-Carlo cycles")
 plt.ylabel("Expectation value for magnetization")
 plt.title("Converge of expectation values\nfor %.1e Monte-Carlo cycles" % (mc_cycles))
