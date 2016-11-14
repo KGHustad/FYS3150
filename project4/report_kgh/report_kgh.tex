@@ -93,6 +93,9 @@ Methods are derived in \ref{sec:methods}, implementation considerations and resu
 
 
 \section{Implementation and results}\label{sec:implementation_and_results}
+For our implementation, we chose a hybrid Python-C approach -- inexpensive operations such as initialization of arrays and extracting the important quantities from the results are done in Python, where we can write short, high-level code, while the expensive operations, i.e. the Metropolis algorithm, is carried out in fast C code.
+
+
 
 \section{Conclusion}\label{sec:conclusion}
 
