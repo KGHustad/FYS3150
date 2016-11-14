@@ -83,6 +83,8 @@ This is a cite\cite{lecture_notes}
 \]
 
 
+The absolute mean magnetization $\langle |M| \angle$ will simply be refered to as the mean magnetization, and be written as $\langle M \rangle$
+
 The partition function is given as
 \begin{equation}
 Z = \sum\limits_{i=1}^Q e^{\beta E_i}
@@ -119,12 +121,12 @@ The expectation value for the squared energy $E^2$ is given by
 
 The heat capacity $C_V$ is given by
 \begin{equation}
-\langle C_v \rangle = \frac{\langle E^2 \rangle - \langle E \rangle ^2}{k_B T^2} = \frac{\frac{\left(-8Je^{-8\beta J} + 8Je^{8\beta J}\right)^2}{\left(e^{-8\beta J} + e^{8\beta J} + 6\right)^2} - \frac{64J^2e^{-8\beta J} + 64J^2e^{8\beta J}}{e^{-8\beta J}+e^{8\beta J} + 6}}{k_B T^2}
+\langle C_v \rangle = \frac{\langle E^2 \rangle - \langle E \rangle ^2}{k_B T^2}
 \end{equation}
 
 
 \begin{equation}
-\langle M \rangle = \frac{1}{Z} \sum\limits_{i=1}^Q M_i e^{-\beta E_i}
+\langle M \rangle = \frac{1}{Z} \sum\limits_{i=1}^Q |M_i| e^{-\beta E_i}
 \end{equation}
 Of the total possible states $Q = 16$, we have
 \begin{itemize}
@@ -134,19 +136,18 @@ Of the total possible states $Q = 16$, we have
 \end{itemize}
 This results in a mean absolute magnetization
 \begin{equation}
-\langle |M| \rangle = \frac{1}{Z} (16+8e^{8\beta}) = \frac{8+4e^{-8\beta J}}{e^{-8\beta J} + e^{\beta} + 6}
+\langle M \rangle = \frac{1}{Z} (16+8e^{8\beta}) = \frac{8+4e^{-8\beta J}}{e^{-8\beta J} + e^{\beta} + 6}
 \end{equation}
-a mean magnetization
-\begin{equation}
-\langle M \rangle = \frac{1}{Z} (0) = 0
-\end{equation}
+
 and a mean magnetization sqaured
 \begin{equation}
 \langle M^2 \rangle = \frac{1}{Z} (32+32e^{8\beta J}) = \frac{16 + 16e^{8\beta}}{e^{-8\beta J} + e^{8\beta J} + 6}
 \end{equation}
 
-
-
+The susceptibility is defined as
+\begin{equation}
+\langle \chi \rangle = \frac{\langle M^2 \rangle - \langle M \rangle ^2}{k_B T^2}
+\end{equation}
 
 
 

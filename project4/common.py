@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import random
 import time
 import ctypes
-from math import sqrt, exp
+import math
 
 def random_spin_matrix(L):
     a = np.random.randint(0, 2, size=(L, L), dtype=np.int8)
@@ -136,23 +136,23 @@ def show_spins(spin):
 
 def analytical_mean_energy(J, T):
     beta = 1./T
-    Z = 2*exp(-8*beta*J) + 2*exp(8*beta*J) + 12.0
-    return -(-16*J*exp(-8*J*beta) + 16*J*exp(8*beta*J)) / Z
+    Z = 2*np.exp(-8*beta*J) + 2*np.exp(8*beta*J) + 12.0
+    return -(-16*J*np.exp(-8*J*beta) + 16*J*np.exp(8*beta*J)) / Z
 
 def analytical_mean_energy_squared(J, T):
     beta = 1./T
-    Z = 2*exp(-8*beta*J) + 2*exp(8*beta*J) + 12.0
-    return (128*J**2*exp(-8*beta*J) + 128*J**2*exp(8*beta*J)) / Z
+    Z = 2*np.exp(-8*beta*J) + 2*np.exp(8*beta*J) + 12.0
+    return (128*J**2*np.exp(-8*beta*J) + 128*J**2*np.exp(8*beta*J)) / Z
 
 def analytical_mean_abs_magnetization(J, T):
     beta = 1./T
-    Z = 2*exp(-8*beta*J) + 2*exp(8*beta*J) + 12.0
-    return (16 + 8*exp(8*beta)) / Z
+    Z = 2*np.exp(-8*beta*J) + 2*np.exp(8*beta*J) + 12.0
+    return (16 + 8*np.exp(8*beta)) / Z
 
 def analytical_mean_magnetization_squared(J, T):
     beta = 1./T
-    Z = 2*exp(-8*beta*J) + 2*exp(8*beta*J) + 12.0
-    return (32 + 32*exp(8*beta*J)) / Z
+    Z = 2*np.exp(-8*beta*J) + 2*np.exp(8*beta*J) + 12.0
+    return (32 + 32*np.exp(8*beta*J)) / Z
 
 def heat_capacity(J, T):
     beta = 1./T
