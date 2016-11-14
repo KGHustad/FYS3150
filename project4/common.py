@@ -113,7 +113,7 @@ def metropolis_c(spin, J, T, sweeps, save_every_nth=1, silent=False):
     if not silent:
         print "Time spent (C): %g" % time_spent
 
-    mean_magnetization = tot_magnetization / float(L**2)
+    mean_magnetization = tot_magnetization
     return energies, mean_magnetization, accepted_configurations.value, time_spent
 
 def extract_expectation_values(energies, mean_magnetization):
