@@ -144,4 +144,4 @@ def analytical_mean_energy_squared(J, T):
 
 def analytical_mean_magnetization(J, T):
     beta = 1./T
-    return (16 + 8*exp(-8*beta*J)) / ( exp(-8*beta*J) + exp(8*beta*J) + 6 )
+    return (8 + 4*exp(-8*beta*J)) / ( exp(-8*beta*J) + exp(8*beta*J) + 6 )
