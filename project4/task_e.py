@@ -3,6 +3,7 @@ import multiprocessing
 import tabulate # on ImportError, run 'pip install tabulate'
 import cPickle as pickle
 import time
+import argparse
 
 def format_table(data_dict):
     L_values = data_dict['L_values']
@@ -24,17 +25,19 @@ def format_table(data_dict):
     headers = ['L', 'T', 'mu_E', 'mu_abs_M', 'susceptibility', 'specific_heat']
     return tabulate.tabulate(table_data, headers, tablefmt='simple')
 
+parser = argparse.ArgumentParser()
+parser.add_argument('-S', '--sweeps', dest='sweeps', type=float, default=int(1E4))
+parser.add_argument('-dT', '--temp_step', dest='dT', type=float, default=0.1)
+parser.add_argument('--seed', dest='seed', type=int, default=3150)
+args = parser.parse_args()
 
-time_suffix = True
-if time_suffix:
-     out_data_file = 'task_e_%s.dat' % time.strftime('%Y-%m-%d--%H-%M-%S')
-else:
-     out_data_file = 'task_e.dat'
+dT = args.dT
+sweeps = int(args.sweeps)
+seed = args.seed
 
-seed = 3150
+T_values = np.linspace(2, 2.3, int(round(0.3/dT))+1)
 
 J = 1
-T = 1
 save_every_nth = 1
 
 pool = multiprocessing.Pool()
@@ -44,10 +47,16 @@ L_values = [40, 60, 100, 140]
 L_values = np.asarray(L_values)
 spin_matrices = {L: homogeneous_spin_matrix(L, 1) for L in L_values}
 
-dt = 0.02
-T_values = np.linspace(2, 2.3, int(round(0.3/dt))+1)
 
-sweeps = int(1E4)
+
+
+out_data_file_basename = 'task_e_dT=%g_sweeps=%.0E' % (dT, sweeps)
+time_suffix = True
+if time_suffix:
+     out_data_file = '%s_%s.dat' % (out_data_file_basename, time.strftime('%Y-%m-%d--%H-%M-%S'))
+else:
+     out_data_file = '%s.dat' % out_data_file_basename
+
 
 results = {}
 out_data = {}
@@ -57,10 +66,10 @@ out_data['T_values'] = T_values
 
 print "L values:"
 print L_values
+print
 
 print "T values:"
 print T_values
-
 print
 
 for L in reversed(L_values):
