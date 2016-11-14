@@ -6,20 +6,25 @@ import time
 import ctypes
 import math
 
-def random_spin_matrix(L):
+def random_spin_matrix(L, seed=None):
+    if seed != None:
+        np.random.seed(seed)
     a = np.random.randint(0, 2, size=(L, L), dtype=np.int8)
     return np.ones(shape=(L, L), dtype=np.int8) - 2*a
 
-def random_spin_matrix_c(L):
+def random_spin_matrix_c(L, seed=None):
+    if seed == None:
+        seed = 0
     spin = np.empty(shape=(L, L), dtype=np.int8)
 
-    from ctypes import c_int8, c_int
+    from ctypes import c_int8, c_int, c_ulong
     int8_array = np.ctypeslib.ndpointer(dtype=c_int8, ndim=1,
                                         flags="contiguous")
     libising = np.ctypeslib.load_library("libising.so", "src/c")
-    libising.fill_random.argstypes = [int8_array, c_int]
+    libising.fill_random.argstypes = [int8_array, c_int, c_ulong]
     libising.fill_random(np.ctypeslib.as_ctypes(spin),
-                         c_int(L))
+                         c_int(L),
+                         c_ulong(seed))
     return spin
 
 def EnergyConfig(A, J):
@@ -56,7 +61,7 @@ def Metropolis(A, J, steps):
         Energy[k+1] += Energy[k]
     return A, Energy
 
-def metropolis_c(spin, J, T, sweeps, save_every_nth=1, silent=False):
+def metropolis_c(spin, J, T, sweeps, save_every_nth=1, seed=0, silent=False):
     if not spin.dtype == np.int8:
         print "Wrong usage! Spin array must be of dtype np.int8"
         return
@@ -69,7 +74,7 @@ def metropolis_c(spin, J, T, sweeps, save_every_nth=1, silent=False):
     tot_magnetization = np.empty(saved_states, dtype=np.int64)
 
     # import and create the needed types
-    from ctypes import c_int8, c_int, c_long, c_double
+    from ctypes import c_int8, c_int, c_long, c_ulong, c_double
     c_long_ptr = ctypes.POINTER(c_long)
     c_double_ptr = ctypes.POINTER(c_double)
     int8_array = np.ctypeslib.ndpointer(dtype=c_int8, ndim=1,
@@ -89,7 +94,8 @@ def metropolis_c(spin, J, T, sweeps, save_every_nth=1, silent=False):
                                            c_double_ptr,
                                            c_long_ptr,
                                            c_long_ptr,
-                                           c_long]
+                                           c_long,
+                                           c_ulong]
 
     # make c primitives to pass by reference
     accepted_configurations = c_long(0)
@@ -105,7 +111,8 @@ def metropolis_c(spin, J, T, sweeps, save_every_nth=1, silent=False):
                               np.ctypeslib.as_ctypes(energies),
                               np.ctypeslib.as_ctypes(tot_magnetization),
                               ctypes.byref(accepted_configurations),
-                              c_long(save_every_nth)
+                              c_long(save_every_nth),
+                              c_ulong(seed)
                               )
     post = time.clock()
     time_spent = post - pre

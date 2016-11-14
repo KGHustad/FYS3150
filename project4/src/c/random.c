@@ -16,11 +16,13 @@ unsigned long get_unix_seed(void) {
     return seed;
 }
 
-gsl_rng* initialize_rng() {
+gsl_rng* initialize_rng(unsigned long seed) {
     const gsl_rng_type * T; /* specifies the type of random number generator */
     gsl_rng * r; /* pointer to random number generator */
 
-    unsigned long seed = get_unix_seed();
+    if (seed == 0) {
+        seed = get_unix_seed();
+    }
 
     /*gsl_rng_env_setup();*/
 
@@ -42,9 +44,9 @@ inline int8_t rand_plus_minus(gsl_rng *r) {
     return ((int8_t) (gsl_rng_get(r) & 2)) - 1;
 }
 
-void fill_random(int8_t *spin, int L) {
+void fill_random(int8_t *spin, int L, unsigned long seed) {
     int i;
-    gsl_rng *r = initialize_rng();
+    gsl_rng *r = initialize_rng(seed);
     for (i = 0; i < L*L; i++) {
         spin[i] = rand_plus_minus(r);
     }
