@@ -144,8 +144,9 @@ def show_spins(spin):
     plt.imshow(spin, cmap=plt.cm.gray, vmin=-1, vmax=1, interpolation='none')
     plt.show()
 
-def expectation_values(values_array, save_every_nth, mc_cycles):
-    return np.cumsum(values_array) / np.arange(1, (mc_cycles/save_every_nth+2), dtype=np.float64)
+def expectation_values(values_array, mc_cycles):
+    denom = np.arange(1, (mc_cycles+1), dtype=np.float64)
+    return np.cumsum(values_array) / denom
 
 
 #Analytical expressions for expectations values of 2x2 lattice.
@@ -172,8 +173,8 @@ def analytical_mean_magnetization_squared(J, T):
 
 def heat_capacity(J, T):
     beta = 1./T
-    return ( analytical_mean_energy_squared(J, T) - analytical_mean_energy(J, T)**2 ) / ( k_B * T**2 )
+    return ( analytical_mean_energy_squared(J, T) - analytical_mean_energy(J, T)**2 ) / ( T**2 )
 
 def susceptibility(J, T):
     beta = 1./T
-    return ( analytical_mean_abs_magnetization(J, T) - analytical_mean_magnetization_squared(J, T) ) / ( k_B * T**2 )
+    return ( analytical_mean_magnetization_squared(J, T) - analytical_mean_abs_magnetization(J, T)**2 ) / ( T**2 )
