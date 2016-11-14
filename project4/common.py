@@ -136,12 +136,20 @@ def show_spins(spin):
 
 def analytical_mean_energy(J, T):
     beta = 1./T
-    return -(-8*J*exp(-8*J*beta) + 8*J*exp(8*beta*J)) / (exp(-8*beta*J) + exp(8*beta*J) + 6.0)
+    Z = 2*exp(-8*beta*J) + 2*exp(8*beta*J) + 12.0
+    return -(-16*J*exp(-8*J*beta) + 16*J*exp(8*beta*J)) / Z
 
 def analytical_mean_energy_squared(J, T):
     beta = 1./T
-    return ( -8*J*exp(-8*beta*J) + 8*J*exp(8*beta*J) )**2 / ( exp(-8*beta*J) + exp(8*beta*J) + 6 )**2
+    Z = 2*exp(-8*beta*J) + 2*exp(8*beta*J) + 12.0
+    return (128*J**2*exp(-8*beta*J) + 128*J**2*exp(8*beta*J)) / Z
 
 def analytical_mean_abs_magnetization(J, T):
     beta = 1./T
-    return (8 + 4*exp(8*beta)) / ( exp(-8*beta*J) + exp(8*beta*J) + 6 )
+    Z = 2*exp(-8*beta*J) + 2*exp(8*beta*J) + 12.0
+    return (16 + 8*exp(8*beta)) / Z
+
+def analytical_mean_magnetization_squared(J, T):
+    beta = 1./T
+    Z = 2*exp(-8*beta*J) + 2*exp(8*beta*J) + 12.0
+    return (128 + 32*exp(8*beta) / Z)

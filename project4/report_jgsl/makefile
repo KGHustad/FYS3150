@@ -8,4 +8,4 @@ show: Report.pdf    #shows pdf-file
 	evince Report.pdf &    #evince = pdf-reader
 clean:
 	latexmk -c    #
-	rm *.bbl *.run.xml    #
+	$(RM) *.bbl *.run.xml    #
