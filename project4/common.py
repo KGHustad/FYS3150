@@ -68,7 +68,6 @@ def metropolis_c(spin, J, T, sweeps, save_every_nth=1, silent=False):
     energies = np.empty(saved_states, dtype=np.float64)
     tot_magnetization = np.empty(saved_states, dtype=np.int64)
 
-    # fill in ctypes magic
     # import and create the needed types
     from ctypes import c_int8, c_int, c_long, c_double
     c_long_ptr = ctypes.POINTER(c_long)
