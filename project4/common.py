@@ -137,6 +137,16 @@ def show_spins(spin):
     plt.imshow(spin, cmap=plt.cm.gray, vmin=-1, vmax=1, interpolation='none')
     plt.show()
 
-def analytical_energy(J, T):
+
+#Analytical expressions for 2x2 lattice.
+
+def analytical_mean_energy(J, T):
     beta = 1./T
     return -(-8*J*exp(-8*J*beta) + 8*J*exp(8*beta*J)) / (exp(-8*beta*J) + exp(8*beta*J) + 6.0)
+
+def analytical_mean_energy_squared(J, T):
+    beta = 1./T
+    return ( -8*J*exp(-8*beta*J) + 8*J*exp(8*beta*J) )**2 / ( exp(-8*beta*J) + exp(8*beta*J) + 6 )**2
+
+def analytical_mean_magnetization(J, T):
+    beta = 1./T
