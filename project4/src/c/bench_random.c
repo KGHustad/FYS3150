@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
         N = (int) atof(argv[1]);
     }
 
-    gsl_rng *r = initialize_rng();
+    gsl_rng *r = initialize_rng(0);
 
     printf("Generating %d random doubles in [0, 1)...\n", N);
     pre = clock();
