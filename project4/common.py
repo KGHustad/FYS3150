@@ -152,4 +152,4 @@ def analytical_mean_abs_magnetization(J, T):
 def analytical_mean_magnetization_squared(J, T):
     beta = 1./T
     Z = 2*exp(-8*beta*J) + 2*exp(8*beta*J) + 12.0
-    return (128 + 64*exp(8*beta) / Z)
+    return (32 + 32*exp(8*beta) / Z)
