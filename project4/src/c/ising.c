@@ -78,7 +78,8 @@ int relative_change_of_energy(lattice* lat_ptr, int i, int j) {
 }
 
 void metropolis(lattice *lat_ptr, int sweeps, double J, double *energies,
-                long *tot_magnetization, gsl_rng *r, double *dE_cache) {
+                long *tot_magnetization, gsl_rng *r, double *dE_cache,
+                long save_every_nth) {
     int L = lat_ptr->L;
     lattice lat = *lat_ptr;
     int8_t **spin = lat_ptr->spin;
@@ -87,7 +88,7 @@ void metropolis(lattice *lat_ptr, int sweeps, double J, double *energies,
     int relative_dE;
     long sweep, count, accepted_configurations=0;
     int i, j;
-    for (sweep=0; sweep < sweeps; sweep++) {
+    for (sweep=1; sweep <= sweeps; sweep++) {
         for (count=0; count < L*L; count++) {
             i = gsl_rng_uniform_int(r, L);
             j = gsl_rng_uniform_int(r, L);
@@ -104,8 +105,10 @@ void metropolis(lattice *lat_ptr, int sweeps, double J, double *energies,
                 accepted_configurations++;
             }
         }
-        energies[sweep+1] = lat.energy;
-        tot_magnetization[sweep+1] = lat.tot_magnetization;
+        if ((sweep % save_every_nth) == 0) {
+            energies[sweep/save_every_nth] = lat.energy;
+            tot_magnetization[sweep/save_every_nth] = lat.tot_magnetization;
+        }
 
     }
     lat.accepted_configurations = accepted_configurations;
@@ -113,7 +116,7 @@ void metropolis(lattice *lat_ptr, int sweeps, double J, double *energies,
 }
 
 void solve(lattice *lat_ptr, int sweeps, double J, double T,
-           double *energies, long *tot_magnetization) {
+           double *energies, long *tot_magnetization, long save_every_nth) {
     double beta = 1 / (/*boltzmann**/T);
 
     /* allocate a buffer where the few possible values of dE can be
@@ -130,7 +133,8 @@ void solve(lattice *lat_ptr, int sweeps, double J, double T,
     }
 
     gsl_rng *r = initialize_rng();
-    metropolis(lat_ptr, sweeps, J, energies, tot_magnetization, r, dE_cache);
+    metropolis(lat_ptr, sweeps, J, energies, tot_magnetization, r, dE_cache,
+               save_every_nth);
 
     /* freeing */
     destroy_rng(r);
@@ -140,7 +144,7 @@ void solve(lattice *lat_ptr, int sweeps, double J, double T,
 void python_interface(int8_t *spin_flat, int L, int sweeps, double J,
                       double T, double *energies,
                       long *tot_magnetization,
-                      long *accepted_configurations_ptr) {
+                      long *accepted_configurations_ptr, long save_every_nth) {
     /* set signal handler */
     signal(SIGINT, abort_execution);
 
@@ -148,7 +152,7 @@ void python_interface(int8_t *spin_flat, int L, int sweeps, double J,
     find_energy(&lat, J);
     find_tot_magnetization(&lat);
 
-    solve(&lat, sweeps, J, T, energies, tot_magnetization);
+    solve(&lat, sweeps, J, T, energies, tot_magnetization, save_every_nth);
 
 
     *energies = lat.energy;

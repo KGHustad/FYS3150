@@ -56,15 +56,17 @@ def Metropolis(A, J, steps):
         Energy[k+1] += Energy[k]
     return A, Energy
 
-def metropolis_c(spin, J, T, sweeps, silent=False):
+def metropolis_c(spin, J, T, sweeps, save_every_nth=1, silent=False):
     if not spin.dtype == np.int8:
         print "Wrong usage! Spin array must be of dtype np.int8"
         return
 
     L = spin.shape[0]
 
-    energies = np.empty(sweeps+1, dtype=np.float64)
-    tot_magnetization = np.empty(sweeps+1, dtype=np.int64)
+    saved_states = sweeps/save_every_nth + 1
+
+    energies = np.empty(saved_states, dtype=np.float64)
+    tot_magnetization = np.empty(saved_states, dtype=np.int64)
 
     # fill in ctypes magic
     # import and create the needed types
@@ -87,7 +89,8 @@ def metropolis_c(spin, J, T, sweeps, silent=False):
                                            c_double,
                                            c_double_ptr,
                                            c_long_ptr,
-                                           c_long_ptr]
+                                           c_long_ptr,
+                                           c_long]
 
     # make c primitives to pass by reference
     #energy = c_double(0)
@@ -106,7 +109,8 @@ def metropolis_c(spin, J, T, sweeps, silent=False):
                               #ctypes.byref(mean_magnetization),
                               np.ctypeslib.as_ctypes(energies),
                               np.ctypeslib.as_ctypes(tot_magnetization),
-                              ctypes.byref(accepted_configurations)
+                              ctypes.byref(accepted_configurations),
+                              c_long(save_every_nth)
                               )
     post = time.clock()
     time_spent = post - pre
@@ -115,7 +119,7 @@ def metropolis_c(spin, J, T, sweeps, silent=False):
         print "Time spent (C): %g" % time_spent
 
     #return energy.value, mean_magnetization.value, accepted_configurations.value, time_spent
-    mean_magnetization = tot_magnetization / L**2
+    mean_magnetization = tot_magnetization / float(L**2)
     return energies, mean_magnetization, accepted_configurations.value, time_spent
 
 def extract_expectation_values(energies, mean_magnetization):
