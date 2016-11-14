@@ -1,4 +1,3 @@
-import numpy as np
 from common import *
 
 seed = 3150
