@@ -14,7 +14,7 @@ mc_cycles = int(1E7)
 energies, mean_magnetization, accepted_configurations, time_spent = metropolis_c(spin, J, T, mc_cycles, save_every_nth=save_every_nth, seed=seed)
 mu_E, mu_M, mu_abs_M, mu_E_sq, mu_M_sq = extract_expectation_values(energies, mean_magnetization)
 
-print mu_E, mu_M, mu_abs_M, mu_E_sq, mu_M_sq
+length = len(energies)
 
 
 exact_mean_energy = analytical_mean_energy(J, T)
@@ -65,7 +65,7 @@ print "Accepted configurations: %8g" % accepted_configurations
 
 show_spins(spin)
 
-expectation_value_for_energy = expectation_values( energies, save_every_nth, mc_cycles )
+expectation_value_for_energy = expectation_values( energies, length )
 plt.plot(expectation_value_for_energy, 'r')
 plt.axhline(exact_mean_energy, color = 'k')
 plt.legend(["Numerical Solution","Analytical Solution"])
@@ -74,7 +74,7 @@ plt.ylabel("Expectation value for energy")
 plt.title("Converge of expectation values\nfor %.1e Monte-Carlo cycles" % (mc_cycles))
 plt.show()
 
-expectation_value_for_energy = expectation_values( energies, save_every_nth, mc_cycles )
+expectation_value_for_energy = expectation_values( energies, length )
 plt.plot( np.abs(expectation_value_for_energy - exact_mean_energy) )
 plt.xlabel("Monte-Carlo cycles")
 plt.ylabel("Absolute Error")
@@ -82,7 +82,7 @@ plt.title("Error of expectation values\nfor %.1e Monte-Carlo cycles" % (mc_cycle
 plt.ylim(0, 0.001)
 plt.show()
 
-expectation_value_for_magnetization = expectation_values( mean_magnetization, save_every_nth, mc_cycles )
+expectation_value_for_magnetization = expectation_values( mean_magnetization, length )
 plt.plot(expectation_value_for_magnetization, 'r')
 plt.axhline(exact_mean_abs_magnetization, color = 'k' )
 plt.legend(["Numerical Solution", "Analytical Solution"])
@@ -91,7 +91,7 @@ plt.ylabel("Expectation value for magnetization")
 plt.title("Converge of expectation values\nfor %.1e Monte-Carlo cycles" % (mc_cycles))
 plt.show()
 
-expectation_value_for_magnetization = expectation_values( mean_magnetization, save_every_nth, mc_cycles )
+expectation_value_for_magnetization = expectation_values( mean_magnetization, length )
 plt.plot( np.abs(expectation_value_for_magnetization - exact_mean_abs_magnetization) )
 plt.xlabel("Monte-Carlo cycles")
 plt.ylabel("Absolute Error")
