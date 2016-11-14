@@ -106,20 +106,18 @@ Z = \sum\limits_{i=1}^16 e^{\beta E_i} = 2e^{-8\beta J} + 2e^{8\beta J} + 12
 
 The expectation value for the energy $E$ is given by
 \begin{equation}\begin{split}
-\langle E \rangle &= -\frac{1}{Z}\frac{\partial Z}{\partial\beta} = -\frac{1}{2e^{-8\beta J} + 2e^{8\beta J} + 12} \frac{\partial (2e^{-8\beta J} + 2e^{8\beta J} + 12)}{\partial \beta}\\\\
-&= -\frac{-16Je^{-8\beta J} + 16Je^{8\beta J}}{2e^{-8\beta J} + 2e^{8\beta J} + 12} = -\frac{-8Je^{-8\beta J} + 8Je^{8\beta J}}{e^{-8\beta J} + e^{8\beta J} + 6}
+\langle E \rangle &= -\frac{1}{Z}\frac{\partial Z}{\partial\beta} = -\frac{1}{Z} \frac{\partial (2e^{-8\beta J} + 2e^{8\beta J} + 12)}{\partial \beta}\\\\
+&= -\frac{-16Je^{-8\beta J} + 16Je^{8\beta J}}{Z} = -\frac{-8Je^{-8\beta J} + 8Je^{8\beta J}}{e^{-8\beta J} + e^{8\beta J} + 6}
 \end{split}\end{equation}
 
+The expectation value for the squared energy $E^$ is given by
 \begin{equation}\begin{split}
 \langle E^2 \rangle &= \frac{1}{Z}\frac{\partial^2 Z}{\partial\beta^2} = \frac{1}{Z}\frac{\partial}{\partial\beta}\left(-16Je^{-8\beta J} + 16Je^{8\beta J} \right)\\\\
-&= \frac{128J^2e^{-8\beta J} + 128J^2e^{8\beta J}}{2e^{-8\beta J}+2e^{8\beta J} + 12} = \frac{64J^2e^{-8\beta J} + 64J^2e^{8\beta J}}{e^{-8\beta J}+e^{8\beta J} + 6}
+&= \frac{128J^2e^{-8\beta J} + 128J^2e^{8\beta J}}{Z} = \frac{64J^2e^{-8\beta J} + 64J^2e^{8\beta J}}{e^{-8\beta J}+e^{8\beta J} + 6}
 \end{split}\end{equation}
 
 
-\begin{equation}\begin{split}
-\langle E \rangle ^2 = \frac{\left(-8Je^{-8\beta J} + 8Je^{8\beta J}\right)^2}{\left(e^{-8\beta J} + e^{8\beta J} + 6\right)^2}
-\end{split}\end{equation}
-
+The heat capacity $C_V$ is given by
 \begin{equation}
 \langle C_v \rangle = \frac{\langle E^2 \rangle - \langle E \rangle ^2}{k_B T^2} = \frac{\frac{\left(-8Je^{-8\beta J} + 8Je^{8\beta J}\right)^2}{\left(e^{-8\beta J} + e^{8\beta J} + 6\right)^2} - \frac{64J^2e^{-8\beta J} + 64J^2e^{8\beta J}}{e^{-8\beta J}+e^{8\beta J} + 6}}{k_B T^2}
 \end{equation}
