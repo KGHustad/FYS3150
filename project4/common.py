@@ -6,6 +6,12 @@ import time
 import ctypes
 import math
 
+def homogeneous_spin_matrix(L, value=1):
+    if not (value == 1 or value == -1):
+        print "Spins must be -1 or 1"
+        return None
+    return np.full((L, L), value, dtype=np.int8)
+
 def random_spin_matrix(L, seed=None):
     if seed != None:
         np.random.seed(seed)
