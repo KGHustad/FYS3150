@@ -65,13 +65,21 @@ if __name__ == '__main__':
     parser.add_argument('-S', '--sweeps', dest='sweeps', type=float, default=int(1E4))
     parser.add_argument('-dT', '--temp_step', dest='dT', type=float, default=0.1)
     parser.add_argument('--seed', dest='seed', type=int, default=3150)
+    parser.add_argument('--T_start', dest='T_start', type=float, default=2.0)
+    parser.add_argument('--T_stop', dest='T_stop', type=float, default=2.3)
+    parser.add_argument('--cutoff', dest='cutoff', type=float, default=0)
     args = parser.parse_args()
 
     dT = args.dT
     sweeps = int(args.sweeps)
     seed = args.seed
+    T_start = args.T_start
+    T_stop = args.T_stop
+    cutoff = int(args.cutoff)
 
-    T_values = np.linspace(2, 2.3, int(round(0.3/dT))+1)
+    n = int(round((T_stop - T_start)/dT))+1
+
+    T_values = np.linspace(T_start, T_stop, n)
 
     J = 1
     save_every_nth = 1
@@ -100,6 +108,7 @@ if __name__ == '__main__':
     out_data['L_values'] = L_values
     out_data['T_values'] = T_values
     out_data['sweeps'] = sweeps
+    out_data['cutoff'] = cutoff
 
     print "L values:"
     print L_values
@@ -119,7 +128,7 @@ if __name__ == '__main__':
         for T in T_values:
             energies, mean_magnetization, accepted_configurations, time_spent = results[(L, T)].get()
 
-            mu_E, mu_M, mu_abs_M, mu_E_sq, mu_M_sq = extract_expectation_values(energies, mean_magnetization)
+            mu_E, mu_M, mu_abs_M, mu_E_sq, mu_M_sq = extract_expectation_values(energies[cutoff:], mean_magnetization[cutoff:])
 
             susceptibility = (mu_M_sq - mu_abs_M**2)/T**2
             specific_heat = (mu_E_sq - mu_E**2)/T**2
