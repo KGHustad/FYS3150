@@ -25,78 +25,115 @@ def format_table(data_dict):
     headers = ['L', 'T', 'mu_E', 'mu_abs_M', 'susceptibility', 'specific_heat']
     return tabulate.tabulate(table_data, headers, tablefmt='simple')
 
-parser = argparse.ArgumentParser()
-parser.add_argument('-S', '--sweeps', dest='sweeps', type=float, default=int(1E4))
-parser.add_argument('-dT', '--temp_step', dest='dT', type=float, default=0.1)
-parser.add_argument('--seed', dest='seed', type=int, default=3150)
-args = parser.parse_args()
+def plot(data_dict, show=False):
+    L_values = data_dict['L_values']
+    T_values = data_dict['T_values']
+    sweeps = data_dict['sweeps']
+    dT = T_values[1] - T_values[0]
 
-dT = args.dT
-sweeps = int(args.sweeps)
-seed = args.seed
+    length = len(T_values)
+    mu_E = np.zeros(length)
+    mu_abs_M = np.zeros(length)
+    susceptibility = np.zeros(length)
+    specific_heat = np.zeros(length)
 
-T_values = np.linspace(2, 2.3, int(round(0.3/dT))+1)
+    plots = [(mu_E, 'mean_energy', '$\mu_E$'),
+             (mu_abs_M, 'mean_abs_magnetization', '$\mu_{|M|}$'),
+             (susceptibility, 'susceptibility', '$\chi$'),
+             (specific_heat, 'specific_heat', '$C_V$')]
+    plt.clf()
+    for L in L_values:
+        print L
+        for i, T in enumerate(T_values):
+            entry = data_dict[(L, T)]
+            mu_E[i] = entry['mu_E']
+            mu_abs_M[i] = entry['mu_abs_M']
+            susceptibility[i] = entry['susceptibility']
+            specific_heat[i] = entry['specific_heat']
+        for data_array, desc, ylabel in plots:
+            plt.plot(T_values, data_array)
+            plt.xlabel('T')
+            plt.ylabel(ylabel)
+            plt.savefig('fig/plot_e_L=%03d_dT=%g_sweeps=%.0E_%s.pdf' % (
+                        L, dT, sweeps, desc))
+            if show:
+                plt.show()
+            plt.clf()
 
-J = 1
-save_every_nth = 1
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-S', '--sweeps', dest='sweeps', type=float, default=int(1E4))
+    parser.add_argument('-dT', '--temp_step', dest='dT', type=float, default=0.1)
+    parser.add_argument('--seed', dest='seed', type=int, default=3150)
+    args = parser.parse_args()
 
-pool = multiprocessing.Pool()
+    dT = args.dT
+    sweeps = int(args.sweeps)
+    seed = args.seed
 
-#L_values = [20, 40]
-L_values = [40, 60, 100, 140]
-L_values = np.asarray(L_values)
-spin_matrices = {L: homogeneous_spin_matrix(L, 1) for L in L_values}
+    T_values = np.linspace(2, 2.3, int(round(0.3/dT))+1)
+
+    J = 1
+    save_every_nth = 1
+
+    pool = multiprocessing.Pool()
+
+    #L_values = [20, 40]
+    L_values = [40, 60, 100, 140]
+    L_values = np.asarray(L_values)
+    spin_matrices = {L: homogeneous_spin_matrix(L, 1) for L in L_values}
 
 
 
 
-out_data_file_basename = 'task_e_dT=%g_sweeps=%.0E' % (dT, sweeps)
-time_suffix = True
-if time_suffix:
-     out_data_file = '%s_%s.dat' % (out_data_file_basename, time.strftime('%Y-%m-%d--%H-%M-%S'))
-else:
-     out_data_file = '%s.dat' % out_data_file_basename
+    out_data_file_basename = 'task_e_dT=%g_sweeps=%.0E' % (dT, sweeps)
+    time_suffix = True
+    if time_suffix:
+         out_data_file = '%s_%s.dat' % (out_data_file_basename, time.strftime('%Y-%m-%d--%H-%M-%S'))
+    else:
+         out_data_file = '%s.dat' % out_data_file_basename
 
 
-results = {}
-out_data = {}
+    results = {}
+    out_data = {}
 
-out_data['L_values'] = L_values
-out_data['T_values'] = T_values
+    out_data['L_values'] = L_values
+    out_data['T_values'] = T_values
+    out_data['sweeps'] = sweeps
 
-print "L values:"
-print L_values
-print
+    print "L values:"
+    print L_values
+    print
 
-print "T values:"
-print T_values
-print
+    print "T values:"
+    print T_values
+    print
 
-for L in reversed(L_values):
-    for T in T_values:
-            spin = spin_matrices[L].copy()
-            argv = [spin, J, T, sweeps, save_every_nth, seed]
-            results[(L, T)] = pool.apply_async(metropolis_c, argv)
+    for L in reversed(L_values):
+        for T in T_values:
+                spin = spin_matrices[L].copy()
+                argv = [spin, J, T, sweeps, save_every_nth, seed]
+                results[(L, T)] = pool.apply_async(metropolis_c, argv)
 
-for L in reversed(L_values):
-    for T in T_values:
-        energies, mean_magnetization, accepted_configurations, time_spent = results[(L, T)].get()
+    for L in reversed(L_values):
+        for T in T_values:
+            energies, mean_magnetization, accepted_configurations, time_spent = results[(L, T)].get()
 
-        mu_E, mu_M, mu_abs_M, mu_E_sq, mu_M_sq = extract_expectation_values(energies, mean_magnetization)
+            mu_E, mu_M, mu_abs_M, mu_E_sq, mu_M_sq = extract_expectation_values(energies, mean_magnetization)
 
-        susceptibility = (mu_M_sq - mu_abs_M**2)/T**2
-        specific_heat = (mu_E_sq - mu_E**2)/T**2
+            susceptibility = (mu_M_sq - mu_abs_M**2)/T**2
+            specific_heat = (mu_E_sq - mu_E**2)/T**2
 
-        entry = {}
-        #print "L=%g  T=%g   mu_E=%g" % (L, T, mu_E)
-        entry['mu_E'] = mu_E
-        entry['mu_abs_M'] = mu_abs_M
-        entry['susceptibility'] = susceptibility
-        entry['specific_heat'] = specific_heat
-        out_data[(L, T)] = entry
+            entry = {}
+            #print "L=%g  T=%g   mu_E=%g" % (L, T, mu_E)
+            entry['mu_E'] = mu_E
+            entry['mu_abs_M'] = mu_abs_M
+            entry['susceptibility'] = susceptibility
+            entry['specific_heat'] = specific_heat
+            out_data[(L, T)] = entry
 
-with open(out_data_file, 'w') as f:
-    pickle.dump(out_data, f)
+    with open(out_data_file, 'w') as f:
+        pickle.dump(out_data, f)
 
-#print out_data
-print format_table(out_data)
+    #print out_data
+    print format_table(out_data)
