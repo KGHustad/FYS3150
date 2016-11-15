@@ -52,7 +52,7 @@ def plot(data_dict, show=False):
             specific_heat[i] = entry['specific_heat']
         for data_array, desc, ylabel in plots:
             plt.plot(T_values, data_array)
-            plt.xlabel('T')
+            plt.xlabel('$T$')
             plt.ylabel(ylabel)
             plt.savefig('fig/plot_e_L=%03d_dT=%g_sweeps=%.0E_%s.pdf' % (
                         L, dT, sweeps, desc))
