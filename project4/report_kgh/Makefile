@@ -1,4 +1,4 @@
-.PHONY: clean clean-latex report show
+.PHONY: clean clean-latex continuous report show
 
 LATEX=pdflatex
 LATEX_OPTS=
@@ -10,6 +10,8 @@ bibliography=../../papers.bib
 clean_latex_ext=*.aux *.bbl *.blg *.log *.out
 
 all: report
+continuous:
+	latexmk ${LATEX_OPTS} -pdf -pvc ${report_texdoc}
 report: $(report_pdf)
 $(report_pdf): $(report_texdoc) $(bibliography)
 	# need to run several times to fix references

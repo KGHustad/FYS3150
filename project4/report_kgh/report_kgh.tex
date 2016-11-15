@@ -60,7 +60,9 @@ In this report, ...
 
 \vfill
 
+\textbf{NOTE:} All programs and derivations used in them were made in collaboration with Jonas Gahr Sturtzel Lunde (\texttt{jonassl}).
 
+\bigskip
 \begin{center}
     GitHub repository at \url{https://github.com/KGHustad/FYS3150}
 \end{center}
@@ -73,7 +75,10 @@ In this report, ...
 \newcommand{\dx}{{\Delta x}}
 \newcommand{\bigO}{{\mathcal{O}}}
 
-\newcommand{\supnew}{^{\mathrm{new}}}
+\newcommand{\stateset}{{\mathcal{S}}}
+
+\newcommand{\upspin}{\uparrow}
+\newcommand{\downspin}{{\color{red}\downarrow}}
 
 
 
@@ -81,7 +86,9 @@ In this report, ...
 %\subsection*{Description of the nature of the problem}
 \cite{mhj_lecture_notes} % must cite something to avoid compilation error when using bibtex
 
-We aim to study ...
+We aim to study the Ising model in for a square $L \times L$ lattice with periodic boundary conditions.
+
+\textbf{WRITE MORE}
 
 
 Methods are derived in \ref{sec:methods}, implementation considerations and results are given in \ref{sec:implementation_and_results}, and finally conclusions are drawn in \ref{sec:conclusion}.
@@ -89,13 +96,111 @@ Methods are derived in \ref{sec:methods}, implementation considerations and resu
 
 
 \section{Discussion of methods}\label{sec:methods}
+We have the following expression for the energy of a given state, $i$,
+\begin{equation}
+    E_i=-J\sum_{< kl >}s_k s_l
+\end{equation}
 
+and its mean magnetization by
+\begin{equation}
+    M_i=\sum_{k}^{L^2} s_k
+\end{equation}
+
+where $s_k, s_l$ are individual spins.
+
+Further, we have the partition function, which is the sum of the energy for all states. We will denote the set of all possible states by $\stateset$.
+
+\begin{equation}
+    Z = \sum_{i \in \stateset}e^{\beta E_i}
+\end{equation}
+
+In general, a $L \times L$ lattice has $2^{L^2}$ possible states, i.e. $|\stateset| = 2^{L^2}$
+
+\subsection{The case of $L = 2$}
+
+\subsubsection{Energy and mean magnetization}
+
+ We will study the case of $L = 2$ and find analycal expressions, which we will later compare to our numerical results.
+\begin{table}[htb]
+\begin{center}
+\begin{tabular}{cccc}
+    State & Symmetries & Energy ($J$) & Mean magnetization \\ \hline
+    $ \begin{array}{cc}
+        \upspin&\upspin \\
+        \upspin&\upspin
+    \end{array} $ &
+    1 & % symmetries
+    -8 & % energy
+    4   % magnetization
+    \\ \hline
+    $ \begin{array}{cc}
+        \upspin&\upspin \\
+        \upspin&\downspin
+    \end{array} $ &
+    4 & % symmetries
+    0 & % energy
+    2   % magnetization
+    \\ \hline
+    $ \begin{array}{cc}
+        \upspin&\upspin \\
+        \downspin&\downspin
+    \end{array} $ &
+    4 & % symmetries
+    0 & % energy
+    0   % magnetization
+    \\ \hline
+    $ \begin{array}{cc}
+        \upspin&\downspin \\
+        \downspin&\upspin
+    \end{array} $ &
+    2 & % symmetries
+    8 & % energy
+    0   % magnetization
+    \\ \hline
+    $ \begin{array}{cc}
+        \downspin&\downspin \\
+        \downspin&\upspin
+    \end{array} $ &
+    4 & % symmetries
+    0 & % energy
+    -2   % magnetization
+    \\ \hline
+    $ \begin{array}{cc}
+        \downspin&\downspin \\
+        \downspin&\downspin
+    \end{array} $ &
+    1 & % symmetries
+    -8 & % energy
+    -4   % magnetization
+    \\ \hline
+\end{tabular}
+\end{center}
+\caption{All 16 possible states for $L=2$}
+\end{table}
+
+\subsubsection{Expectation values}
+
+It is known that the expectation value for the energy, the energy squared, the absolute magnetization \footnote{We will not disciminate between positive and negative magnetization}, the heat capacity and the magnetic susceptibility are respectively
+
+\begin{align}
+    \langle E \rangle &= - \frac{1}{Z} \frac{\partial }{\partial \beta} Z \\
+    \langle E^2 \rangle &= \frac{1}{Z} \frac{\partial^2}{\partial \beta^2} Z\\
+    \langle M \rangle &= \frac{1}{Z} \sum_{i \in \stateset} M_i\\
+    \langle C_V \rangle &= \\
+    \langle \chi \rangle &= \\
+\end{align}
 
 
 \section{Implementation and results}\label{sec:implementation_and_results}
-For our implementation, we chose a hybrid Python-C approach -- inexpensive operations such as initialization of arrays and extracting the important quantities from the results are done in Python, where we can write short, high-level code, while the expensive operations, i.e. the Metropolis algorithm, is carried out in fast C code.
+\subsection{Choice of language}
+For our implementation, we chose a hybrid Python-C approach -- inexpensive operations such as initialization of arrays and extracting the important quantities from the results are done in Python, where we can write short high-level code, while the expensive operations, i.e. the Metropolis algorithm, is carried out in fast C code.
 
+\subsection{Parallelization}
+The Metropolis algorithm cannot easily (and efficiently) be parallelized without side-effects. One could combine several runs with different seeds to get some kind of average, but such an approach is sub-optimal. However, it is trivial to parallelize multiple runs with differing parameters.
 
+For this purpose, we could have extended our C code with OpenMP or used MPI from Python (which has been shown to achieve similar efficiency to MPI from C++ in \cite{mortensen_langtangen_hpc_python}) but neither OpenMP nor MPI are optimal choices for such a problem. A pool based parallelization model allows for efficient and automated distribution of tasks at run time. The pool size is usually chosen to be equal to the number of logical processors, and then each worker in the pool will fetch and compute tasks until the pool is empty.
+
+Studying running times from our program, we should not be surprised to find that our parallel program induces no measurable overhead \footnote{Strictly speaking, this is only the case for machines that are able to sustain peak clock speed on all cores. Also, hyperthreading is not true parallelism, so in general one cannot expect a speedup greater than the number of cores. For these reasons, a typical laptop will see a higher time usage per job when running in parallel, but that does not mean our program is suboptimal.} and is hence optimal.
 
 \section{Conclusion}\label{sec:conclusion}
 
