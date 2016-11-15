@@ -77,25 +77,54 @@ This is a cite\cite{lecture_notes}
 
 \[
 \begin{matrix*}[r]
-\uparrow & \downarrow \\
-\downarrow & \uparrow
+\uparrow & \downarrow & & \uparrow \\
+\downarrow & \uparrow &	& \downarrow
 \end{matrix*}
 \]
 
+\section{Introduction}
 
-The absolute mean magnetization $\langle |M| \angle$ will simply be refered to as the mean magnetization, and be written as $\langle M \rangle$
 
+\section{Method and Idea}
+\subsection{Deriving expectation values}
 The partition function is given as
-\begin{equation}
+\begin{equation}\label{eqn:partition}
 Z = \sum\limits_{i=1}^Q e^{\beta E_i}
 \end{equation}
-
-where the energy $E_i$ of a state $i$ is given as, and Q is the total possible number of states, $2^N$
+Where Q is the total possible number of states, equal to $2^N$, where N is the number of spins in the lattice. The energy $E_i$ of a state $i$ is given as
 \begin{equation}
 E_i = -J \sum\limits_{<kl>}^N s_k s_l
 \end{equation}
 
-For our case we have a total of $Q = 16$ possible states. Of these states,
+The expectation value for the energy is given by
+\begin{equation}\label{eqn:energy}
+\langle E \rangle = -\frac{1}{Z}\frac{\partial Z}{\partial\beta}
+\end{equation}
+
+The expectation value for the energy squared is given by
+\begin{equation}
+\langle E^2 \rangle = \frac{1}{Z}\frac{\partial^2 Z}{\partial\beta^2}
+\end{equation}
+
+The expectation value for the absolute magnetization\footnote{which will simply be refered to as the magnetization, and written as $M$, as we will never be interested in the actual magnetization}
+\begin{equation}
+\langle M \rangle = \frac{1}{Z} \sum\limits_{i=1}^Q M_i e^{-\beta E_i}
+\end{equation}
+
+The expectation value for the heat capacity $C_V$ is given by
+\begin{equation}
+\langle C_v \rangle = \frac{\langle E^2 \rangle - \langle E \rangle ^2}{T^2}
+\end{equation}
+
+The susceptibility is defined as
+\begin{equation}
+\langle \chi \rangle = \frac{\langle M^2 \rangle - \langle M \rangle ^2}{T^2}
+\end{equation}
+
+
+\subsection{The 2x2 case}
+\subsubsection{Analytical expectation values}
+Because of the enourmous scaling of the partition function with the size of $L$, it is virtually impossible to calculate analytical values for larger lattices. Therefore, we will first study the simple case $L = 2$. This gives a total of $Q = 16$ possible states. Of these states,
 \begin{itemize}
 \item 12 have an energy $E_i = 0$
 \item 2 have an energy $E_i = -8J$
@@ -119,16 +148,8 @@ The expectation value for the squared energy $E^2$ is given by
 \end{split}\end{equation}
 
 
-The heat capacity $C_V$ is given by
-\begin{equation}
-\langle C_v \rangle = \frac{\langle E^2 \rangle - \langle E \rangle ^2}{k_B T^2}
-\end{equation}
 
-
-\begin{equation}
-\langle M \rangle = \frac{1}{Z} \sum\limits_{i=1}^Q |M_i| e^{-\beta E_i}
-\end{equation}
-Of the total possible states $Q = 16$, we have
+Now looking at magnetization, of the total possible states $Q = 16$, we have
 \begin{itemize}
 \item 8 states with absolute magnetizaton $|M| = 2$ and energy $E = 0$
 \item 2 states with absolute magnetization $|M| = 4$ and energy $E = -8J$
@@ -144,13 +165,20 @@ and a mean magnetization sqaured
 \langle M^2 \rangle = \frac{1}{Z} (32+32e^{8\beta J}) = \frac{16 + 16e^{8\beta}}{e^{-8\beta J} + e^{8\beta J} + 6}
 \end{equation}
 
-The susceptibility is defined as
-\begin{equation}
-\langle \chi \rangle = \frac{\langle M^2 \rangle - \langle M \rangle ^2}{k_B T^2}
-\end{equation}
 
 
+\subsection{The metropolis algorithm}
+We will be performing our Monte-Carlo cycles with the metropolis algorithm, in order to reach the most probable state as quickly as possible.
 
+\section{Implementation and results}
+
+\begin{lstlisting}
+Variance of energy for T = 1.0:  9.31410774333
+Variance of energy for T = 2.4:  3249.2162423
+\end{lstlisting}
+
+
+\section{Conclusion}
 
 
 

@@ -11,11 +11,11 @@ J = 1
 T1 = 1.0
 T2 = 2.4
 save_every_nth = 1
-reached_steady_state = int(1e4)
+reached_steady_state = int(1e5)
 
 #show_spins(spin)
 
-mc_cycles = int(1E5)
+mc_cycles = int(1E6)
 energies1, mean_magnetization1, accepted_configurations, time_spent = metropolis_c(spin1, J, T1, mc_cycles, save_every_nth=save_every_nth, seed=seed)
 energies2, mean_magnetization2, accepted_configurations, time_spent = metropolis_c(spin2, J, T2, mc_cycles, save_every_nth=save_every_nth, seed=seed)
 energies1 = energies1[reached_steady_state:]
