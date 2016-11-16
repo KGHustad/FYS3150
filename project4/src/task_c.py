@@ -47,7 +47,7 @@ for original_spin, desc in spin_matrices:
         expectation_value_for_magnetization = expectation_values(mean_magnetization, length)
 
         plt.plot(sweep_array, expectation_value_for_energy, 'r')
-        plt.xlabel("Monte-Carlo cycles")
+        plt.xlabel("sweeps")
         plt.ylabel("Expectation value for energy")
         plt.title("Converge of expectation values\nfor %.0E sweeps and T=%g with a\n%s spin matrix with L=%d" % (sweeps, T, desc, L))
         plt.ylim(np.percentile(expectation_value_for_energy, 0+percentile),
@@ -61,7 +61,7 @@ for original_spin, desc in spin_matrices:
         plt.clf()
 
         plt.plot(sweep_array, expectation_value_for_magnetization, 'r')
-        plt.xlabel("Monte-Carlo cycles")
+        plt.xlabel("sweeps")
         plt.ylabel("Expectation value for magnetization")
         plt.title("Converge of expectation values\nfor %.0E sweeps and T=%g with a\n%s spin matrix with L=%d" % (sweeps, T, desc, L))
         plt.ylim(np.percentile(expectation_value_for_magnetization, 0+percentile),

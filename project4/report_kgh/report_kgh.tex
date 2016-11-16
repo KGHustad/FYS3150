@@ -7,7 +7,7 @@
 \usepackage{amsmath, amssymb}
 \usepackage{tikz}
 \usepackage{graphicx}
-%\usepackage{subcaption}
+\usepackage{subcaption}
 \usepackage{parskip}
 \usepackage{lmodern}
 \usepackage{algorithm}
@@ -240,7 +240,7 @@ The Metropolis algorithm cannot easily (and efficiently) be parallelized without
 
 For this purpose, we could have extended our C code with OpenMP or used MPI from Python (which has been shown to achieve similar efficiency to MPI from C++ in \cite{mortensen_langtangen_hpc_python}) but neither OpenMP nor MPI are optimal choices for such a problem. A pool-based parallelization model allows for efficient and automated distribution of tasks at run time. The pool size is usually chosen to be equal to the number of logical processors, and then each worker in the pool will fetch and compute tasks until the pool is empty. We used python's built-in \href{https://docs.python.org/2/library/multiprocessing.html}{multiprocessing} package, which provides a simple API to pool-based parallel processing.
 
-Studying running times, we should not be surprised to find that our parallel program induces no measurable overhead \footnote{Strictly speaking, this is only the case for machines that are able to sustain peak clock speed on all cores. Also, hyperthreading is not true parallelism, so in general one cannot expect a speedup greater than the number of cores. For these reasons, a typical laptop will see a higher time usage per job when running in parallel, but that does not imply that our program is suboptimal.} and is hence optimal.
+Studying running times, we should not be surprised to find that our parallel program induces no measurable overhead \footnote{Strictly speaking, this is only the case for machines that are able to sustain peak clock speed on all cores. Also, hyperthreading is not true parallelism, so in general one cannot expect a speedup greater than the number of cores. For these reasons, a typical laptop will see a higher time usage per job when running in parallel, but that does not imply that our program is suboptimal.} and is hence optimal\footnote{We ran our program with 404 tasks on a machine with 64 logical processors. The computation which completed took 22566 CPU minutes and completed in 357 (wall clock) minutes, meaning 63.12/64 of the time was spent on useful computation (and the rest was spend idling).}.
 
 \subsection{Comparing analytical and numerical results for $L=2$}
 \begin{table}
@@ -249,7 +249,99 @@ Studying running times, we should not be surprised to find that our parallel pro
     \label{table:b}
 \end{table}
 
-From \ref{table:b} we see that $\chi$ and $C_V$ converges slower than the other quantities. We also see no improvement going from $N=10^{6}$ to $N=10^{7}$.
+From \ref{table:b} we see that $\chi$ and $C_V$ converges slower than the other quantities. We also see no improvement going from $N=10^{6}$ to $N=10^{7}$. It appears that $10^6$ sweeps over the lattice is sufficient to reach convergence.
+
+\subsection{Rate of convergence}
+After about $2\cdot 10^5$ sweeps over the lattice, the expectation values seem to have converged. We run our simulations with different input matrices but the same random seed, which mean that the same spins are attempted to be flipped. It appears that sometime before $2\cdot 10^5$, the spin matrices become equal, and from that point on, they will remain equal. Therefore, we can observe that figure \ref{fig:c:2.4:homogeneous} and figure \vref{fig:c:2.4:random} are identical.
+
+\begin{figure}[htb]
+%\includegraphics[width=\textwidth]{../fig/{plot_c_energy_homogeneous_T=2.4_sweeps=1E+06}.pdf}
+\begin{center}
+\begin{subfigure}[t]{0.8\textwidth}
+\includegraphics[width=\textwidth]{../fig/{plot_c_energy_homogeneous_T=2.4_sweeps=1E+06}.pdf}
+\caption{Homogeneous}
+\label{fig:c:2.4:homogeneous}
+\end{subfigure}
+\begin{subfigure}[t]{0.8\textwidth}
+\includegraphics[width=\textwidth]{../fig/{plot_c_energy_random_T=2.4_sweeps=1E+06}.pdf}
+\caption{Random}
+\label{fig:c:2.4:random}
+\end{subfigure}
+\end{center}
+
+\caption{Convergence of the expectation value for the energy}
+\label{fig:c:2.4}
+\end{figure}
+
+When the steady state has been reached, we expect the rate of accepted configurations to decline, while the rate is particularly large for a random matrix which is far for the steady state.
+
+\subsection{Probability distributions}
+Looking at the distribution of the energy states for $T=1$, we see that firuge \vref{fig:d:1} is heavily skewed towards the left -- almost all the values are all the way to the left. The variance is only about 9.3, which is very reasonable, when we look at the plot.
+
+For $T=2.4$, the mean is far from the theoretical minimum energy, and as we see in figure \vref{fig:d:2.4}, the distribution of the energies is approximately normal distributed. We find a variance of about 3200, and which is also very reasonable. We could probably get a reasonably good fit by using the mean energy and variance with a normal distribution.
+
+\begin{figure}[htb]
+%\includegraphics[width=\textwidth]{../fig/{plot_c_energy_homogeneous_T=2.4_sweeps=1E+06}.pdf}
+\begin{center}
+\begin{subfigure}[t]{0.8\textwidth}
+\includegraphics[width=\textwidth]{../fig/{plot_d_T=1}.pdf}
+\caption{$T=1$}
+\label{fig:d:1}
+\end{subfigure}
+\begin{subfigure}[t]{0.8\textwidth}
+\includegraphics[width=\textwidth]{../fig/{plot_d_T=2.4}.pdf}
+\caption{$T=2.4$}
+\label{fig:d:2.4}
+\end{subfigure}
+\end{center}
+
+\caption{Distribution of the energies after a steady state has been reached with $L = 20$}
+\label{fig:d}
+\end{figure}
+
+
+\subsection{Critical temperature}
+
+\begin{figure}[htb]
+\includegraphics[width=\textwidth]{{../fig/plot_e_dT=0.001_sweeps=2E+06_specific_heat}.pdf}
+\caption{The expectation value for $C_V$ of the sweeps $\in [10^6, 2\cdot10^6]$ with $\Delta T = 0.001$}
+\label{fig:e}
+\end{figure}
+
+From \vref{fig:e}, we see that the peaks seem to converge towards the analytical critical temperature, $\frac{2}{\ln(1 + \sqrt{2})} \approx 2.269$.
+
+We have
+
+\begin{equation}
+    T_C(L)-T_C(L=\infty) = aL^{-1/\nu}
+    \label{eq:critical:infty}
+\end{equation}
+
+
+Inserting for two values $L_i, L_j$ in \ref{eq:critical:infty} and subtracting, we obtain
+\begin{align}
+    T_C(L_i) - T_C(L_j) &= a(L_i^{-1/\nu} - L_j^{-1/\nu}) \nonumber \\
+    a &= \frac{T_C(L_i) - T_C(L_j)}{L_i^{-1/\nu} - L_j^{-1/\nu}}
+    \label{eq:critical:pair}
+\end{align}
+
+Now, selecting our approximations to $T_C(L)$ is somewhat difficult with the significant fluctuations, but a simple solution would be to select the $T$ value corrensponding to the global maximum for each $L$. Doing this, we find $T_C(100) = 2.277$ and $T_C(140) = 2.275$.
+
+We set $\nu=1$. Inserting $L_i = 100$ and $L_j = 140$ in \ref{eq:critical:pair}, we approximate $a$ to
+\begin{align}
+    a &= \frac{T_C(L_i) - T_C(L_j)}{L_i^{-1} - L_j^{-1}} \nonumber \\
+     &= \frac{T_C(100) - T_C(140)}{\frac{1}{100} - \frac{1}{140}}
+     \approx 0.7
+\end{align}
+
+Rearranging \ref{eq:critical:infty}, and inserting $L=140$ we find
+\begin{align}
+    {T_C}_\infty &= T_C(L) - \frac{a}{L} \nonumber \\
+    &= 2.275 - \frac{0.7}{140}
+    = 2.270
+\end{align}
+
+We are quite content with an error of 0.001 from the analytical value.
 
 \section{Conclusion}\label{sec:conclusion}
 
