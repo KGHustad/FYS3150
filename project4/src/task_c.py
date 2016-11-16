@@ -1,14 +1,22 @@
 from common import *
 import multiprocessing
+import sys
 
 L = 20
 seed = 3150*2
 
 convergence_reached = int(2E5)
+percentile = 0.02
 
 sweeps = int(1E6)
 J = 1
 save_every_nth = 1
+
+show = True
+if '--no_show' in sys.argv:
+    show = False
+
+proj_path = get_proj_path()
 
 spin_homogeneous = homogeneous_spin_matrix(L, 1)
 spin_random = random_spin_matrix(L, seed=seed)
@@ -41,17 +49,27 @@ for original_spin, desc in spin_matrices:
         plt.plot(sweep_array, expectation_value_for_energy, 'r')
         plt.xlabel("Monte-Carlo cycles")
         plt.ylabel("Expectation value for energy")
-        plt.title("Converge of expectation values\nfor %.0E sweeps\nwith a %s spin matrix with L=%d" % (sweeps, desc, L))
+        plt.title("Converge of expectation values\nfor %.0E sweeps and T=%g with a\n%s spin matrix with L=%d" % (sweeps, T, desc, L))
+        plt.ylim(np.percentile(expectation_value_for_energy, 0+percentile),
+                 np.percentile(expectation_value_for_energy, 100-percentile))
         plt.tight_layout()
-        plt.savefig('fig/plot_c_energy_%s_T=%g_sweeps=%.0E.pdf' % (
-                    desc, T, sweeps))
-        plt.show()
+        filename = 'fig/plot_c_energy_%s_T=%g_sweeps=%.0E.pdf' % (
+                    desc, T, sweeps)
+        plt.savefig(os.path.join(proj_path, filename))
+        if show:
+            plt.show()
+        plt.clf()
 
         plt.plot(sweep_array, expectation_value_for_magnetization, 'r')
         plt.xlabel("Monte-Carlo cycles")
         plt.ylabel("Expectation value for magnetization")
-        plt.title("Converge of expectation values\nfor %.0E Monte-Carlo cycles\nwith a %s spin matrix with L=%d" % (sweeps, desc, L))
+        plt.title("Converge of expectation values\nfor %.0E sweeps and T=%g with a\n%s spin matrix with L=%d" % (sweeps, T, desc, L))
+        plt.ylim(np.percentile(expectation_value_for_magnetization, 0+percentile),
+                 np.percentile(expectation_value_for_magnetization, 100-percentile))
         plt.tight_layout()
-        plt.savefig('fig/plot_c_magnetization_%s_T=%g_sweeps=%.0E.pdf' % (
-                    desc, T, sweeps))
-        plt.show()
+        filename = 'fig/plot_c_magnetization_%s_T=%g_sweeps=%.0E.pdf' % (
+                    desc, T, sweeps)
+        plt.savefig(os.path.join(proj_path, filename))
+        if show:
+            plt.show()
+        plt.clf()
