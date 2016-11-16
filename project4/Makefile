@@ -1,5 +1,7 @@
 .PHONY: clean clean-all clean-c clean-python clean-latex clean-plots libising report_kgh show_kgh clean_kgh
 
+PY_SRC_DIR=.
+
 LATEX=pdflatex
 LATEX_OPTS=
 
@@ -38,6 +40,8 @@ show_jgsl: report_kgh
 clean_jgsl:
 	$(MAKE) -C $(report_jgsl_dir) clean
 
+reference_test: libising
+	python $(PY_SRC_DIR)/task_b_table.py
 
 #test: $(test_programs) #$(libising_file)
 #	pytest $(pytest_opts) $(test_programs)
