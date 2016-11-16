@@ -5,6 +5,14 @@ import random
 import time
 import ctypes
 import math
+import os
+
+def get_lib_name():
+    return 'libising.so'
+def get_lib_path():
+    this_file_dir = os.path.dirname(__file__)
+    relative_lib_path = os.path.join(this_file_dir, 'src', 'c')
+    return relative_lib_path
 
 def homogeneous_spin_matrix(L, value=1):
     if not (value == 1 or value == -1):
@@ -26,7 +34,7 @@ def random_spin_matrix_c(L, seed=None):
     from ctypes import c_int8, c_int, c_ulong
     int8_array = np.ctypeslib.ndpointer(dtype=c_int8, ndim=1,
                                         flags="contiguous")
-    libising = np.ctypeslib.load_library("libising.so", "src/c")
+    libising = np.ctypeslib.load_library(get_lib_name(), get_lib_path())
     libising.fill_random.argstypes = [int8_array, c_int, c_ulong]
     libising.fill_random(np.ctypeslib.as_ctypes(spin),
                          c_int(L),
@@ -91,7 +99,7 @@ def metropolis_c(spin, J, T, sweeps, save_every_nth=1, seed=0, silent=False):
                                         flags="contiguous")
 
     # load library
-    libising = np.ctypeslib.load_library("libising.so", "src/c")
+    libising = np.ctypeslib.load_library(get_lib_name(), get_lib_path())
     libising.python_interface.argstypes = [int8_array,
                                            c_int,
                                            c_int,
