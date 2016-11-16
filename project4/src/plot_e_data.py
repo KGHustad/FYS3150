@@ -2,7 +2,7 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 import cPickle as pickle
-from task_e import plot
+from task_e import *
 
 filenames = sys.argv[1:]
 
@@ -15,3 +15,4 @@ for filename in filenames:
         data_dict = pickle.load(f)
     plot(data_dict, #show=True
     )
+    plot2(data_dict)

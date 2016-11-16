@@ -1,5 +1,11 @@
 from common import *
 import multiprocessing
+import os
+import sys
+
+proj_path = get_proj_path()
+
+
 #Changing fontsize to make plots readable without microscope
 plt.rc('font', **{'size' : 14})
 
@@ -13,6 +19,10 @@ T1 = 1.0
 T2 = 2.4
 save_every_nth = 1
 reached_steady_state = int(1e5)
+
+show = True
+if '--no_show' in sys.argv:
+    show = False
 
 #show_spins(spin)
 
@@ -37,17 +47,29 @@ plt.hist( energies1, bins = len(energy_frequency1[:,0]), normed = True, align = 
 plt.xlabel("Energy")
 plt.ylabel("P(E)")
 plt.title("Probability of energy-states for T = 1")
-plt.show()
+plt.tight_layout()
+filename = 'fig/plot_d_T=1.pdf'
+plt.savefig(os.path.join(proj_path, filename))
+if show:
+    plt.show()
+plt.clf()
 
 plt.plot(energy_frequency1[:,0],energy_frequency1[:,1])
-plt.show()
+if show:
+    plt.show()
+plt.clf()
 
 energy_frequency2 = scipy.stats.itemfreq(energies2)
 plt.hist( energies2, bins = energy_frequency2[:,0], normed = True, align = 'left' )
 plt.xlabel("Energy")
 plt.ylabel("P(E)")
 plt.title("Probability of energy-states for T = 2.4")
-plt.show()
+plt.tight_layout()
+filename = 'fig/plot_d_T=2.4.pdf'
+plt.savefig(os.path.join(proj_path, filename))
+if show:
+    plt.show()
+plt.clf()
 
 energy_variance1 = np.var(energies1)
 energy_variance2 = np.var(energies2)

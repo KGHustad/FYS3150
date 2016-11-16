@@ -15,6 +15,11 @@ def get_lib_path():
     relative_lib_path = os.path.join(this_file_dir, 'c')
     return relative_lib_path
 
+def get_proj_path():
+    this_file_dir = os.path.dirname(__file__)
+    proj_path = os.path.abspath(os.path.join(this_file_dir, '..'))
+    return proj_path
+
 def homogeneous_spin_matrix(L, value=1):
     if not (value == 1 or value == -1):
         print "Spins must be -1 or 1"

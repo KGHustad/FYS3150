@@ -4,6 +4,9 @@ import tabulate # on ImportError, run 'pip install tabulate'
 import cPickle as pickle
 import time
 import argparse
+import os
+
+proj_path = get_proj_path()
 
 def format_table(data_dict):
     L_values = data_dict['L_values']
@@ -54,11 +57,52 @@ def plot(data_dict, show=False):
             plt.plot(T_values, data_array)
             plt.xlabel('$T$')
             plt.ylabel(ylabel)
-            plt.savefig('fig/plot_e_L=%03d_dT=%g_sweeps=%.0E_%s.pdf' % (
-                        L, dT, sweeps, desc))
+            filename = 'fig/plot_e_L=%03d_dT=%g_sweeps=%.0E_%s.pdf' % (
+                        L, dT, sweeps, desc)
+            plt.savefig(os.path.join(proj_path, filename))
             if show:
                 plt.show()
             plt.clf()
+
+def plot2(data_dict, show=False):
+    L_values = data_dict['L_values']
+    T_values = data_dict['T_values']
+    sweeps = data_dict['sweeps']
+    dT = T_values[1] - T_values[0]
+
+    shape = (len(L_values), len(T_values))
+    mu_E = np.zeros(shape)
+    mu_abs_M = np.zeros(shape)
+    susceptibility = np.zeros(shape)
+    specific_heat = np.zeros(shape)
+
+    plots = [#(mu_E, 'mean_energy', '$\mu_E$'),
+             #(mu_abs_M, 'mean_abs_magnetization', '$\mu_{|M|}$'),
+             #(susceptibility, 'susceptibility', '$\chi$'),
+             (specific_heat, 'specific_heat', '$C_V/L^2$')]
+    plt.clf()
+    for l, L in enumerate(L_values):
+        for i, T in enumerate(T_values):
+            entry = data_dict[(L, T)]
+            mu_E[l,i] = entry['mu_E']/float(L**2)
+            mu_abs_M[l,i] = entry['mu_abs_M']/float(L**2)
+            susceptibility[l,i] = entry['susceptibility']/float(L**2)
+            specific_heat[l,i] = entry['specific_heat']/float(L**2)
+    for data_array, desc, ylabel in plots:
+        legend = []
+        for l, L in enumerate(L_values):
+            plt.plot(T_values, data_array[l,:])
+            legend.append('L = %g' % L)
+        plt.xlabel('$T$')
+        plt.ylabel(ylabel)
+        plt.legend(legend, loc='best')
+        plt.tight_layout()
+        filename = 'fig/plot_e_dT=%g_sweeps=%.0E_%s.pdf' % (
+                    dT, sweeps, desc)
+        plt.savefig(os.path.join(proj_path, filename))
+        if show:
+            plt.show()
+        plt.clf()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
