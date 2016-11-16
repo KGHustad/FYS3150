@@ -1,4 +1,5 @@
 from common import *
+import multiprocessing
 #Changing fontsize to make plots readable without microscope
 plt.rc('font', **{'size' : 14})
 
@@ -15,9 +16,16 @@ reached_steady_state = int(1e5)
 
 #show_spins(spin)
 
+pool = multiprocessing.Pool()
+
 mc_cycles = int(1E6)
-energies1, mean_magnetization1, accepted_configurations, time_spent = metropolis_c(spin1, J, T1, mc_cycles, save_every_nth=save_every_nth, seed=seed)
-energies2, mean_magnetization2, accepted_configurations, time_spent = metropolis_c(spin2, J, T2, mc_cycles, save_every_nth=save_every_nth, seed=seed)
+
+res1 = pool.apply_async(metropolis_c, [spin1, J, T1, mc_cycles, save_every_nth, seed])
+res2 = pool.apply_async(metropolis_c, [spin2, J, T2, mc_cycles, save_every_nth, seed])
+
+energies1, mean_magnetization1, accepted_configurations, time_spent = res1.get()
+energies2, mean_magnetization2, accepted_configurations, time_spent = res2.get()
+
 energies1 = energies1[reached_steady_state:]
 energies2 = energies2[reached_steady_state:]
 
