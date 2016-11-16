@@ -9,9 +9,10 @@ import os
 
 def get_lib_name():
     return 'libising.so'
+
 def get_lib_path():
     this_file_dir = os.path.dirname(__file__)
-    relative_lib_path = os.path.join(this_file_dir, 'src', 'c')
+    relative_lib_path = os.path.join(this_file_dir, 'c')
     return relative_lib_path
 
 def homogeneous_spin_matrix(L, value=1):
