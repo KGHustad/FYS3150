@@ -76,9 +76,11 @@ In this report, ...
 \newcommand{\bigO}{{\mathcal{O}}}
 
 \newcommand{\stateset}{{\mathcal{S}}}
+\newcommand{\expectation}[1]{{\langle #1 \rangle}}
 
 \newcommand{\upspin}{\uparrow}
 \newcommand{\downspin}{{\color{red}\downarrow}}
+
 
 
 
@@ -176,6 +178,7 @@ In general, a $L \times L$ lattice has $2^{L^2}$ possible states, i.e. $|\states
 \end{tabular}
 \end{center}
 \caption{All 16 possible states for $L=2$}
+\label{table:states}
 \end{table}
 
 \subsubsection{Expectation values}
@@ -183,24 +186,64 @@ In general, a $L \times L$ lattice has $2^{L^2}$ possible states, i.e. $|\states
 It is known that the expectation value for the energy, the energy squared, the absolute magnetization \footnote{We will not disciminate between positive and negative magnetization}, the heat capacity and the magnetic susceptibility are respectively
 
 \begin{align}
-    \langle E \rangle &= - \frac{1}{Z} \frac{\partial }{\partial \beta} Z \\
-    \langle E^2 \rangle &= \frac{1}{Z} \frac{\partial^2}{\partial \beta^2} Z\\
-    \langle M \rangle &= \frac{1}{Z} \sum_{i \in \stateset} M_i\\
-    \langle C_V \rangle &= \\
-    \langle \chi \rangle &= \\
+    \langle E \rangle &= - \frac{1}{Z} \frac{\partial }{\partial \beta} Z \label{eq:mu_E} \\
+    \langle E^2 \rangle &= \frac{1}{Z} \frac{\partial^2}{\partial \beta^2} Z \label{eq:mu_E_sq}\\
+    \langle M \rangle &= \frac{1}{Z} \sum_{i \in \stateset} M_i e^{-\beta E_i} \label{eq:mu_M}\\
+    \langle M^2 \rangle &= \frac{1}{Z} \sum_{i \in \stateset} M_i^2 e^{-\beta E_i} \label{eq:mu_M_sq}\\
+    \langle C_V \rangle &= \frac{\langle E^2 \rangle - {\langle E \rangle}^2}{T^2} \label{eq:mu_C_V}\\
+    \langle \chi \rangle &= \frac{\langle M^2 \rangle - {\langle M \rangle}^2}{T^2} \label{eq:mu_chi}
 \end{align}
 
+Using the energy values from \vref{table:states}, we obtain
+\begin{align}
+    Z = \sum_{i \in \stateset}e^{\beta E_i}
+    &= 2e^{-8 J \beta} + 2e^{8 J \beta} + 12  \nonumber \\
+    &= 2(e^{-8 J \beta} + e^{8 J \beta} + 6)
+\end{align}
+
+We can insert $Z$ into \vref{eq:mu_E} and \vref{eq:mu_E_sq} to obtain
+\begin{align}
+    \frac{\partial }{\partial \beta} Z &= -16J e^{-8 J \beta} + 16J e^{8J \beta} \\
+    \frac{\partial^2}{\partial \beta^2} Z &= 128J^2 e^{-8 J \beta} + 128J^2 e^{8J \beta} \\
+    \langle E \rangle &= - \frac{-16J e^{-8 J \beta} + 16J e^{8J \beta}}{2(e^{-8 J \beta} + e^{8 J \beta} + 6)}
+    =  \frac{8J e^{-8 J \beta} - 8J e^{8J \beta}}{ e^{-8 J \beta} + e^{8 J \beta} + 6} \label{eq:mu_E:2} \\
+    \langle E^2 \rangle &= \frac{128J^2 e^{-8 J \beta} + 128J^2 e^{8J \beta}}{2(e^{-8 J \beta} + e^{8 J \beta} + 6)}
+    = \frac{64J^2 e^{-8 J \beta} + 64J^2 e^{8J \beta}}{e^{-8 J \beta} + e^{8 J \beta} + 6} \label{eq:mu_E_sq:2}
+\end{align}
+
+Likewise, we can use the magnetization values from \vref{table:states} to obtain
+\begin{align}
+    \langle M \rangle &= \frac{1}{Z} \sum_{i \in \stateset} M_i e^{-\beta E_i}
+    = \frac{1}{Z} \left( 8 e^{8 J \beta} + 16 \right)
+    = \frac{4 e^{8 J \beta} + 8}{e^{-8 J \beta} + e^{8 J \beta} + 6}
+    \label{eq:mu_M:2} \\
+    \langle M^2 \rangle &= \frac{1}{Z} \sum_{i \in \stateset} M_i^2 e^{-\beta E_i}
+    = \frac{1}{Z} \left(32 e^{8 J \beta} + 32 \right)
+    = \frac{16 e^{8 J \beta} + 16}{e^{-8 J \beta} + e^{8 J \beta} + 6}
+    \label{eq:mu_M_sq:2}
+\end{align}
+
+We now have all we need to find $\expectation{\chi}$ and $\expectation{C_V}$, but we will not bother with writing out the expressions here.
 
 \section{Implementation and results}\label{sec:implementation_and_results}
 \subsection{Choice of language}
 For our implementation, we chose a hybrid Python-C approach -- inexpensive operations such as initialization of arrays and extracting the important quantities from the results are done in Python, where we can write short high-level code, while the expensive operations, i.e. the Metropolis algorithm, is carried out in fast C code.
 
+\subsection{Random number generation}
+We use the GNU Scientific Library's \href{https://www.gnu.org/software/gsl/manual/html_node/Random-number-generator-algorithms.html}{implementation of the Mersenne-Twister algorithm} for our random number generation. This algorithm satisfies the desired statistical properties and is reasonably efficient\footnote{A minimal benchmark program can be found in \texttt{src/c/bench\_random.c}}.
+
+The programs allow the user to fix the seed to a given value. If no seed is provided, the RNG will be seeded from \texttt{/dev/urandom}, which is a special file on UNIX-like systems from which random bytes can be read in a thread-safe manner, such that only a single thread can read a byte before a new one is generated.
+
+
 \subsection{Parallelization}
-The Metropolis algorithm cannot easily (and efficiently) be parallelized without side-effects. One could combine several runs with different seeds to get some kind of average, but such an approach is sub-optimal. However, it is trivial to parallelize multiple runs with differing parameters.
+The Metropolis algorithm cannot easily (and efficiently) be parallelized without side-effects\footnote{One could be tempted to operate with multiple threads on a single spin matrix, but the issue of maintaining cache coherency would arise, unless, of course, the threads worked on strictly independent parts of the spin matrix, in which case some border spins cannot be flipped.  \href{https://github.com/CompPhysics/ComputationalPhysics/blob/082ee7e/doc/Programs/ParallelizationOpenMP/OpenMPising.cpp}{This program} suffers from the former issue.}. One could combine several runs with different seeds to get some kind of average, but such an approach is sub-optimal. However, it is trivial to parallelize multiple runs with differing parameters.
 
-For this purpose, we could have extended our C code with OpenMP or used MPI from Python (which has been shown to achieve similar efficiency to MPI from C++ in \cite{mortensen_langtangen_hpc_python}) but neither OpenMP nor MPI are optimal choices for such a problem. A pool based parallelization model allows for efficient and automated distribution of tasks at run time. The pool size is usually chosen to be equal to the number of logical processors, and then each worker in the pool will fetch and compute tasks until the pool is empty.
+For this purpose, we could have extended our C code with OpenMP or used MPI from Python (which has been shown to achieve similar efficiency to MPI from C++ in \cite{mortensen_langtangen_hpc_python}) but neither OpenMP nor MPI are optimal choices for such a problem. A pool-based parallelization model allows for efficient and automated distribution of tasks at run time. The pool size is usually chosen to be equal to the number of logical processors, and then each worker in the pool will fetch and compute tasks until the pool is empty. We used python's built-in \href{https://docs.python.org/2/library/multiprocessing.html}{multiprocessing} package, which provides a simple API to pool-based parallel processing.
 
-Studying running times from our program, we should not be surprised to find that our parallel program induces no measurable overhead \footnote{Strictly speaking, this is only the case for machines that are able to sustain peak clock speed on all cores. Also, hyperthreading is not true parallelism, so in general one cannot expect a speedup greater than the number of cores. For these reasons, a typical laptop will see a higher time usage per job when running in parallel, but that does not mean our program is suboptimal.} and is hence optimal.
+Studying running times, we should not be surprised to find that our parallel program induces no measurable overhead \footnote{Strictly speaking, this is only the case for machines that are able to sustain peak clock speed on all cores. Also, hyperthreading is not true parallelism, so in general one cannot expect a speedup greater than the number of cores. For these reasons, a typical laptop will see a higher time usage per job when running in parallel, but that does not imply that our program is suboptimal.} and is hence optimal.
+
+\subsection{Comparing analytical and numerical results for $L=2$}
+
 
 \section{Conclusion}\label{sec:conclusion}
 
