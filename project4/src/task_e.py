@@ -76,9 +76,9 @@ def plot2(data_dict, show=False):
     susceptibility = np.zeros(shape)
     specific_heat = np.zeros(shape)
 
-    plots = [#(mu_E, 'mean_energy', '$\mu_E$'),
-             #(mu_abs_M, 'mean_abs_magnetization', '$\mu_{|M|}$'),
-             #(susceptibility, 'susceptibility', '$\chi$'),
+    plots = [(mu_E, 'mean_energy', '$\mu_E/L^2$'),
+             (mu_abs_M, 'mean_abs_magnetization', '$\mu_{|M|}/L^2$'),
+             (susceptibility, 'susceptibility', '$\chi/L^2$'),
              (specific_heat, 'specific_heat', '$C_V/L^2$')]
     plt.clf()
     for l, L in enumerate(L_values):

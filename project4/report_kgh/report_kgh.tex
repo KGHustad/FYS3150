@@ -16,6 +16,7 @@
 \usepackage{listings}
 \usepackage{physics}
 \usepackage{varioref}
+\usepackage{placeins}
 
 % varioref stuff from Anders
 \labelformat{section}{section~#1}
@@ -55,7 +56,7 @@
 
 \begin{abstract}
 \noindent
-In this report, ...
+In this report, we study the Ising model for a square lattice. We compare analytical and numerical results, we study the efficiency of our program and the Metropolis algorithm, and we verify numerically Lars Onsager's analytical solution for the critical heat of an infinitely large lattice.
 \end{abstract}
 
 \vfill
@@ -86,11 +87,9 @@ In this report, ...
 
 \section{Introduction}\label{sec:intro}
 %\subsection*{Description of the nature of the problem}
-\cite{mhj_lecture_notes} % must cite something to avoid compilation error when using bibtex
+%\cite{mhj_lecture_notes} % must cite something to avoid compilation error when using bibtex
 
-We aim to study the Ising model in for a square $L \times L$ lattice with periodic boundary conditions.
-
-\textbf{WRITE MORE}
+We aim to study the Ising model in for a square $L \times L$ lattice with periodic boundary conditions. We study the case of $L=2$ and compare analytical and numerical values. We then observe the convergence rate for $L=20$, and we look at the distribution of energies after reaching the steady state. Finally, we attempt to approximate the critical temperature as $L$ tends to infinity.
 
 
 Methods are derived in \ref{sec:methods}, implementation considerations and results are given in \ref{sec:implementation_and_results}, and finally conclusions are drawn in \ref{sec:conclusion}.
@@ -275,6 +274,20 @@ After about $2\cdot 10^5$ sweeps over the lattice, the expectation values seem t
 
 When the steady state has been reached, we expect the rate of accepted configurations to decline, while the rate is particularly large for a random matrix which is far for the steady state.
 
+For higher values temperatures, one would expect more chaos, and thus more accepted configurations. We see from \vref{table:accepted_configurations} that this is indeed the case.
+
+\begin{table}[htb]
+    \begin{center}
+    \begin{tabular}{crr}
+        T & Homogeneous & Random \\ \hline
+        1.0 & 28606 & 30558 \\ \hline
+        2.4 & 10864256 & 10875744 \\ \hline
+    \end{tabular}
+    \end{center}
+    \caption{Accepted configurations for $L=2$ after $10^7$ sweeps}
+    \label{table:accepted_configurations}
+\end{table}
+
 \subsection{Probability distributions}
 Looking at the distribution of the energy states for $T=1$, we see that firuge \vref{fig:d:1} is heavily skewed towards the left -- almost all the values are all the way to the left. The variance is only about 9.3, which is very reasonable, when we look at the plot.
 
@@ -344,10 +357,31 @@ Rearranging \ref{eq:critical:infty}, and inserting $L=140$ we find
 We are quite content with an error of 0.001 from the analytical value.
 
 \section{Conclusion}\label{sec:conclusion}
+We have found an agreement betweeen the analytical solutions and our program for $L=2$, we saw that the quite a lot of sweeps are needed to achieve convergence, and we found our approximated critical heat to be in agreement with the analytical solutions of Lars Onsager.
 
 %\bibliographystyle{plain}
 %\bibliographystyle{siam}
 \bibliographystyle{IEEEtran}
 \bibliography{../../papers}{}
+
+\FloatBarrier
+
+
+\section{Appendix}
+
+\begin{figure}[htb]
+\includegraphics[width=\textwidth]{{../fig/plot_e_dT=0.001_sweeps=2E+06_susceptibility}.pdf}
+\caption{The expectation value for $\chi$ of the sweeps $\in [10^6, 2\cdot10^6]$ with $\Delta T = 0.001$}
+\end{figure}
+
+\begin{figure}[htb]
+\includegraphics[width=\textwidth]{{../fig/plot_e_dT=0.001_sweeps=2E+06_mean_energy}.pdf}
+\caption{The expectation value for the mean energy of the sweeps $\in [10^6, 2\cdot10^6]$ with $\Delta T = 0.001$}
+\end{figure}
+
+\begin{figure}[htb]
+\includegraphics[width=\textwidth]{{../fig/plot_e_dT=0.001_sweeps=2E+06_mean_abs_magnetization}.pdf}
+\caption{The expectation value for the absolute magnetization of the sweeps $\in [10^6, 2\cdot10^6]$ with $\Delta T = 0.001$}
+\end{figure}
 
 \end{document}
