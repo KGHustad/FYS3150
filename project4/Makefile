@@ -1,6 +1,6 @@
 .PHONY: clean clean-all clean-c clean-python clean-latex clean-plots libising report_kgh show_kgh clean_kgh
 
-PY_SRC_DIR=.
+PY_SRC_DIR=src
 
 LATEX=pdflatex
 LATEX_OPTS=

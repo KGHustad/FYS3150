@@ -15,11 +15,8 @@ make report_kgh
 
 
 
-
-__Note__: All programs should be run from this directory since the location of the library used by ctypes is relatively specified.
-
 ## Reference test
-__TODO__
+See `reference_test.md`
 
 ## Dependencies
 * A \*NIX system (`/dev/urandom` is used to seed RNGs)
