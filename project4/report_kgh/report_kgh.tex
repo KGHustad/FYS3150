@@ -243,7 +243,13 @@ For this purpose, we could have extended our C code with OpenMP or used MPI from
 Studying running times, we should not be surprised to find that our parallel program induces no measurable overhead \footnote{Strictly speaking, this is only the case for machines that are able to sustain peak clock speed on all cores. Also, hyperthreading is not true parallelism, so in general one cannot expect a speedup greater than the number of cores. For these reasons, a typical laptop will see a higher time usage per job when running in parallel, but that does not imply that our program is suboptimal.} and is hence optimal.
 
 \subsection{Comparing analytical and numerical results for $L=2$}
+\begin{table}
+    \input{table_b.tex}
+    \caption{Relative error of numerical results for $N$ sweeps and $T=1$}
+    \label{table:b}
+\end{table}
 
+From \ref{table:b} we see that $\chi$ and $C_V$ converges slower than the other quantities. We also see no improvement going from $N=10^{6}$ to $N=10^{7}$.
 
 \section{Conclusion}\label{sec:conclusion}
 
