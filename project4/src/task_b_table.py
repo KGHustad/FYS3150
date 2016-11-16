@@ -23,6 +23,10 @@ silent = False
 if '--silent' in sys.argv:
     silent = True
 
+floatfmt = 'G'
+if '--short' in sys.argv:
+    floatfmt = '.1E'
+
 sweeps_values = [10**4, 10**5, 10**6, 10**7]
 
 # order of array:
@@ -65,6 +69,6 @@ data[:,0] = np.asarray(sweeps_values)
 
 headers = ['N', 'mu_E', 'mu_E_sq', 'mu_abs_M', 'mu_M_sq', 'susceptibility', 'specific_heat']
 if table_format == 'latex':
-    ['$N$', '$\mu_E$', '$\mu_{E^2}$', '$\mu_{|M|}$', '$\mu_{M^2}$', '$\chi$', '$C_V$']
+    headers = ['$N$', '$\mu_E$', '$\mu_{E^2}$', '$\mu_{|M|}$', '$\mu_{M^2}$', '$\chi$', '$C_V$']
 
-print tabulate.tabulate(data, headers, tablefmt=table_format)
+print tabulate.tabulate(data, headers, floatfmt=floatfmt, tablefmt=table_format)
