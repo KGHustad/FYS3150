@@ -18,3 +18,8 @@ __pycache__/
 *.log
 *.out
 
+#LaTeXmk
+*.bcf
+*.fdb_latexmk
+*.fls
+*.run.xml
