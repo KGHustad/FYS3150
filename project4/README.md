@@ -1,5 +1,8 @@
 # Project 4
 
+The code was developed by Kristian Gregorius Hustad and Jonas Gahr Sturtzel Lunde.
+
+The reports are individual.
 
 ## Instructions
 To make the C library run
@@ -22,6 +25,7 @@ See `reference_test.md`
 * A \*NIX system (`/dev/urandom` is used to seed RNGs)
 * A C compiler (testing was done with GCC)
 * Python 2 w/ SciPy stack
+* The Python package `tabulate` [can be installed with pip](https://pypi.python.org/pypi/tabulate)
 * The GNU Scientific Library (GSL)
 * The Automatically Tuned Linear Algebra Software library (ATLAS)
 * texlive with most of the bells and whistles
