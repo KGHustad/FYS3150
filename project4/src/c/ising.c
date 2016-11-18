@@ -88,10 +88,13 @@ void metropolis(lattice *lat_ptr, int sweeps, double J, double *energies,
     int relative_dE;
     long sweep, count, accepted_configurations=0;
     int i, j;
+    long pos_1d;
+    long L_sq = L*L;
     for (sweep=1; sweep <= sweeps; sweep++) {
         for (count=0; count < L*L; count++) {
-            i = gsl_rng_uniform_int(r, L);
-            j = gsl_rng_uniform_int(r, L);
+            pos_1d = gsl_rng_uniform_int(r, L_sq);
+            i = pos_1d / L;
+            j = pos_1d % L;
 
             relative_dE = relative_change_of_energy(lat_ptr, i, j);
             double dE = dE_cache[relative_dE];
