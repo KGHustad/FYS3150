@@ -4,6 +4,12 @@ The code was developed by Kristian Gregorius Hustad and Jonas Gahr Sturtzel Lund
 
 The reports are individual.
 
+## Pre/post-deadline versions
+Some minor changes have been made after the deadline. To get the last version before the deadline, run
+``` sh
+git checkout project4-delivery
+```
+
 ## Instructions
 To make the C library run
 ``` sh
