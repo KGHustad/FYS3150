@@ -104,6 +104,15 @@ def plot2(data_dict, show=False):
             plt.show()
         plt.clf()
 
+def job_handler(argv, cutoff):
+    """This job handler should carry out the entire job, including
+    extracting the wanted results, such that memory used for storing
+    temporary results can be freed after the job is done"""
+    energies, mean_magnetization, accepted_configurations, time_spent = metropolis_c(*argv)
+    mu_E, mu_M, mu_abs_M, mu_E_sq, mu_M_sq = extract_expectation_values(energies[cutoff:], mean_magnetization[cutoff:])
+    energies, mean_magnetization = None, None
+    return mu_E, mu_M, mu_abs_M, mu_E_sq, mu_M_sq
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-S', '--sweeps', dest='sweeps', type=float, default=int(1E4))
@@ -166,13 +175,15 @@ if __name__ == '__main__':
         for T in T_values:
                 spin = spin_matrices[L].copy()
                 argv = [spin, J, T, sweeps, save_every_nth, seed]
-                results[(L, T)] = pool.apply_async(metropolis_c, argv)
+                results[(L, T)] = pool.apply_async(job_handler, [argv, cutoff])
 
     for L in reversed(L_values):
         for T in T_values:
+            """
             energies, mean_magnetization, accepted_configurations, time_spent = results[(L, T)].get()
-
             mu_E, mu_M, mu_abs_M, mu_E_sq, mu_M_sq = extract_expectation_values(energies[cutoff:], mean_magnetization[cutoff:])
+            """
+            mu_E, mu_M, mu_abs_M, mu_E_sq, mu_M_sq = results[(L, T)].get()
 
             susceptibility = (mu_M_sq - mu_abs_M**2)/T**2
             specific_heat = (mu_E_sq - mu_E**2)/T**2
