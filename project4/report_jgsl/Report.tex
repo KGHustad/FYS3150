@@ -39,9 +39,9 @@
 \title{FYS3150 - Project 4}
 \author{
 	\begin{tabular}{rl}
-		Jonas Gahr Sturtzel Lunde - (\textit{jonassl})\\
+		Jonas Gahr Sturtzel Lunde - (\texttt{jonassl})\\
 	\end{tabular}}
-\date{10.11.2016}
+\date{14.11.2016}
 \maketitle
 
 
@@ -52,79 +52,95 @@
 \renewcommand{\beforeepigraphskip}{50pt}
 \renewcommand{\afterepigraphskip}{100pt}
 \renewcommand{\epigraphsize}{\normalsize}
-\epigraph{This is a quote}
-	{\textit{By this guy}}
+\epigraph{I like apple cakes}
+	{\textit{Morten Hjorth-Jensen}}
 
 
 
 %__Abstract__
 \begin{abstract}
 \noindent
-This is an abstract
+In this report, we will be using the Ising model in two dimensions, in combination with the Metropolis algorithm, to describe a magnetic system and it's phase transition. We will be deriving exact expectation values for a simple Ising model, and calculating these for larger systems numerically. We will show that temperature impacts the convergence and energy-distribution of the system, and show that the critical temperature of the phase transition can be derived by letting the size of the system approach infinite.
 \end{abstract}
+
+
+\vfill
+\begin{center}
+The programs in this report is developed in collaboration with\\
+Kristian Gregorius Hustad - (\texttt{krihus}).\\
+Results will be similar.\\
+\vspace{2mm}
+GitHub repository at \url{https://github.com/KGHustad/FYS3150}
+\end{center}
 \pagebreak
 
 
 
-This is a cite\cite{lecture_notes}
 
-\[
-\begin{matrix*}
-\uparrow & \downarrow \\
-\downarrow & \uparrow
-\end{matrix*}
-\]
-
-\[
-\begin{matrix*}[r]
-\uparrow & \downarrow & & \uparrow \\
-\downarrow & \uparrow &	& \downarrow
-\end{matrix*}
-\]
 
 \section{Introduction}
+In this report we will study how a ferromagnetic material behaves, using the Ising model. We will be setting up the problem as a two-dimentional N-spin systems, in a quadratic $L\times L$ lattice. A lattice consists of $L^2 = N$ spins, and a spin can have the magnetic values $1$ or $-1$, . We will be calling a specific configurations of spins for a \textit{state}, and the total number of possible states for a given lattice is $2^N = Q$. An example of a state for a $3\times 3$ lattice:
+\[
+\begin{matrix}
+\uparrow & \downarrow & \uparrow \\
+\downarrow & \uparrow & \downarrow\\
+\downarrow & \downarrow & \uparrow
+\end{matrix}
+\]
 
-
-\section{Method and Idea}
-\subsection{Deriving expectation values}
-The partition function is given as
-\begin{equation}\label{eqn:partition}
-Z = \sum\limits_{i=1}^Q e^{\beta E_i}
-\end{equation}
-Where Q is the total possible number of states, equal to $2^N$, where N is the number of spins in the lattice. The energy $E_i$ of a state $i$ is given as
+The energy $E_i$ of a state $i$ is given as
 \begin{equation}
 E_i = -J \sum\limits_{<kl>}^N s_k s_l
 \end{equation}
+where $<kl>$ means summing over nearest neighbors only, and $J$ is a constant expressing the interaction-stength in our system.\\\\
+We will be implementing \textit{periodic boundry conditions} on these summations. This means that the neighbor of an edge-spin is considered to be the spin on the opposite edge of the lattice, i.e. the left neighbor of the left-most spin on the first row, is the right-most spin on the first row.
 
-The expectation value for the energy is given by
+
+
+
+
+\section{Method and Idea}
+\subsection{Normalizing the probability - The partition function}
+The probability of finding a system in a given state $i$ with an energy $E_i$, is proportional to $e^{\beta E_i}$. To normalize this probability-distribution, we introduce the partition function as a scaling constant. The partition function for a magnetic system with temperature $T = 1/\beta$ is given as
+\begin{equation}\label{eqn:partition}
+Z = \sum\limits_{i=1}^Q e^{\beta E_i}
+\end{equation}
+as shown in \cite{lecture_notes}. Making the probability of finding oneself in a state with energy $E_i$
+\begin{equation}
+P(E_i) = \frac{1}{Z} e^{-\beta E_i}
+\end{equation}
+
+\subsection{Deriving expectation values}
+We are mostly interested in the energy, magnetization, heat capacity, and magnetic susceptibility. The expectation values for these quantities are giving as
 \begin{equation}\label{eqn:energy}
 \langle E \rangle = -\frac{1}{Z}\frac{\partial Z}{\partial\beta}
 \end{equation}
 
-The expectation value for the energy squared is given by
-\begin{equation}
-\langle E^2 \rangle = \frac{1}{Z}\frac{\partial^2 Z}{\partial\beta^2}
-\end{equation}
+%\begin{equation}
+%\langle E^2 \rangle = \frac{1}{Z}\frac{\partial^2 Z}{\partial\beta^2}
+%\end{equation}
 
-The expectation value for the absolute magnetization\footnote{which will simply be refered to as the magnetization, and written as $M$, as we will never be interested in the actual magnetization}
+The expectation value for the absolute magnetization\footnote{which will simply be refered to as the magnetization, and written as $M$, as we will never be interested in the actual magnetization} is given by
 \begin{equation}
 \langle M \rangle = \frac{1}{Z} \sum\limits_{i=1}^Q M_i e^{-\beta E_i}
 \end{equation}
 
 The expectation value for the heat capacity $C_V$ is given by
 \begin{equation}
-\langle C_v \rangle = \frac{\langle E^2 \rangle - \langle E \rangle ^2}{T^2}
+\langle C_V \rangle = \frac{\langle E^2 \rangle - \langle E \rangle ^2}{T^2}
 \end{equation}
 
-The susceptibility is defined as
+The expectation value for the magnetic susceptibility is given by
 \begin{equation}
 \langle \chi \rangle = \frac{\langle M^2 \rangle - \langle M \rangle ^2}{T^2}
 \end{equation}
 
 
+
+
 \subsection{The 2x2 case}
-\subsubsection{Analytical expectation values}
-Because of the enourmous scaling of the partition function with the size of $L$, it is virtually impossible to calculate analytical values for larger lattices. Therefore, we will first study the simple case $L = 2$. This gives a total of $Q = 16$ possible states. Of these states,
+
+Because of the enourmous scaling of the partition function with the size of the lattice, it is virtually impossible to calculate the analytical partition function for larger lattices. To have anaytical solutions to test out simulations against, we will therefore first study the simple case $L = 2$. This gives a total of $Q = 16$ possible states. Of these states,
 \begin{itemize}
 \item 12 have an energy $E_i = 0$
 \item 2 have an energy $E_i = -8J$
@@ -132,8 +148,10 @@ Because of the enourmous scaling of the partition function with the size of $L$,
 \end{itemize}
 This gives a partition function
 \begin{equation}
-Z = \sum\limits_{i=1}^16 e^{\beta E_i} = 2e^{-8\beta J} + 2e^{8\beta J} + 12
+Z = \sum\limits_{i=1}^{16} e^{\beta E_i} = 2e^{-8\beta J} + 2e^{8\beta J} + 12
 \end{equation}
+
+\subsubsection{Analytical expectation values}
 
 The expectation value for the energy $E$ is given by
 \begin{equation}\begin{split}
@@ -151,34 +169,236 @@ The expectation value for the squared energy $E^2$ is given by
 
 Now looking at magnetization, of the total possible states $Q = 16$, we have
 \begin{itemize}
-\item 8 states with absolute magnetizaton $|M| = 2$ and energy $E = 0$
-\item 2 states with absolute magnetization $|M| = 4$ and energy $E = -8J$
+\item 8 states with magnetizaton $M = 2$ and energy $E = 0$
+\item 2 states with magnetization $M = 4$ and energy $E = -8J$
 \item 6 states with no magnetization.
 \end{itemize}
-This results in a mean absolute magnetization
+This results in an expectations value for magnetization
 \begin{equation}
-\langle M \rangle = \frac{1}{Z} (16+8e^{8\beta}) = \frac{8+4e^{-8\beta J}}{e^{-8\beta J} + e^{\beta} + 6}
+\langle M \rangle = \frac{1}{Z} (16+8e^{8\beta J}) = \frac{8+4e^{-8\beta J}}{e^{-8\beta J} + e^{\beta} + 6}
 \end{equation}
 
-and a mean magnetization sqaured
+and magnetization sqaured
 \begin{equation}
-\langle M^2 \rangle = \frac{1}{Z} (32+32e^{8\beta J}) = \frac{16 + 16e^{8\beta}}{e^{-8\beta J} + e^{8\beta J} + 6}
+\langle M^2 \rangle = \frac{1}{Z} (32+32e^{8\beta J}) = \frac{16 + 16e^{8\beta J}}{e^{-8\beta J} + e^{8\beta J} + 6}
 \end{equation}
+These expressions will later be tested against numerically derived solutions.
 
 
+\subsection{The Metropolis algorithm}
+We will be performing our Monte-Carlo cycles\footnote{One Monte-Carlo cycle is condsidered to consist of a sweep over the whole lattice with the Metropolis algorithm. In other words, one Monte-Carlo cycle consists of $L^2$ attempted configurations} with the Metropolis algorithm. After setting up our initial lattice in form of a matrix, the algorith works after the following steps
+\begin{itemize}
+\item Pick a random spin in the lattice, and calculate the change in energy, $\Delta E$, that would occur if the spin were to be flipped.
+\item If the energy-change is negative(or zero), $\Delta E \leq 0$:
+\begin{itemize}
+\item Accept the new configuration and flip the chosen spin. We have now moved to a lower energy-level.
+\end{itemize}
+\item If the energy-change is positive, $\Delta E > 0$:
+\begin{itemize}
+\item Use the change in energy to calculate the ratio between the probability of the new configuration and the old configuration, given as $e^{-\beta \Delta E}$. This value represents the probability of moving to the chosen higher energy-state. To simulate this chance, we generate a random number, $r\in [0,1]$, and compare it to the probability.
+\begin{itemize}
+\item If $r \leq e^{-\beta \Delta E}$, we accept the new configuration, and flip the spin. We have now moved to a higher energy-level.
+\end{itemize}
+\begin{itemize}
+\item If If $r > e^{-\beta \Delta E}$, we decline the new configuration, and stay at the same configuration and energy-level.
+\end{itemize}
+\end{itemize}
+\end{itemize}
+Repeat the steps until satisfactorily accurate data has been gathered.
 
-\subsection{The metropolis algorithm}
-We will be performing our Monte-Carlo cycles with the metropolis algorithm, in order to reach the most probable state as quickly as possible.
+
+\subsection{The steady state \& Approximating expectation values}
+After repeating this process a given amount of times, we will find ourselves in the so-called \textit{steady state} - The point where the simulation approaches the most probable state, and simply starts fluctuating around it. These fluctuations come from the fact that the the algorith sometimes accepts "backward steps" into higher energy levels.\\\\
+The probably most amazing quality about the Metropolis algorithm is that after reaching the the steady state, the probability of findind oneself in a state with a certain condition, mimics the expectation value for that condition. This means that we can approximate the expectation values by deriving the mean values from simulating the Ising model with the metropolis algorithm!
+
+
+\subsection{The phase transition \& Deriving the critical temperature}\label{sec:approx_tc}
+A phase transition is when the characteristics of a material quickly changes when approaching a certain temperature, the so-called \textit{critical temperature}. In our case, that would be the four properties we have been looking at - magnetization, energy, specific heat, and susceptibility. This critical temperature can however only be found directly for an infinitely large lattice. Luckily, as explain in \cite{lecture_notes}, we can approximate the actual critical temperature as a function of a the critical temperature found in two large, finitely shaped lattices.
+\begin{equation}\label{eqn:approx_tc}
+T_C(L) - T_C(L \rightarrow \infty) \approx aL^{-1/\nu}
+\end{equation}
+with $\nu = 1$.\\
+We now need to approximate $a$ by picking our two largest lattices, $i$ and $j$, and inserting them into equation \ref{eqn:approx_tc}. Solving for $a$, we get
+\begin{equation}
+a = \frac{T_C(L_i) - T_C(L_j)}{L_i^{-1} - L_j^{-1}}
+\end{equation}
+When we have some actual data, we can insert the calculated $a$ back into \ref{eqn:approx_tc} to approximate the critical temperature $T_C(L\rightarrow\infty)$.
 
 \section{Implementation and results}
+\subsection{Reaching the steady state}\label{sec:22}
+The steady state is characterized by the numerical mean values approaching the expectation values. Because we only have solves the exact expectation values for the $2\times 2$ case, we will use this as a benchmark.\\\\
+Looking at figures \ref{fig:mean_energy} and \ref{fig:mean_mag}, I believe around 15'000 Monte-Carlo cylces should be sufficient to bring the mean values close to the expectation values, and conclude that we have reached the steady state.\\\\
+Listing \ref{lst:22} shows how close the numerical mean values have come to the exact expectation values after 10 million Monte-Carlo cycles. It's worth noting how increadibly slow the specific heat and susceptibility converges against their analytical values, compared to energy and magnetization.
 
-\begin{lstlisting}
+\begin{lstlisting}[basicstyle=\footnotesize, frame=single, caption = Mean values against expectation values after $10^7$ Monte-Carlo cycles on a $2\times 2$ lattice, label = lst:22]
+Mean energy:             -7.98411
+Analytical mean energy:  -7.98393
+Error in mean energy:    2.30052e-05
+
+Mean energy squared:          63.8729
+Analytical mean energy sq.:   63.8714
+Error in mean energy sq.:    2.27802e-05
+
+Mean abs. magnetization:  3.99468
+Analytical mean mag.:     3.99464
+Error in mean mag..:     1.02824e-05
+
+Mean magnetization sq.:         15.9735
+Analytical mean mag. sq.:       15.9732
+Error in mean mag. sq.:      1.65854e-05
+
+Analytical susceptibility:     0.016043
+Computed susceptibility:      0.0159797
+Error susceptibility:        -0.00394153
+
+Analytical specific heat:      0.128329
+Computed specific heat:        0.126851
+Error specific heat:         -0.0115163
+
+Attempted configurations:    4e+06
+Accepted configurations:     7866
+\end{lstlisting}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{fig/b_energy_1.pdf}
+\caption{Mean energy for $2\times 2$ case}
+\label{fig:mean_energy}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{fig/b_mag_1.pdf}
+\caption{Mean magnetization for $2\times 2$ case}
+\label{fig:mean_mag}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{fig/b_error_both_1.pdf}
+\caption{Error in energy and magnetization for $2\times 2$ case}
+\label{fig:error_2}
+\end{figure}
+
+
+\subsection{Comparing systems of different temperatures}\label{sec:temp}
+\subsubsection{Convergence-impact of temperature}
+Looking at figure \ref{fig:energy_temp}, we clearly see that the higher temperature setup uses significantly longer time to reach an equilibrium state. While the $T=1$ lattice seems to converge on an exact expectation value around 15-20'000 cycles, the $T=2.4$ case doesn't seem to converge until perhaps 40'000 or more cycles\footnote{Note that the axis are far from equal on the two graphs}. It is worth noting that the $T=1$ case seems to converge around at the same rate as the $2\times 2$ case we looked at in section \ref{sec:22}. The number of cycles needed to reach the steady state is probably constant at a given temperature.\\\\
+Looking at figure \ref{fig:mag_temp}, we see similar results. Even though the difference seems to be smaller when looking at random matrices, the higher temperature model is clearly converging more slowely.\\\\
+
+
+\begin{figure}[H]
+\includegraphics[width=0.5\textwidth]{fig/homo.pdf}
+\includegraphics[width=0.5\textwidth]{fig/t24.pdf}
+\caption{Comparing temperature T=1 and T=2.4 for uniform matrices}
+\label{fig:energy_temp}
+\end{figure}
+
+\begin{figure}[H]
+\includegraphics[width=0.5\textwidth]{fig/randomt1.pdf}
+\includegraphics[width=0.5\textwidth]{fig/randomt24.pdf}
+\caption{comparing temperature T=1 and T=2.4 for random matrices}
+\label{fig:mag_temp}
+\end{figure}
+We chose to look at magnetization in one case and energy in the other, for the sake of variance. Because they converge in a similar manner under the same circumstances, as seen in figure \ref{fig:error_2}, which one we look at shouldn't impact our findings.
+
+\subsubsection{Accepted configurations as function of temperature}
+We see from figures \ref{fig:energy_temp} and \ref{fig:mag_temp} that the increase in temperature not only causes a slower convergence, but also the fluctuations are much higher, and we get a less smooth curve than in the lower temperature system.
+
+The Metropolis algorithm has a $e^{-\beta \Delta E}$ chance of accepting a change to a higher energy-level. Since $\beta$ is given as $\beta = 1/T$, the chance of accepting a change to a higher energy-level, increases with the temperature $T$. This means that a high temperature system, even after reaching the most probably state, we will often diverge to higher energy-levels. This causes a large increase in accepted configurations, as shown in listing \ref{lst:temp}.
+\pagebreak
+\begin{lstlisting}[basicstyle=\footnotesize, frame=single, caption = Mean values against expectation values after $10^7$ Monte-Carlo cycles on a $2\times 2$ lattice, label=lst:temp]
+Accepted Configurations for
+T=1.0 and a homogeneous spin matrix: 28606
+T=2.4 and a homogeneous spin matrix: 10864256
+T=1.0 and a random spin matrix: 30558
+T=2.4 and a random spin matrix: 10875744
+\end{lstlisting}
+
+
+
+\subsection{Probability-distribution of energy-states}
+As already explored in section \ref{sec:temp}, a high temperature system will have much higher fluctuations from the lowest energy-level than a low temperature one. We see this very clearly from figures \ref{fig:prob1} and \ref{fig:prob2}. The $T=1$ case has a dominating probability of being in the absolutely lowest energy-state, $E = -800$. Where on the other hand, the $T=2.4$ case has a more natural distribution of probabilities.\\\\
+The temperature's effect on the energy-states can also be shown by computing the variance. From listing \ref{lst:variance} we unsurprisingly see that the higher temperature system has a much larger variety in it's energy-distribution. It's also worth noting that the $T=2.4$ case forms a Gaussian-looking probability-distribution, while the $T=1$ case does nothing of the sort.
+
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{fig/figure_1.pdf}
+\caption{Probability distribtuion of energy-states in equilibrium-system for $T=1$}
+\label{fig:prob1}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{fig/figure_2.pdf}
+\caption{Probability distribtuion of energy-states in equilibrium-system for $T=2.4$}
+\label{fig:prob2}
+\end{figure}
+
+
+\begin{lstlisting}[basicstyle=\footnotesize, frame=single, caption = Variance $\sigma^2_E$ for probability-distribution , label=lst:variance]
 Variance of energy for T = 1.0:  9.31410774333
 Variance of energy for T = 2.4:  3249.2162423
 \end{lstlisting}
 
 
+\subsection{Approaching the critical temperature}
+The clearest signs of the phase transition is found in the susceptibility and specific heat of the system, which seems to exibit similar behavior. We see from figures \ref{fig:tc_susceptibility} and \ref{fig:tc_specific_heat} that the functions starts climbing when approaching the critical temperature, and, for larger lattice-sizes, develops a notable top-point. I think it's safe to conlude that this top approaches the critical temperature as $L\rightarrow \infty$.\footnote{I have cheated a bit and marked the true critical temperature in the plots, to make the reults clearer.}\\\\
+We also see behavioral changes in the magnetization \ref{fig:tc_mag} and \ref{fig:tc_energy}, but they offer us no way of approximating the critical temperature, as nothing distinguishable happens precicely there.
+
+As explained in section \ref{sec:approx_tc}, we can derive the critical temperature anaytically, by looking at two large lattices. We will take the global maximums of the specific heat, which are somewhere around $T_C(140) = 2.275$ and $T_C(100) = 2.277$. Inserting these into equation \ref{eqn:approx_tc}, we can approximate $a$ as
+\begin{equation}
+a = \frac{2.277 - 2.275}{\frac{1}{100} - \frac{1}{140}} \approx 0.7
+\end{equation}
+This gives a critical temperature of
+\begin{equation}
+T_C(L \rightarrow \infty) = T_C(L) - a/L = 2.275 - \frac{0.7}{140} = 2.27
+\end{equation}
+Comparing with the exact anlytically value derived by Lars Onsager, $\approx 2.269$, our approximation are off with an relative error of only $4.4\cdot 10^{-4}$. This is almost surprisingly accuracte, considering the finite limiations of our system, and the noise the graphs are exhibiting\ref{fig:tc_specific_heat}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{{fig/plot_e_susceptibility.pdf}}
+\caption{Mean susceptibility as function of temperature for increasing lattice sizes, as approaching critical temperature}
+\label{fig:tc_susceptibility}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{{fig/plot_e_specific_heat.pdf}}
+\caption{Mean specific heat as function of temperature for increasing lattice sizes, as approaching critical temperature}
+\label{fig:tc_specific_heat}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{{fig/plot_e_mean_abs_magnetization.pdf}}
+\caption{Mean magnetization as function of temperature for increasing lattice sizes, as approaching critical temperature}
+\label{fig:tc_mag}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{{fig/plot_e_mean_energy.pdf}}
+\caption{Mean energy as function of temperature for increasing lattice sizes, as approaching critical temperature}
+\label{fig:tc_energy}
+\end{figure}
+
+
+
 \section{Conclusion}
+In this report, we have studied the behavior of different configurations of a ferromagnetic material, using the Ising model. We have analyzed and implemented the Metropolis algorith for simulating such systems over time. Then the expectation values for interesting properties of a $2\times 2$ lattice was calculated, and we later saw that the numerical mean converges on this exact solution. The effects of temperature-adjustments on the system have also been studied in several ways. First, we saw how it impacted the convergence on the most likely state. Then we looked at the phase transition of our magnetic system, and estimated the critical temperature through numerical simulations of large lattices.
+
+
+\section{Appendix}
+\begin{figure}[H]
+\includegraphics[width=0.5\textwidth]{fig/homo.pdf}
+\includegraphics[width=0.5\textwidth]{fig/random.pdf}
+\caption{Comparing randomly and uniformly generated matrices. We clearly see that uniformly generated converges much quicker than randomly generated one.}
+\end{figure}
+
 
 
 
