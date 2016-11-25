@@ -27,9 +27,8 @@
 %__quotes and refrencing__
 \usepackage{epigraph}	%Allows epigraph enviroment, for quotes
 \usepackage{hyperref}	%Allows hyperreferences in pdf
-\usepackage[backend=biber]{biblatex}	%Citations
-\addbibresource{cites.bib}	%Reference to citation file
-
+%\usepackage[backend=biber]{biblatex}
+%\addbibresource{cites.bib}	
 
 \begin{document}
 
@@ -55,85 +54,54 @@
 \renewcommand{\epigraphsize}{\normalsize}
 \epigraph{This is a quote}
 	{\textit{By this guy}}
-
-
-
-%__Abstract__
-\begin{abstract}
-\noindent
-This is an abstract
-\end{abstract}
 \pagebreak
 
 
+Forward Euler
+\begin{align}
+\frac{\partial u(x_i,t_j)^2}{\partial x^2} &= \frac{\partial u(x_i,t_j)}{\partial t} \\
+\frac{u(x_i + \Delta x, t_j) - 2u(x_i,t_j) + u(x_i - \Delta x, t_j)}{\Delta x^2}
+&= \frac{u(x_i, t_j + \Delta t) - u(x_i, t_i)}{\Delta t} \\
+\frac{u_{i+1,j} - 2u_{i,j}+u_{i-1,j}}{\Delta x^2} &= \frac{u_{i,j+1} - u_{i,j}}{\Delta t} \\
+u_{i,j+1} = \alpha u_{i-1,j} + (1-2\alpha)u_{i,j} + \alpha u_{i+1,j}
+\end{align}
+where $\alpha = \frac{\Delta t}{\Delta x^2}$
 
-%__Label and refrencing__
-\section{Introduction}\label{Int}
-This is a reference to the Introduction\ref{Int}
+Backward Euler
 
-
-
-%__Cites__
-This is a cite\cite{kim2016design}
-\printbibliography %Prints citations. Should be at the bottom of document
-\pagebreak
-
-
-%__Math__
-%Units and such should usually not be in italic.
-\begin{equation}\begin{split}
-4\text{ m} = 400\text{ mm}
-\end{equation}\end{split}
+\begin{align}
+\frac{u_{i+1,j} - 2u_{i,j}+u_{i-1,j}}{\Delta x^2} &= \frac{u_{i,j} - u_{i,j-1}}{\Delta t} \\
+u_{i,j-1} = \alpha u_{i+1,j} + (1 - 2\alpha )u_{i,j} + \alpha u_{i-1,j}
+\end{align}
 
 
-%__Algorithm__
-\begin{algorithm}
-\caption{Euler-Cromer} \label{alg:euler_cromer}
-\begin{algorithmic}[1]
-  \Procedure{EulerCromer}{$p, v, p\, v, m, n$}
-    \For {$i \gets 0, \dots, n-1$}
-        \State $acc \gets $ \textsc{Acceleration}$(p, v_{i}, m, i, n, dt)$
-        \State $v \gets v_{i} + acc$
-        \State $p \gets p_{i}$
-    \EndFor
-  \EndProcedure
-\end{algorithmic}
-\end{algorithm}
-\pagebreak
+\[
+Â = \begin{bmatrix}
+1+2\alpha & -\alpha & 0 & \cdots & \cdots \\
+-\alpha & 1+2\alpha & -\alpha & \cdots & \vdots \\
+0 & \ddots & \ddots & \ddots & \vdots \\
+\vdots & \ddots & \ddots & \ddots & -\alpha \\
+\vdots & \cdots & \cdots & -\alpha & 1+2\alpha \\
+\end{bmatrix}
+\]
+we define
+\[ V_j = \begin{bmatrix}
+u_{0,j}\\
+u_{1,j}\\
+\cdots\\
+u_{n-1,j}\\
+u_{n,j}\\
+\end{bmatrix}
+\]
+and get
+\begin{equation}
+ÂV_j = V_{j-1}
+\end{equation}
+which means we can define a state $V_j$ as
+\begin{equation}
+V_j = Â^{-j}V_0
+\end{equation}
 
-
-
-%__Listings__
-\begin{lstlisting}[basicstyle=\footnotesize, frame=single, caption = This is a list caption, label = lst:list1]
-this	is
-a	list
-:)
-\end{lstlisting}
-\pagebreak
-
-
-
-%__Graphics___
-\begin{figure}[H]
-\centering	%Makes the graphic always stay in the center, no matter it's size.
-\includegraphics[width=0.4\textwidth]{fig/art.png}
-\includegraphics[width=0.3\textwidth]{fig/art.png}
-\caption{This is a figure-caption}
-\label{fig:figure1}
-\end{figure}
-This is a reference\ref{fig:figure1} to a figure.
-\pagebreak
-
-
-
-%__Footnotes__
-This is a text with a footnote\footnote{This is a footnote}
-
-
-
-%__EndNotes
-\newpage	%Begins a new page and leaves everything as is
-\pagebreak	%Begins a new page and spreads everything on the last page evenly out
-\vfill		%It puts some empty space of elastic size
-\newcommand{\dt}{\Delta t}	%Makes a new command "\dt", which calls "\Delta t"
 \end{document}
+
+
