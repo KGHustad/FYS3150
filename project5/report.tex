@@ -1,0 +1,139 @@
+\documentclass[10pt,a4paper]{article}
+
+%__Fonts and layout__
+\usepackage[utf8]{inputenc}	%Allows input of unusual characters
+\usepackage[T1]{fontenc,url}	%Helps correctly display unusual characters
+\usepackage{parskip}	%Something about paragraph spacing
+\usepackage{lmodern}	%Makes your font prettier or something
+\usepackage{microtype}	%Makes text look prettier
+\usepackage{verbatim}
+
+%__math__
+\usepackage{amsmath, amssymb}	%Improved math syntax and symbols
+\usepackage{mathtools}	%Some matrix stuff and shit
+\usepackage{tikz}	%Graph drawing
+\usepackage{physics}	%Mathematical physics notation
+
+%__algorithms and programming__
+\usepackage{algorithm}	%Allows writing of pretty algorithm. Perfect for desplaying code-syntax
+\usepackage{algpseudocode}	%Similar to algorithm, just different layout
+\usepackage{listings}	%Listing-enviroment, perfect for code or terminal output
+\usepackage{enumerate}	%For listing of stuff
+
+%__graphs and pictures__
+\usepackage{graphicx}	%Includegraphics
+\usepackage{float}	%Allows the [H] option, to force graphics in place
+
+%__quotes and refrencing__
+\usepackage{epigraph}	%Allows epigraph enviroment, for quotes
+\usepackage{hyperref}	%Allows hyperreferences in pdf
+\usepackage[backend=biber]{biblatex}	%Citations
+\addbibresource{cites.bib}	%Reference to citation file
+
+
+\begin{document}
+
+
+
+%__Making a first-page__
+\title{This is the title}
+\author{
+	\begin{tabular}{rl}
+		Author nr 1 & (\textit{username1})\\
+		Author nr 2 & (\textit{username2})\\
+	\end{tabular}}
+\date{01.01.2000}
+\maketitle
+
+
+
+%__Epigraph__
+\setlength{\epigraphwidth}{0.75\textwidth}
+\renewcommand{\epigraphflush}{center}
+\renewcommand{\beforeepigraphskip}{50pt}
+\renewcommand{\afterepigraphskip}{100pt}
+\renewcommand{\epigraphsize}{\normalsize}
+\epigraph{This is a quote}
+	{\textit{By this guy}}
+
+
+
+%__Abstract__
+\begin{abstract}
+\noindent
+This is an abstract
+\end{abstract}
+\pagebreak
+
+
+
+%__Label and refrencing__
+\section{Introduction}\label{Int}
+This is a reference to the Introduction\ref{Int}
+
+
+
+%__Cites__
+This is a cite\cite{kim2016design}
+\printbibliography %Prints citations. Should be at the bottom of document
+\pagebreak
+
+
+%__Math__
+%Units and such should usually not be in italic.
+\begin{equation}\begin{split}
+4\text{ m} = 400\text{ mm}
+\end{equation}\end{split}
+
+
+%__Algorithm__
+\begin{algorithm}
+\caption{Euler-Cromer} \label{alg:euler_cromer}
+\begin{algorithmic}[1]
+  \Procedure{EulerCromer}{$p, v, p\, v, m, n$}
+    \For {$i \gets 0, \dots, n-1$}
+        \State $acc \gets $ \textsc{Acceleration}$(p, v_{i}, m, i, n, dt)$
+        \State $v \gets v_{i} + acc$
+        \State $p \gets p_{i}$
+    \EndFor
+  \EndProcedure
+\end{algorithmic}
+\end{algorithm}
+\pagebreak
+
+
+
+%__Listings__
+\begin{lstlisting}[basicstyle=\footnotesize, frame=single, caption = This is a list caption, label = lst:list1]
+this	is
+a	list
+:)
+\end{lstlisting}
+\pagebreak
+
+
+
+%__Graphics___
+\begin{figure}[H]
+\centering	%Makes the graphic always stay in the center, no matter it's size.
+\includegraphics[width=0.4\textwidth]{fig/art.png}
+\includegraphics[width=0.3\textwidth]{fig/art.png}
+\caption{This is a figure-caption}
+\label{fig:figure1}
+\end{figure}
+This is a reference\ref{fig:figure1} to a figure.
+\pagebreak
+
+
+
+%__Footnotes__
+This is a text with a footnote\footnote{This is a footnote}
+
+
+
+%__EndNotes
+\newpage	%Begins a new page and leaves everything as is
+\pagebreak	%Begins a new page and spreads everything on the last page evenly out
+\vfill		%It puts some empty space of elastic size
+\newcommand{\dt}{\Delta t}	%Makes a new command "\dt", which calls "\Delta t"
+\end{document}
