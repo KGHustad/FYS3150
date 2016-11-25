@@ -4,13 +4,18 @@
 #include <mpi.h>
 
 #include "common.h"
+//#include "diffuse_2d.h"
 
 void diffusion_2d_parallel(double **v, double **f,
-                           int width, int height,
-                           double kappa, int iters) {
+                           int height, int width,
+                           double kappa, int iters, MPI_Comm comm) {
     int my_rank, num_procs;
-    MPI_Comm_rank (MPI_COMM_WORLD, &my_rank);
-    MPI_Comm_size (MPI_COMM_WORLD, &num_procs);
+    MPI_Comm_rank (comm, &my_rank);
+    MPI_Comm_size (comm, &num_procs);
+
+
+    /* TODO: IMPLEMENT SOURCE TERM */
+
 
     int it, i, j;
 
@@ -36,7 +41,7 @@ void diffusion_2d_parallel(double **v, double **f,
     /* create buffer for sending */
     /* find size of single message */
     int msg_size;
-    MPI_Pack_size(width, MPI_DOUBLE, MPI_COMM_WORLD, &msg_size);
+    MPI_Pack_size(width, MPI_DOUBLE, comm, &msg_size);
     /* each region has at most two adjacent regions (above and below) */
     int neighbours = 2;
     /* there can be at most 2 outstanding sends per neighbour, thus the buffer
@@ -49,12 +54,12 @@ void diffusion_2d_parallel(double **v, double **f,
         /* buffered send */
         /* to above */
         if (my_rank != 0) {
-            MPI_Bsend(v[0], width, MPI_FLOAT, my_rank-1, it, MPI_COMM_WORLD);
+            MPI_Bsend(v[0], width, MPI_FLOAT, my_rank-1, it, comm);
         }
         /* to below */
         if (my_rank != num_procs-1) {
             MPI_Bsend(v[height-1], width, MPI_FLOAT, my_rank+1, it,
-                     MPI_COMM_WORLD);
+                     comm);
         }
 
         /* compute inner points */
@@ -69,7 +74,7 @@ void diffusion_2d_parallel(double **v, double **f,
         /* receive */
         /* from above */
         if (my_rank != 0) {
-            MPI_Recv(row_above, width, MPI_FLOAT, my_rank-1, it, MPI_COMM_WORLD,
+            MPI_Recv(row_above, width, MPI_FLOAT, my_rank-1, it, comm,
                      &status);
             i = 0;
             for (j=1; j < width-1; j++) {
@@ -80,7 +85,7 @@ void diffusion_2d_parallel(double **v, double **f,
         }
         /* from below */
         if (my_rank != num_procs-1) {
-            MPI_Recv(row_below, width, MPI_FLOAT, my_rank+1, it, MPI_COMM_WORLD,
+            MPI_Recv(row_below, width, MPI_FLOAT, my_rank+1, it, comm,
                      &status);
             i = height-1;
             for (j=1; j < width-1; j++) {
@@ -118,7 +123,11 @@ void diffusion_2d_parallel(double **v, double **f,
 }
 
 
-void solve_2d_parallel(double **v, double **f, int width, int height,
-                       double kappa, int iters) {
-
+void solve_2d_parallel(double *v_flat, double *f_flat, int width, int height,
+                       double kappa, int iters, MPI_Comm comm) {
+    double **v = alloc_2d_array_from_flat(v_flat, height, width);
+    double **f = alloc_2d_array_from_flat(f_flat, height, width);
+    diffusion_2d_parallel(v, f, height, width, kappa, iters, comm);
+    free(v);
+    free(f);
 }

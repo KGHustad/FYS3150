@@ -1,10 +1,10 @@
-.PHONY: clean bench_random
+.PHONY: clean
 
 MPICC=mpicc
-CC_FLAGS = -Wall -O3 -std=gnu89 -fPIC -march=native
+CC_FLAGS = -Wall -O3 -std=gnu89 -fpic -march=native
 LDFLAGS= -lm
 diffuse_sources = common.c diffuse_2d.c
-diffuse_headers =
+diffuse_headers = common.h
 diffuse_object_files = common.o diffuse_2d.o
 diffuse_lib = libdiffuse.so
 
