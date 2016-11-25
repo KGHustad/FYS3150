@@ -1,4 +1,4 @@
-.PHONY: clean
+.PHONY: clean diffusion_lib continuous report show clean-all clean clean-c clean-python clean-latex clean-plots
 
 LATEX=pdflatex
 LATEX_OPTS=
