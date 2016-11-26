@@ -1,7 +1,8 @@
-set -x # print all commands
+#set -x # print all commands
 
 function dnf_install {
-    sudo dnf -y install $1
+    echo -e "\nAttempting to install $1 via dnf"
+    sudo dnf -q -y install $1
     if [ $? -ne 0 ]; then
         echo "could not install $1 - abort"
         exit 1
@@ -10,6 +11,7 @@ function dnf_install {
 
 
 function pip_install {
+    echo -e "\nAttempting to install $1 via pip"
     sudo -H pip install --upgrade "$@"
     if [ $? -ne 0 ]; then
         echo "could not install $p - abort"
@@ -39,5 +41,16 @@ dnf_install openmpi-devel
 # MPI for Python
 dnf_install mpi4py-common
 
+# Python tabulate for pretty tables
+pip_install tabulate
+
 # GSL
 dnf_install gsl-devel
+
+# LaTeX
+dnf_install texlive-scheme-medium
+dnf_install texlive-collection-bibtexextra
+dnf_install texlive-collection-binextra
+dnf_install texlive-collection-latexextra
+dnf_install texlive-collection-publishers
+dnf_install texlive-collection-science
