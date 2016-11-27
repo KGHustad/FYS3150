@@ -3,18 +3,18 @@
 #include "random.h"
 
 int main(int argc, char *argv[]) {
-    int i;
+    long i;
     clock_t pre, post;
     double time_spent;
 
-    int N = (int) 1E6;
+    long N = (long) 1E8;
     if (argc > 1) {
-        N = (int) atof(argv[1]);
+        N = (long) atof(argv[1]);
     }
 
     gsl_rng *r = initialize_rng(0);
 
-    printf("Generating %d random doubles in [0, 1)...\n", N);
+    printf("Generating %ld random doubles in [0, 1)...\n", N);
     pre = clock();
     for (i = 0; i < N; i++) {
         gsl_rng_uniform(r);
@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
            time_spent, N/time_spent);
 
     int end_interval = 40;
-    printf("Generating %d random ints in [0, %d)...\n", N, end_interval);
+    printf("Generating %ld random ints in [0, %d)...\n", N, end_interval);
     pre = clock();
     for (i = 0; i < N; i++) {
         gsl_rng_uniform_int(r, end_interval);
