@@ -1,7 +1,7 @@
 #.PHONY: $(projects) dependencies
 .PHONY: project1 project2 project3 project4 project5 dependencies
 
-projects = project1 project2 project3 project4 #project5
+projects = project1 project2 project3 project4 project5
 
 all: $(projects)
 project1:
