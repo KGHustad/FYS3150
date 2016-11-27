@@ -1,6 +1,5 @@
-# FYS3150
-Computational physics
-
+# FYS3150 - Computational physics
+This repository contains the course work of Kristian Gregorius Hustad and Jonas Gahr Sturtzel Lunde from the autumn of 2016.
 
 ## Dependencies
 To install (hopefully) all dependencies, run
