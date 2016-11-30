@@ -1,24 +1,14 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <mpi.h>
 
 #include "common.h"
-//#include "diffuse_2d.h"
+#include "boundary.h"
 
-void diffusion_2d_parallel(double **v, double **f,
-                           int height, int width,
-                           double kappa, int iters, MPI_Comm comm) {
-    int my_rank, num_procs;
-    MPI_Comm_rank (comm, &my_rank);
-    MPI_Comm_size (comm, &num_procs);
-
-
-    /* TODO: IMPLEMENT SOURCE TERM */
-
-
-    int it, i, j;
-
+void diffusion_2d(double **v, double **f,
+                  int height, int width,
+                  double kappa, int iters,
+                  boundary_condition left, boundary_condition right,
+                  boundary_condition top, boundary_condition bottom) {
     /* v and v_bar should be different arrays with identical contents */
     double **v_bar = alloc_2d_array(height, width);
     memcpy_2d_array(v_bar, v, height, width);
@@ -27,73 +17,22 @@ void diffusion_2d_parallel(double **v, double **f,
     double **v_dest = v;
     double** temp;
 
-    /* allocate, if necessary, memory to store rows above and below */
-    double *row_above = NULL, *row_below = NULL;
-    if (my_rank != 0) {
-        row_above = malloc(sizeof(double)*width);
-    }
-    if (my_rank != num_procs-1) {
-        row_below = malloc(sizeof(double)*width);
-    }
-
-    MPI_Status status;
-
-    /* create buffer for sending */
-    /* find size of single message */
-    int msg_size;
-    MPI_Pack_size(width, MPI_DOUBLE, comm, &msg_size);
-    /* each region has at most two adjacent regions (above and below) */
-    int neighbours = 2;
-    /* there can be at most 2 outstanding sends per neighbour, thus the buffer
-       needs to be of size 2*neighbours*(size of a message incl. overhead) */
-    int buf_size = 2*neighbours*(msg_size+MPI_BSEND_OVERHEAD);
-    void* buf = malloc(buf_size);
-    MPI_Buffer_attach(buf, buf_size);
-
-    for (it=1; it <= iters; it++) {
-        /* buffered send */
-        /* to above */
-        if (my_rank != 0) {
-            MPI_Bsend(v[0], width, MPI_FLOAT, my_rank-1, it, comm);
-        }
-        /* to below */
-        if (my_rank != num_procs-1) {
-            MPI_Bsend(v[height-1], width, MPI_FLOAT, my_rank+1, it,
-                     comm);
-        }
-
-        /* compute inner points */
-        for (i=1; i < height-1; i++) {
-            for (j=1; j < width-1; j++) {
+    int it, i, j;
+    for (it = 1; it <= iters; it++) {
+        /* update inner points */
+        for (i = 1; i < height - 1; i++) {
+            for (j = 1; j < width - 1; j++) {
                 v_bar[i][j] = v[i][j]
                               + kappa*(v[i-1][j] + v[i][j-1] - 4*v[i][j]
-                                       + v[i][j+1] + v[i+1][j]);
+                                     + v[i][j+1] + v[i+1][j]);
             }
         }
 
-        /* receive */
-        /* from above */
-        if (my_rank != 0) {
-            MPI_Recv(row_above, width, MPI_FLOAT, my_rank-1, it, comm,
-                     &status);
-            i = 0;
-            for (j=1; j < width-1; j++) {
-                v_bar[i][j] = v[i][j]
-                              + kappa*(row_above[j] + v[i][j-1] - 4*v[i][j]
-                                       + v[i][j+1] + v[i+1][j]);
-            }
-        }
-        /* from below */
-        if (my_rank != num_procs-1) {
-            MPI_Recv(row_below, width, MPI_FLOAT, my_rank+1, it, comm,
-                     &status);
-            i = height-1;
-            for (j=1; j < width-1; j++) {
-                v_bar[i][j] = v[i][j]
-                              + kappa*(v[i-1][j] + v[i][j-1] - 4*v[i][j]
-                                       + v[i][j+1] + row_below[j]);
-            }
-        }
+        /* boundaries */
+        update_boundary(v_bar, top, height, width);
+        update_boundary(v_bar, bottom, height, width);
+        update_boundary(v_bar, left, height, width);
+        update_boundary(v_bar, right, height, width);
 
         /* swap pointers */
         temp = v;
@@ -106,28 +45,27 @@ void diffusion_2d_parallel(double **v, double **f,
         memcpy(v[0], v_dest[0], sizeof(double)*width*height);
     }
 
-    /* free, if necessary, memory allocated to store rows above and below */
-    if (my_rank != 0) {
-        free(row_above);
-    }
-    if (my_rank != num_procs-1) {
-        free(row_below);
-    }
-
-    /* detach and free send buffer */
-    MPI_Buffer_detach(buf, &buf_size);
-    free(buf);
-
     /* free v_bar */
     free_2d_array(v_bar);
 }
 
 
-void solve_2d_parallel(double *v_flat, double *f_flat, int width, int height,
-                       double kappa, int iters, MPI_Comm comm) {
+void solve_2d(double *v_flat, double *f_flat, int width, int height,
+              double kappa, int iters, int bc_left, int bc_right,
+              int bc_top, int bc_bottom) {
+    boundary_condition left, right, top, bottom;
+    left.pos = LEFT;
+    left.type = bc_left;
+    right.pos = RIGHT;
+    right.type = bc_right;
+    top.pos = TOP;
+    top.type = bc_top;
+    bottom.pos = BOTTOM;
+    bottom.type = bc_bottom;
+
     double **v = alloc_2d_array_from_flat(v_flat, height, width);
     double **f = alloc_2d_array_from_flat(f_flat, height, width);
-    diffusion_2d_parallel(v, f, height, width, kappa, iters, comm);
+    diffusion_2d(v, f, height, width, kappa, iters, left, right, top, bottom);
     free(v);
     free(f);
 }
