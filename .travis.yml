@@ -8,7 +8,7 @@ before_install:
 addons:
   apt:
     packages:
-    - libgsl-dev
+    - libgsl0-dev
     - libatlas-base-dev
     - openmpi-bin
     - libopenmpi-dev
