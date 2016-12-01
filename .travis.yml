@@ -8,7 +8,7 @@ before_install:
 addons:
   apt:
     packages:
-    - libgls-dev
+    - libgsl-dev
     - libatlas-base-dev
     - openmpi-bin
     - libopenmpi-dev
@@ -16,11 +16,12 @@ addons:
 env:
     - OMP_NUM_THREADS=4
 script:
-    - cd project2 && make jacobi_lib && cd -
-    - cd project3 && make solar_system_lib && cd -
-    - cd project4 && make libising && cd -
-    - cd project5 && make diffusion_lib && make clean-c && cd -
-    - cd project5 && make diffusion_lib_mpi && cd -
+    - make -C project2 jacobi_lib
+    - make -C project3 solar_system_lib
+    - make -C project4 libising
+    - make -C project5 diffusion_lib
+    - make -C project5 clean-c
+    - make -C project5 diffusion_lib_mpi
 
 notifications:
     email: false
