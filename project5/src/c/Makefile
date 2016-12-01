@@ -3,23 +3,36 @@
 CC=cc
 CC_FLAGS = -Wall -O3 -std=gnu89 -fpic -march=native
 LDFLAGS= -lm
+LDFLAGS += -fopenmp
 diffuse_sources = boundary.c common.c diffuse_2d.c
+diffuse_sources_omp = diffuse_2d_omp.c
 diffuse_sources_mpi = diffuse_2d_mpi.c
 diffuse_headers = boundary.h common.h
+diffuse_headers_omp =
 diffuse_headers_mpi =
 diffuse_object_files = boundary.o common.o diffuse_2d.o
+diffuse_object_files_omp = diffuse_2d_omp.o
 diffuse_object_files_mpi = diffuse_2d_mpi.o
 diffuse_lib = libdiffuse.so
 
-bench_random = bench_random.o
+LDFLAGS += -fopenmp
+diffuse_sources += $(diffuse_sources_omp)
+diffuse_headers += $(diffuse_headers_omp)
+diffuse_object_files += $(diffuse_object_files_omp)
 
 all: $(diffuse_lib)
+
+#OMP: LDFLAGS += -fopenmp
+#OMP: diffuse_sources += $(diffuse_sources_omp)
+#OMP: diffuse_headers += $(diffuse_headers_omp)
+#OMP: diffuse_object_files += $(diffuse_object_files_omp)
+#OMP: all
 
 MPI: CC=mpicc
 MPI: diffuse_sources += $(diffuse_sources_mpi)
 MPI: diffuse_headers += $(diffuse_headers_mpi)
 MPI: diffuse_object_files += $(diffuse_object_files_mpi)
-MPI: $(diffuse_lib)
+MPI: all
 
 $(diffuse_lib): $(diffuse_object_files)
 	$(CC) -shared -Wl,-soname,diffuse -o $(diffuse_lib) $(diffuse_object_files) $(LDFLAGS)

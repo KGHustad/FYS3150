@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "common.h"
 #include "boundary.h"
@@ -52,7 +53,7 @@ void diffusion_2d(double **v, double **f,
 
 void solve_2d(double *v_flat, double *f_flat, int width, int height,
               double kappa, int iters, int bc_left, int bc_right,
-              int bc_top, int bc_bottom) {
+              int bc_top, int bc_bottom, double *time_spent) {
     boundary_condition left, right, top, bottom;
     left.pos = LEFT;
     left.type = bc_left;
@@ -63,9 +64,13 @@ void solve_2d(double *v_flat, double *f_flat, int width, int height,
     bottom.pos = BOTTOM;
     bottom.type = bc_bottom;
 
+    time_t pre, post;
     double **v = alloc_2d_array_from_flat(v_flat, height, width);
     double **f = alloc_2d_array_from_flat(f_flat, height, width);
+    pre = clock();
     diffusion_2d(v, f, height, width, kappa, iters, left, right, top, bottom);
+    post = clock();
     free(v);
     free(f);
+    *time_spent = (post - pre)/1E6;
 }
