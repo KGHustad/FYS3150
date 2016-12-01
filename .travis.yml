@@ -1,14 +1,16 @@
-OMP_NUM_THREADS=4
-
 language: c
 
 compiler: gcc
 
 before_install: dependencies/install_dependencies_deb.sh
-
+env:
+    - OMP_NUM_THREADS=4
 script:
     - cd project2 && make jacobi_lib && cd -
     - cd project3 && make solar_system_lib && cd -
     - cd project4 && make libising && cd -
     - cd project5 && make diffusion_lib && make clean-c && cd -
     - cd project5 && make diffusion_lib_mpi && cd -
+
+notifications:
+    email: false
