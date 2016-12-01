@@ -19,3 +19,8 @@ This may take a few minutes.
 
 ## Note on compatibility
 The programs in this repository were developed in Ubuntu 16.04. Attempts have been made to maximize platform independence, but no guarantees are given.
+
+## Travis
+We have set up [Travis CI](https://travis-ci.org/KGHustad/FYS3150) with this repository to compile our C libraries automatically for each commit.
+
+It would be possible (and desirable) to extend this to running tests, but we have not yet found the time to set that up.
