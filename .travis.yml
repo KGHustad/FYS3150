@@ -2,7 +2,17 @@ language: c
 
 compiler: gcc
 
-before_install: dependencies/install_dependencies_deb.sh
+before_install:
+    - pip install --user tabulate
+
+addons:
+  apt:
+    packages:
+    - libgls-dev
+    - libatlas-base-dev
+    - openmpi-bin
+    - libopenmpi-dev
+
 env:
     - OMP_NUM_THREADS=4
 script:
