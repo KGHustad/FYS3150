@@ -1,3 +1,4 @@
+#/usr/bin/env sh
 #set -x # print all commands
 
 function dnf_install {
