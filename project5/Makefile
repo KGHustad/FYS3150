@@ -17,6 +17,9 @@ $(diffusion_lib_file): diffusion_lib
 diffusion_lib:
 	$(MAKE) -C $(diffusion_lib_dir)
 
+diffusion_lib_mpi:
+	$(MAKE) -C $(diffusion_lib_dir) MPI
+
 # report stuff
 continuous:
 	latexmk ${LATEX_OPTS} -pdf -pvc ${report_texdoc}
