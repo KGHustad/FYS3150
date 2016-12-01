@@ -54,10 +54,26 @@
 \renewcommand{\epigraphsize}{\normalsize}
 \epigraph{This is a quote}
 	{\textit{By this guy}}
+
+\begin{abstract}
+\noindent
+This is an abstract
+\end{abstract}
+
 \pagebreak
 
 
-Forward Euler
+
+
+
+\section{Method and Idea}
+\subsection{One dimmentional case}
+\subsubsection{Disrectization}
+\begin{equation}
+u(x+\Delta x, t+\Delta t) = u(x_{i+1},t_{i+1}) = u_{i+1,j+1}
+\end{equation}
+
+\subsubsection{Forward Euler - Explicit scheme}
 \begin{align}
 \frac{\partial u(x_i,t_j)^2}{\partial x^2} &= \frac{\partial u(x_i,t_j)}{\partial t} \\
 \frac{u(x_i + \Delta x, t_j) - 2u(x_i,t_j) + u(x_i - \Delta x, t_j)}{\Delta x^2}
@@ -67,14 +83,14 @@ u_{i,j+1} = \alpha u_{i-1,j} + (1-2\alpha)u_{i,j} + \alpha u_{i+1,j}
 \end{align}
 where $\alpha = \frac{\Delta t}{\Delta x^2}$
 
-Backward Euler
 
+\subsubsection{Backward Euler - Implicit scheme}
 \begin{align}
 \frac{u_{i+1,j} - 2u_{i,j}+u_{i-1,j}}{\Delta x^2} &= \frac{u_{i,j} - u_{i,j-1}}{\Delta t} \\
 u_{i,j-1} = \alpha u_{i+1,j} + (1 - 2\alpha )u_{i,j} + \alpha u_{i-1,j}
 \end{align}
 
-
+we define
 \[
 Â = \begin{bmatrix}
 1+2\alpha & -\alpha & 0 & \cdots & \cdots \\
@@ -84,7 +100,7 @@ u_{i,j-1} = \alpha u_{i+1,j} + (1 - 2\alpha )u_{i,j} + \alpha u_{i-1,j}
 \vdots & \cdots & \cdots & -\alpha & 1+2\alpha \\
 \end{bmatrix}
 \]
-we define
+and
 \[ V_j = \begin{bmatrix}
 u_{0,j}\\
 u_{1,j}\\
@@ -97,11 +113,30 @@ and get
 \begin{equation}
 ÂV_j = V_{j-1}
 \end{equation}
-which means we can define a state $V_j$ as
+which means we can define the state at time $j$, $V_j$ as
 \begin{equation}
 V_j = Â^{-j}V_0
 \end{equation}
 
+
+\subsubsection{The Crank-Nicolson scheme}
+
+
+\subsubsection{The truncation error}
+
+
+\subsection{Two dimmentional case}
+\begin{equation}
+\left(\frac{\partial^2 u(x,y,t)}{\partial x^2} + \frac{\partial^2 u(x,y,t)}{\partial y^2}\right) = \frac{\partial u(x,y,t)}{\partial t}
+\end{equation}
+Forward Euler
+\begin{equation}
+\frac{u_{i+1,j}^l - 2u_{i,j}^l + u_{i-1,j}^l}{h^2} + \frac{u_{i,j+1}^l - 2u_{i,j}^l + u_{i,j-1}^l}{h^2} = \frac{u_{i,j}^{l+1} - u_{i,j}^l}{\Delta t}
+\end{equation}
+
+\begin{equation}
+u_{i,j}^{l+1} = u_{i,j}^l + \alpha\left( u_{i+1,j}^l + u_{i-1,j}^l + u_{i,j+1}^l + u_{i,j+1}^l - 4u_{i,j}^l \right)
+\end{equation}
 \end{document}
 
 
