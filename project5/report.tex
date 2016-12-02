@@ -1,36 +1,26 @@
 \documentclass[10pt,a4paper]{article}
 
-%__Fonts and layout__
-\usepackage[utf8]{inputenc}	%Allows input of unusual characters
-\usepackage[T1]{fontenc,url}	%Helps correctly display unusual characters
-\usepackage{parskip}	%Something about paragraph spacing
-\usepackage{lmodern}	%Makes your font prettier or something
-\usepackage{microtype}	%Makes text look prettier
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc,url}
+\usepackage{parskip}
+\usepackage{lmodern}
+\usepackage{microtype}
 \usepackage{verbatim}
-
-%__math__
-\usepackage{amsmath, amssymb}	%Improved math syntax and symbols
-\usepackage{mathtools}	%Some matrix stuff and shit
-\usepackage{tikz}	%Graph drawing
-\usepackage{physics}	%Mathematical physics notation
-
-%__algorithms and programming__
-\usepackage{algorithm}	%Allows writing of pretty algorithm. Perfect for desplaying code-syntax
-\usepackage{algpseudocode}	%Similar to algorithm, just different layout
-\usepackage{listings}	%Listing-enviroment, perfect for code or terminal output
-\usepackage{enumerate}	%For listing of stuff
-
-%__graphs and pictures__
-\usepackage{graphicx}	%Includegraphics
-\usepackage{float}	%Allows the [H] option, to force graphics in place
-
-%__quotes and refrencing__
-\usepackage{epigraph}	%Allows epigraph enviroment, for quotes
-\usepackage{hyperref}	%Allows hyperreferences in pdf
+\usepackage{amsmath, amssymb}
+\usepackage{mathtools}
+\usepackage{tikz}
+\usepackage{physics}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{listings}
+\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{epigraph}
+\usepackage{hyperref}
 %\usepackage[backend=biber]{biblatex}
 %\addbibresource{cites.bib}
 
-% gregorian macros
 \newcommand{\indiceset}{\mathcal{I}}
 \newcommand{\indicesetinner}{\mathcal{I}_{\mathrm{inner}}}
 
@@ -39,7 +29,6 @@
 
 
 
-%__Making a first-page__
 \title{FYS3150 -- Project 5 -- PDE}
 \author{
 	\begin{tabular}{rl}
@@ -51,14 +40,13 @@
 
 
 
-%__Epigraph__
 \setlength{\epigraphwidth}{0.75\textwidth}
 \renewcommand{\epigraphflush}{center}
 \renewcommand{\beforeepigraphskip}{50pt}
 \renewcommand{\afterepigraphskip}{100pt}
 \renewcommand{\epigraphsize}{\normalsize}
-\epigraph{This is a quote}
-	{\textit{By this guy}}
+\epigraph{Nobody reads my lecture notes}
+	{\textit{Morten Hjorth-Jensen}}
 
 \begin{abstract}
 \noindent
@@ -156,7 +144,6 @@ We can compute $v_{ij}^l$ for all $i, j \in \indicesetinner$
 In order to simplify matters, we use a 1D decomposition (along the y-axis).
 
 
-% references
 \bibliographystyle{IEEEtran}
 \bibliography{../papers}{}
 
