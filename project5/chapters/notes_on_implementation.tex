@@ -5,6 +5,6 @@ With the explicit scheme, we can compute $v_{ij}^l$ for all $i, j \in \indexseti
 
 Since there are $(N - 1)^2$ independent values to be computed, the finest decomposition we could make, would be a 2D decomposition with $(N - 1)^2$ workers.
 
-If one assumes that the values have already been distributed among the $\frac{N^2}{n^2}$ workers, and that each worker is responsible for computing $n^2$ values. This would lead to each worker having to communicate $4n$ values to its neighbour workers at each time step. If the further assume that the workers are connected in a 2D mesh network, so that each worker is directly connected to its 4 neighbours, then we see that we have to do $\bigtheta{n}$
+If one assumes that the values have already been distributed among the $\frac{N^2}{n^2}$ workers, and that each worker is responsible for computing $n^2$ values. This would lead to each worker having to communicate $4n$ values to its neighbour workers at each time step. If the further assume that the workers are connected in a 2D mesh network, so that each worker is directly connected to its 4 neighbours, then we see that we have to do $\bigtheta n$
 
 In order to simplify matters, we use a 1D decomposition (along the y-axis).
