@@ -59,6 +59,12 @@ This is an abstract
 
 \textbf{TODO}: Remember to cite \cite{hpl_fdm}!
 
+\section{Introduction}
+We will be solving the partial differential equation 
+\begin{equation}\label{eqn:PDE}
+\frac{\partial u(x_i,t_j)^2}{\partial x^2} = \frac{\partial u(x_i,t_j)}{\partial t}
+\end{equation}
+
 \section{Method and Idea}
 \subsection{One dimmentional case}
 \subsubsection{Disrectization}
@@ -67,14 +73,28 @@ u(x+\Delta x, t+\Delta t) = u(x_{i+1},t_{i+1}) = u_{i+1,j+1}
 \end{equation}
 
 \subsubsection{Forward Euler - Explicit scheme}
-\begin{align}
-\frac{\partial u(x_i,t_j)^2}{\partial x^2} &= \frac{\partial u(x_i,t_j)}{\partial t} \\
+We will be deriving the explicit scheme by Taylor expansion around $u(x,t)$.
+\begin{equation}
+u(x,t+\Delta t) = u(x,t) + \frac{\partial u(x,t)}{\partial t} + O(\Delta t^2)
+\end{equation}
+
+
+Approximating the partial differential equation \ref{eqn:PDE} with the explicit scheme, we get
+\begin{equation}
 \frac{u(x_i + \Delta x, t_j) - 2u(x_i,t_j) + u(x_i - \Delta x, t_j)}{\Delta x^2}
-&= \frac{u(x_i, t_j + \Delta t) - u(x_i, t_i)}{\Delta t} \\
-\frac{u_{i+1,j} - 2u_{i,j}+u_{i-1,j}}{\Delta x^2} &= \frac{u_{i,j+1} - u_{i,j}}{\Delta t} \\
+= \frac{u(x_i, t_j + \Delta t) - u(x_i, t_i)}{\Delta t}
+\end{equation}
+
+which we can discretize as
+\begin{equation}
+\frac{u_{i+1,j} - 2u_{i,j}+u_{i-1,j}}{\Delta x^2} = \frac{u_{i,j+1} - u_{i,j}}{\Delta t}
+\end{equation}
+
+which gives
+\begin{equation}
 u_{i,j+1} = \alpha u_{i-1,j} + (1-2\alpha)u_{i,j} + \alpha u_{i+1,j}
-\end{align}
-where $\alpha = \frac{\Delta t}{\Delta x^2}$
+\end{equation}
+where $\alpha = \frac{\Delta t}{\Delta x^2}$ is a known constant.
 
 
 \subsubsection{Backward Euler - Implicit scheme}
