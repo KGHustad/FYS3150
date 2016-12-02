@@ -128,7 +128,7 @@ giving a trucation error running as $\dt$.
 \\\\
 We can discretize this as explained in section \ref{sec:disc}, giving
 \begin{equation}
-\frac{u_i^{l+1} - u_i^l}{\dt}
+u_t = \frac{u_i^{l+1} - u_i^l}{\dt}
 \end{equation}
 which gives
 \begin{equation}
@@ -143,10 +143,28 @@ where $\alpha = \frac{\dt}{\dx^2}$ is a known constant.
 
 
 \subsubsection{Backward Euler - Implicit scheme}
-\begin{align}
-\frac{u_{i+1}^l - 2u_i^l+u_{i-1}^l}{\dx^2} &= \frac{u_i^l - u_i^{l-1}}{\dt} \\
+Taylor expanding backwards around $u(x,t)$, truncating after the first derivative.
+\begin{equation}
+u(x,t-\dt) = u(x,t) - \frac{\pu(x,t)}{\pt}\dt + O(\dt^2)
+\end{equation}
+
+\begin{equation}
+\frac{\pu(x,t)}{\pt} = \frac{u(x,t) - u(x,t-\dt)}{\dt} + \frac{O(\dt^2)}{\dt} \approx \frac{u(x,t) - u(x,t-\dt)}{\dt}
+\end{equation}
+giving a trucation error running as $\dt$.
+\\\\
+We can discretize this as
+\begin{equation}
+u_t = \frac{u_i^l - u_i^{l-1}}{\dt}
+\end{equation}
+which gives us the approximation to the partial differential equation
+\begin{equation}
+\frac{u_{i+1}^l - 2u_i^l+u_{i-1}^l}{\dx^2} = \frac{u_i^l - u_i^{l-1}}{\dt}
+\end{equation}
+which can be rewritten to
+\begin{equation}\label{eqn:implicit}
 u_i^{l-1} = \alpha u_{i+1}^l + (1 - 2\alpha )u_i^l + \alpha u_{i-1}^l
-\end{align}
+\end{equation}
 
 we define
 \[
@@ -159,21 +177,21 @@ we define
 \end{bmatrix}
 \]
 and
-\[ V_j = \begin{bmatrix}
-u_{0,j}\\
-u_{1,j}\\
+\[ V_l = \begin{bmatrix}
+u_{0}^l\\
+u_{1}^l\\
 \cdots\\
-u_{n-1,j}\\
-u_{n,j}\\
+u_{n-1}^l\\
+u_{n}^l\\
 \end{bmatrix}
 \]
-and get
+and rewrite \ref{eqn:implicit} as the matrix equation
 \begin{equation}
-ÂV_j = V_{j-1}
+ÂV_l = V_{l-1}
 \end{equation}
-which means we can define the state at time $j$, $V_j$ as
+which means we can define the state at time $l$, $V_l$ as
 \begin{equation}
-V_j = Â^{-j}V_0
+V_l = Â^{-l}V_0
 \end{equation}
 
 
