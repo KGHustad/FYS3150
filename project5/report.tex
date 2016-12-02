@@ -78,6 +78,10 @@ We will be deriving the explicit scheme by Taylor expansion around $u(x,t)$.
 u(x,t+\Delta t) = u(x,t) + \frac{\partial u(x,t)}{\partial t} + O(\Delta t^2)
 \end{equation}
 
+\begin{equation}
+\frac{\partial u(x,t)}{\partial t} = \frac{u(x,t+\Delta t) - u(x,t)}{\Delta t} - \frac{O(\Delta t^2)}{\Delta t}
+\end{equation}
+
 
 Approximating the partial differential equation \ref{eqn:PDE} with the explicit scheme, we get
 \begin{equation}
