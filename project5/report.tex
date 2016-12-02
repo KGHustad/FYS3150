@@ -87,13 +87,13 @@ We will be solving the partial differential equation
 by approximating the left side with the central difference scheme, and the right side by Forward and Backward Euler, and the Crank-Nicolson scheme.
 
 \section{Method and Idea}
-\subsection{One dimmentional case}
-\subsubsection{Disrectization}\label{sec:disc}
-One dimmention:
+\subsection{One dimensional case}
+\subsubsection{Discretization}\label{sec:disc}
+One dimension:
 \begin{equation}
 u(x+\dx, t+\dt) = u(x_{i+1},t_{i+1}) = u_{i+1}^{j+1}
 \end{equation}
-Two dimmentions:
+Two dimensions:
 \begin{equation}
 u(x+\dx, y+\dy, t+\dt) = u(x_{i+1}, y_{i+1}, t_{i+1}) = u_{i+1,j+1}^{j+1}
 \end{equation}
@@ -133,7 +133,7 @@ u(x,t+\dt) = u(x,t) + \frac{\pu(x,t)}{\pt}\dt + O(\dt^2)
 \begin{equation}
 \frac{\pu(x,t)}{\pt} = \frac{u(x,t+\dt) - u(x,t)}{\dt} + \frac{O(\dt^2)}{\dt} \approx \frac{u(x,t+\dt) - u(x,t)}{\dt}
 \end{equation}
-giving a trucation error running as $\dt$.
+giving a truncation error running as $\dt$.
 \\\\
 We can discretize this as explained in section \ref{sec:disc}, giving
 \begin{equation}
@@ -160,7 +160,7 @@ u(x,t-\dt) = u(x,t) - \frac{\pu(x,t)}{\pt}\dt + O(\dt^2)
 \begin{equation}
 \frac{\pu(x,t)}{\pt} = \frac{u(x,t) - u(x,t-\dt)}{\dt} + \frac{O(\dt^2)}{\dt} \approx \frac{u(x,t) - u(x,t-\dt)}{\dt}
 \end{equation}
-giving a trucation error running as $\dt$.
+giving a truncation error running as $\dt$.
 \\\\
 We can discretize this as
 \begin{equation}
@@ -210,7 +210,7 @@ V_l = Â^{-l}V_0
 \subsubsection{The truncation error}
 
 
-\subsection{Two dimmentional case}
+\subsection{Two dimensional case}
 \begin{equation}
 \left(\frac{\ppu(x,y,t)}{\px^2} + \frac{\ppu(x,y,t)}{\py^2}\right) = \frac{\pu(x,y,t)}{\pt}
 \end{equation}
