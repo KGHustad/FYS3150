@@ -136,13 +136,7 @@ u_{i,j}^{l+1} = u_{i,j}^l + \alpha\left( u_{i+1,j}^l + u_{i-1,j}^l + u_{i,j+1}^l
 
 \section{Implementation and results}\label{sec:implementation_and_results}
 
-\subsection{Parallelization of the 2D explicit scheme}
-\subsubsection{Work distribution and granularity}
-\cite{inf3380_bok}
-We can compute $v_{ij}^l$ for all $i, j \in \indicesetinner$
-
-In order to simplify matters, we use a 1D decomposition (along the y-axis).
-
+\input{chapters/notes_on_implementation.tex}
 
 \bibliographystyle{IEEEtran}
 \bibliography{../papers}{}
