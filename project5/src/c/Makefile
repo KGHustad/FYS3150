@@ -4,13 +4,13 @@ CC=cc
 CC_FLAGS = -Wall -O3 -std=gnu89 -fpic -march=native
 LDFLAGS= -lm
 LDFLAGS += -fopenmp
-diffuse_sources = boundary.c common.c diffuse_2d.c
+diffuse_sources = boundary.c common.c diffuse_1d.c diffuse_2d.c tridiagonal.c
 diffuse_sources_omp = diffuse_2d_omp.c
 diffuse_sources_mpi = diffuse_2d_mpi.c
-diffuse_headers = boundary.h common.h
+diffuse_headers = boundary.h common.h tridiagonal.h
 diffuse_headers_omp =
 diffuse_headers_mpi =
-diffuse_object_files = boundary.o common.o diffuse_2d.o
+diffuse_object_files = boundary.o common.o diffuse_1d.o diffuse_2d.o tridiagonal.o
 diffuse_object_files_omp = diffuse_2d_omp.o
 diffuse_object_files_mpi = diffuse_2d_mpi.o
 diffuse_lib = libdiffuse.so
