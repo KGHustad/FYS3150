@@ -7,6 +7,7 @@ report_pdf=report.pdf
 bibliography=../papers.bib
 
 clean_latex_ext=*.aux *.bbl *.blg *.log *.out
+clean_latex_ext += *.fdb_latexmk *.fls 	# from latexmk
 
 diffusion_lib_dir=src/c
 diffusion_lib_file=src/c/libdiffuse.so
