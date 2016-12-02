@@ -27,7 +27,13 @@
 \newcommand{\half}{\frac{1}{2}}
 \newcommand{\dt}{{\Delta t}}
 \newcommand{\dx}{{\Delta x}}
-
+\newcommand{\dy}{{\Delta y}}
+\newcommand{\du}{{\Delta u}}
+\newcommand{\pt}{{\partial t}}
+\newcommand{\px}{{\partial x}}
+\newcommand{\py}{{\partial y}}
+\newcommand{\pu}{{\partial u}}
+\newcommand{\ppu}{{\partial^2 u}}
 
 \begin{document}
 
@@ -67,48 +73,55 @@ This is an abstract
 \section{Introduction}
 We will be solving the partial differential equation
 \begin{equation}\label{eqn:PDE}
-\frac{\partial u(x_i,t_j)^2}{\partial x^2} = \frac{\partial u(x_i,t_j)}{\partial t}
+\frac{\pu(x_i,t_j)^2}{\px^2} = \frac{\pu(x_i,t_j)}{\pt}
 \end{equation}
 
 \section{Method and Idea}
 \subsection{One dimmentional case}
 \subsubsection{Disrectization}
 \begin{equation}
-u(x+\Delta x, t+\Delta t) = u(x_{i+1},t_{i+1}) = u_{i+1,j+1}
+u(x+\dx, t+\dt) = u(x_{i+1},t_{i+1}) = u_{i+1,j+1}
 \end{equation}
 
 \subsubsection{Forward Euler - Explicit scheme}
-We will be deriving the explicit scheme by Taylor expansion around $u(x,t)$.
+We will be approximating the partial differential equation \ref{eqn:PDE} with the explicit scheme by Taylor expansion around $u(x,t)$. Truncating at the first derivative, we get.
 \begin{equation}
-u(x,t+\Delta t) = u(x,t) + \frac{\partial u(x,t)}{\partial t} + O(\Delta t^2)
+u(x,t+\dt) = u(x,t) + \frac{\pu(x,t)}{\pt}\dt + O(\dt^2)
 \end{equation}
 
 \begin{equation}
-\frac{\partial u(x,t)}{\partial t} = \frac{u(x,t+\Delta t) - u(x,t)}{\Delta t} - \frac{O(\Delta t^2)}{\Delta t}
+\frac{\pu(x,t)}{\pt} = \frac{u(x,t+\dt) - u(x,t)}{\dt} - \frac{O(\dt^2)}{\dt} \approx \frac{u(x,t+\dt) - u(x,t)}{\dt}
+\end{equation}
+giving a trucation error running as $\dt$.
+
+Then the left side, with $x$ as variable, truncating at the second derivative.
+\begin{equation}
+u(x+\Delta x, t) = u(x,t) + \frac{\pu(x,t)}{\px}\dx + \frac{\ppu(x,t)}{2\px^2}\dx^2 + O(\dx^3)
+\end{equation}
+\begin{equation}
+\frac{\ppu(x,t)}{\px^2} = \frac{2u(x+\dx,t) - 2u(x,t)}{\dx^2} - \frac{2\frac{\pu(x,t)}{\px}}{\dx}
 \end{equation}
 
-
-Approximating the partial differential equation \ref{eqn:PDE} with the explicit scheme, we get
 \begin{equation}
-\frac{u(x_i + \Delta x, t_j) - 2u(x_i,t_j) + u(x_i - \Delta x, t_j)}{\Delta x^2}
-= \frac{u(x_i, t_j + \Delta t) - u(x_i, t_i)}{\Delta t}
+\frac{u(x_i + \dx, t_j) - 2u(x_i,t_j) + u(x_i - \dx, t_j)}{\dx^2}
+= \frac{u(x_i, t_j + \dt) - u(x_i, t_i)}{\dt}
 \end{equation}
 
 which we can discretize as
 \begin{equation}
-\frac{u_{i+1,j} - 2u_{i,j}+u_{i-1,j}}{\Delta x^2} = \frac{u_{i,j+1} - u_{i,j}}{\Delta t}
+\frac{u_{i+1,j} - 2u_{i,j}+u_{i-1,j}}{\dx^2} = \frac{u_{i,j+1} - u_{i,j}}{\dt}
 \end{equation}
 
 which gives
 \begin{equation}
 u_{i,j+1} = \alpha u_{i-1,j} + (1-2\alpha)u_{i,j} + \alpha u_{i+1,j}
 \end{equation}
-where $\alpha = \frac{\Delta t}{\Delta x^2}$ is a known constant.
+where $\alpha = \frac{\dt}{\dx^2}$ is a known constant.
 
 
 \subsubsection{Backward Euler - Implicit scheme}
 \begin{align}
-\frac{u_{i+1,j} - 2u_{i,j}+u_{i-1,j}}{\Delta x^2} &= \frac{u_{i,j} - u_{i,j-1}}{\Delta t} \\
+\frac{u_{i+1,j} - 2u_{i,j}+u_{i-1,j}}{\dx^2} &= \frac{u_{i,j} - u_{i,j-1}}{\dt} \\
 u_{i,j-1} = \alpha u_{i+1,j} + (1 - 2\alpha )u_{i,j} + \alpha u_{i-1,j}
 \end{align}
 
@@ -149,11 +162,11 @@ V_j = Â^{-j}V_0
 
 \subsection{Two dimmentional case}
 \begin{equation}
-\left(\frac{\partial^2 u(x,y,t)}{\partial x^2} + \frac{\partial^2 u(x,y,t)}{\partial y^2}\right) = \frac{\partial u(x,y,t)}{\partial t}
+\left(\frac{\ppu(x,y,t)}{\px^2} + \frac{\ppu(x,y,t)}{\py^2}\right) = \frac{\pu(x,y,t)}{\pt}
 \end{equation}
 Forward Euler
 \begin{equation}
-\frac{u_{i+1,j}^l - 2u_{i,j}^l + u_{i-1,j}^l}{h^2} + \frac{u_{i,j+1}^l - 2u_{i,j}^l + u_{i,j-1}^l}{h^2} = \frac{u_{i,j}^{l+1} - u_{i,j}^l}{\Delta t}
+\frac{u_{i+1,j}^l - 2u_{i,j}^l + u_{i-1,j}^l}{h^2} + \frac{u_{i,j+1}^l - 2u_{i,j}^l + u_{i,j-1}^l}{h^2} = \frac{u_{i,j}^{l+1} - u_{i,j}^l}{\dt}
 \end{equation}
 
 \begin{equation}
