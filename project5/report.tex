@@ -75,28 +75,19 @@ We will be solving the partial differential equation
 \begin{equation}\label{eqn:PDE}
 \frac{\pu(x_i,t_j)^2}{\px^2} = \frac{\pu(x_i,t_j)}{\pt}
 \end{equation}
+by approximating the left side with the central difference scheme, and the right side by Forward and Backward Euler, and the Crank-Nicolson scheme.
 
 \section{Method and Idea}
 \subsection{One dimmentional case}
-\subsubsection{Disrectization}
+\subsubsection{Disrectization}\label{sec:disc}
 \begin{equation}
 u(x+\dx, t+\dt) = u(x_{i+1},t_{i+1}) = u_{i+1,j+1}
 \end{equation}
 
-\subsubsection{Forward Euler - Explicit scheme}
-We will be approximating the partial differential equation \ref{eqn:PDE} with the explicit scheme by Taylor expansion around $u(x,t)$. Truncating at the first derivative, we get.
-\begin{equation}
-u(x,t+\dt) = u(x,t) + \frac{\pu(x,t)}{\pt}\dt + O(\dt^2)
-\end{equation}
 
-\begin{equation}
-\frac{\pu(x,t)}{\pt} = \frac{u(x,t+\dt) - u(x,t)}{\dt} + \frac{O(\dt^2)}{\dt} \approx \frac{u(x,t+\dt) - u(x,t)}{\dt}
-\end{equation}
-giving a trucation error running as $\dt$.
-\\
-\\
-\\
-Central difference:
+
+\subsubsection{Central difference scheme}
+For the spacial derivative of the partial differential equation, we will be using the central difference scheme, derived from a Taylor expansion in both directions around $u(x,t)$.
 \begin{equation}
 u(x+\Delta x, t) = u(x,t) + \frac{\pu(x,t)}{\px}\dx + \frac{\ppu(x,t)}{2\px^2}\dx^2 + O(\dx^3)
 \end{equation}
@@ -113,23 +104,34 @@ u(x+\Delta x, t) + u(x-\Delta x, t) = 2u(x,t) + 2\frac{\ppu(x,t)}{2\px^2}\dx^2 +
 \frac{\ppu(x,t)}{2\px^2} &= \frac{u(x+\Delta x, t) - 2u(x,t) + u(x-\Delta x, t)}{\dx^2} + \frac{2O(\dx^3)}{\dx^2}\\
 &\approx \frac{u(x+\Delta x, t) - 2u(x,t) + u(x-\Delta x, t)}{\dx^2}
 \end{split}\end{equation}
-
-
+Giving a truncation error running as $\dx$.\\\\
+Which we can discretize as
 \begin{equation}
-\frac{\ppu(x,t)}{\px^2} = \frac{2u(x+\dx,t) - 2u(x,t)}{\dx^2} - \frac{2\frac{\pu(x,t)}{\px}}{\dx}
+u_{xx} = \frac{u_{i+1,j} - 2u_{i,j}+u_{i-1,j}}{\dx^2}
+\end{equation}
+
+
+\subsubsection{Forward Euler - Explicit scheme}
+We will be approximating the partial differential equation \ref{eqn:PDE} with the explicit scheme by Taylor expansion around $u(x,t)$. Truncating at the first derivative, we get.
+\begin{equation}
+u(x,t+\dt) = u(x,t) + \frac{\pu(x,t)}{\pt}\dt + O(\dt^2)
 \end{equation}
 
 \begin{equation}
-\frac{u(x_i + \dx, t_j) - 2u(x_i,t_j) + u(x_i - \dx, t_j)}{\dx^2}
-= \frac{u(x_i, t_j + \dt) - u(x_i, t_i)}{\dt}
+\frac{\pu(x,t)}{\pt} = \frac{u(x,t+\dt) - u(x,t)}{\dt} + \frac{O(\dt^2)}{\dt} \approx \frac{u(x,t+\dt) - u(x,t)}{\dt}
 \end{equation}
-
-which we can discretize as
+giving a trucation error running as $\dt$.
+\\\\
+We can discretize this as explained in section \ref{sec:disc}, giving
+\begin{equation}
+\frac{u_{i,j+1} - u_{i,j}}{\dt}
+\end{equation}
+which gives
 \begin{equation}
 \frac{u_{i+1,j} - 2u_{i,j}+u_{i-1,j}}{\dx^2} = \frac{u_{i,j+1} - u_{i,j}}{\dt}
 \end{equation}
 
-which gives
+Solving for $u_{i,j+1}$ gives
 \begin{equation}
 u_{i,j+1} = \alpha u_{i-1,j} + (1-2\alpha)u_{i,j} + \alpha u_{i+1,j}
 \end{equation}
