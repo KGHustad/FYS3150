@@ -18,7 +18,15 @@
 \usepackage{float}
 \usepackage{epigraph}
 \usepackage{hyperref}
+\usepackage{varioref}
 
+% varioref stuff from Anders
+\labelformat{section}{section~#1}
+\labelformat{subsection}{section~#1}
+\labelformat{subsubsection}{paragraph~#1}
+\labelformat{equation}{(#1)}
+\labelformat{figure}{figure~#1}
+\labelformat{table}{table~#1}
 
 \newcommand{\indexset}{\mathcal{I}}
 \newcommand{\indexsetinner}{\mathcal{I}_{\mathrm{inner}}}
@@ -29,6 +37,11 @@
 \newcommand{\dx}{{\Delta x}}
 \newcommand{\dy}{{\Delta y}}
 \newcommand{\du}{{\Delta u}}
+\newcommand{\fracpt}{\frac{\partial}{\partial t}}
+\newcommand{\fracpx}{\frac{\partial}{\partial x}}
+\newcommand{\fracpy}{\frac{\partial}{\partial y}}
+\newcommand{\fracpxx}{\frac{\partial^2}{\partial x^2}}
+\newcommand{\fracpyy}{\frac{\partial^2}{\partial y^2}}
 \newcommand{\pt}{{\partial t}}
 \newcommand{\px}{{\partial x}}
 \newcommand{\py}{{\partial y}}
@@ -84,7 +97,7 @@ We will be solving the partial differential equation
 \begin{equation}\label{eqn:PDE}
 \frac{\pu(x_i,t_j)^2}{\px^2} = \frac{\pu(x_i,t_j)}{\pt}
 \end{equation}
-by approximating the left side with the central difference scheme, and the right side by Forward and Backward Euler, and the Crank-Nicolson scheme.
+by approximating the left side with the centered difference scheme, and the right side by Forward and Backward Euler, and the Crank-Nicolson scheme.
 
 \section{Method and Idea}
 \subsection{One dimensional case}
@@ -99,8 +112,8 @@ u(x+\dx, y+\dy, t+\dt) = u(x_{i+1}, y_{i+1}, t_{i+1}) = u_{i+1,j+1}^{j+1}
 \end{equation}
 
 
-\subsubsection{Central difference scheme}
-For the spacial derivative of the partial differential equation, we will be using the central difference scheme, derived from a Taylor expansion in both directions around $u(x,t)$.
+\subsubsection{Centered difference scheme}
+For the spacial derivative of the partial differential equation, we will be using the centered difference scheme, derived from a Taylor expansion in both directions around $u(x,t)$.
 \begin{equation}
 u(x+\Delta x, t) = u(x,t) + \frac{\pu(x,t)}{\px}\dx + \frac{\ppu(x,t)}{2\px^2}\dx^2 + O(\dx^3)
 \end{equation}
@@ -210,9 +223,26 @@ V_l = Â^{-l}V_0
 \subsubsection{The truncation error}
 
 
+\subsubsection{An analytical solution}\label{sec:analytical_1d}
+\cite{inf-mat2351_book} gives a solution to the diffusion equation
+
+\begin{align}\label{eq:analytical_1d_book}
+    u(x, t) = e^{-\pi^2 t} \sin(\pi x) , \quad u(0, t) = u(1, t) = 0
+\end{align}
+
+We can easily show that \vref{eq:analytical_1d_book} solves \vref{eqn:PDE},
+\begin{align}
+\fracpt u(x, t) &= -\pi^2 u(x, t) \\
+\fracpxx u(x, t) &= \fracpx \left(\pi e^{-\pi^2 t} \cos(\pi x) \right)
+= -\pi^2 e^{-\pi^2 t} \sin(\pi x) = -\pi^2 u(x, t)
+\end{align}
+
+
+
 \subsection{Two dimensional case}
 \begin{equation}
 \left(\frac{\ppu(x,y,t)}{\px^2} + \frac{\ppu(x,y,t)}{\py^2}\right) = \frac{\pu(x,y,t)}{\pt}
+\label{eq:diffusion_2d}
 \end{equation}
 Forward Euler
 \begin{equation}
@@ -223,7 +253,28 @@ Forward Euler
 u_{i,j}^{l+1} = u_{i,j}^l + \alpha\left( u_{i+1,j}^l + u_{i-1,j}^l + u_{i,j+1}^l + u_{i,j+1}^l - 4u_{i,j}^l \right)
 \end{equation}
 
+\subsubsection{An analytical solution}
+We can adapt the analytical solution described in \vref{sec:analytical_1d} to solve the 2D problem.
 
+Using the Dirichlet boundary conditions
+\begin{align}
+u(0, y, t) = u(1, y, t) = u(x, 0, t) = u(x, 1, t) = 0
+\end{align}
+we get
+\begin{align}\label{eq:analytical_2d}
+    u(x, y, t) = e^{-2\pi^2 t} \sin(\pi x) \sin(\pi y)
+\end{align}
+
+which solves \vref{eq:diffusion_2d} since
+\begin{align}
+\fracpt u(x, y, t) &= -2\pi^2 u(x, y, t) \\
+\fracpxx u(x, y, t) &= \fracpx \left( \pi e^{-2\pi^2 t} \cos(\pi x) \sin(\pi y) \right) \\
+&= -\pi^2 e^{-2\pi^2 t} \sin(\pi x) \sin(\pi y) \\
+&= -\pi^2 u(x, y, t) \\
+\fracpyy u(x, y, t) &= \fracpy \left( \pi e^{-2\pi^2 t} \sin(\pi x) \cos(\pi y) \right) \\
+&= -\pi^2 e^{-2\pi^2 t} \sin(\pi x) \sin(\pi y) \\
+&= -\pi^2 u(x, y, t)
+\end{align}
 
 \section{Implementation and results}\label{sec:implementation_and_results}
 
