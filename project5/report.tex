@@ -80,10 +80,14 @@ by approximating the left side with the central difference scheme, and the right
 \section{Method and Idea}
 \subsection{One dimmentional case}
 \subsubsection{Disrectization}\label{sec:disc}
+One dimmention:
 \begin{equation}
-u(x+\dx, t+\dt) = u(x_{i+1},t_{i+1}) = u_{i+1,j+1}
+u(x+\dx, t+\dt) = u(x_{i+1},t_{i+1}) = u_{i+1}^{j+1}
 \end{equation}
-
+Two dimmentions:
+\begin{equation}
+u(x+\dx, y+\dy, t+\dt) = u(x_{i+1}, y_{i+1}, t_{i+1}) = u_{i+1,j+1}^{j+1}
+\end{equation}
 
 
 \subsubsection{Central difference scheme}
@@ -107,7 +111,7 @@ u(x+\Delta x, t) + u(x-\Delta x, t) = 2u(x,t) + 2\frac{\ppu(x,t)}{2\px^2}\dx^2 +
 Giving a truncation error running as $\dx$.\\\\
 Which we can discretize as
 \begin{equation}
-u_{xx} = \frac{u_{i+1,j} - 2u_{i,j}+u_{i-1,j}}{\dx^2}
+u_{xx} = \frac{u_{i+1}^l - 2u_i^l+u_{i-1}^l}{\dx^2}
 \end{equation}
 
 
@@ -124,24 +128,24 @@ giving a trucation error running as $\dt$.
 \\\\
 We can discretize this as explained in section \ref{sec:disc}, giving
 \begin{equation}
-\frac{u_{i,j+1} - u_{i,j}}{\dt}
+\frac{u_i^{l+1} - u_i^l}{\dt}
 \end{equation}
 which gives
 \begin{equation}
-\frac{u_{i+1,j} - 2u_{i,j}+u_{i-1,j}}{\dx^2} = \frac{u_{i,j+1} - u_{i,j}}{\dt}
+\frac{u_{i+1}^l - 2u_i^l+u_{i-1}^l}{\dx^2} = \frac{u_i^{l+1} - u_i^l}{\dt}
 \end{equation}
 
-Solving for $u_{i,j+1}$ gives
+Solving for $u_i^{l+1}$
 \begin{equation}
-u_{i,j+1} = \alpha u_{i-1,j} + (1-2\alpha)u_{i,j} + \alpha u_{i+1,j}
+u_i^{l+1} = \alpha u_{i-1}^l + (1-2\alpha)u_i^l + \alpha u_{i+1}^l
 \end{equation}
 where $\alpha = \frac{\dt}{\dx^2}$ is a known constant.
 
 
 \subsubsection{Backward Euler - Implicit scheme}
 \begin{align}
-\frac{u_{i+1,j} - 2u_{i,j}+u_{i-1,j}}{\dx^2} &= \frac{u_{i,j} - u_{i,j-1}}{\dt} \\
-u_{i,j-1} = \alpha u_{i+1,j} + (1 - 2\alpha )u_{i,j} + \alpha u_{i-1,j}
+\frac{u_{i+1}^l - 2u_i^l+u_{i-1}^l}{\dx^2} &= \frac{u_i^l - u_i^{l-1}}{\dt} \\
+u_i^{l-1} = \alpha u_{i+1}^l + (1 - 2\alpha )u_i^l + \alpha u_{i-1}^l
 \end{align}
 
 we define
