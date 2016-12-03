@@ -93,26 +93,26 @@ This is an abstract
 \textbf{TODO}: Remember to cite \cite{hpl_fdm}!
 
 \section{Introduction}
-We will be solving the partial differential equation
+We will aim to solve the partial differential equation \ref{eqn:PDE} using finite difference schemes. The spacial derivative on the left side will be approximated with central difference, and the time-derivative using Forward Euler, Backward Euler, and the Crank-Nicolson scheme.
 \begin{equation}\label{eqn:PDE}
-\frac{\pu(x_i,t_j)^2}{\px^2} = \frac{\pu(x_i,t_j)}{\pt}
+\frac{\ppu(x,t)}{\px^2} = \frac{\pu(x,t)}{\pt}
 \end{equation}
-by approximating the left side with the centered difference scheme, and the right side by Forward and Backward Euler, and the Crank-Nicolson scheme.
 
 \section{Method and Idea}
 \subsection{One dimensional case}
-\subsubsection{Discretization}\label{sec:disc}
+\subsubsection{Discretization and notation}\label{sec:disc}
+The time and spacial dimmentions will be discretized 
 One dimension:
 \begin{equation}
-u(x+\dx, t+\dt) = u(x_{i+1},t_{i+1}) = u_{i+1}^{j+1}
+u(x+\dx, t+\dt) = u(x_{i+1},t_{l+1}) = u_{i+1}^{l+1}
 \end{equation}
 Two dimensions:
 \begin{equation}
-u(x+\dx, y+\dy, t+\dt) = u(x_{i+1}, y_{i+1}, t_{i+1}) = u_{i+1,j+1}^{j+1}
+u(x+\dx, y+\dy, t+\dt) = u(x_{i+1}, y_{j+1}, t_{l+1}) = u_{i+1,j+1}^{l+1}
 \end{equation}
 
 
-\subsubsection{Centered difference scheme}
+\subsubsection{Central difference scheme}
 For the spacial derivative of the partial differential equation, we will be using the centered difference scheme, derived from a Taylor expansion in both directions around $u(x,t)$.
 \begin{equation}
 u(x+\Delta x, t) = u(x,t) + \frac{\pu(x,t)}{\px}\dx + \frac{\ppu(x,t)}{2\px^2}\dx^2 + O(\dx^3)
