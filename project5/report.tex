@@ -101,16 +101,25 @@ We will aim to solve the partial differential equation \ref{eqn:PDE} using finit
 \section{Method and Idea}
 \subsection{One dimensional case}
 \subsubsection{Discretization and notation}\label{sec:disc}
-The time and spacial dimmentions will be discretized 
-One dimension:
+The spacial dimentions will be discretized as points
+\begin{equation} (x_i), \ i \in [0,n+1] \end{equation}
+in the one dimmentional case, and points 
+\begin{equation} (x_i, y_j), \ i,j \in [0,n+1]\end{equation}
+in the two-dimmentional case.\\
+
+The time will be discretized as
+\begin{equation} t_l, \ l \in [0,N+1] \end{equation}
+We will also rewrite this to the following compact notation, in one dimension:
 \begin{equation}
 u(x+\dx, t+\dt) = u(x_{i+1},t_{l+1}) = u_{i+1}^{l+1}
 \end{equation}
-Two dimensions:
+and two dimensions:
 \begin{equation}
 u(x+\dx, y+\dy, t+\dt) = u(x_{i+1}, y_{j+1}, t_{l+1}) = u_{i+1,j+1}^{l+1}
 \end{equation}
 
+We will also write the derivatives in \ref{eqn:PDE} with the compact notation
+\begin{equation} u_{xx} = u_t \end{equation}
 
 \subsubsection{Central difference scheme}
 For the spacial derivative of the partial differential equation, we will be using the centered difference scheme, derived from a Taylor expansion in both directions around $u(x,t)$.
@@ -131,7 +140,7 @@ u(x+\Delta x, t) + u(x-\Delta x, t) = 2u(x,t) + 2\frac{\ppu(x,t)}{2\px^2}\dx^2 +
 &\approx \frac{u(x+\Delta x, t) - 2u(x,t) + u(x-\Delta x, t)}{\dx^2}
 \end{split}\end{equation}
 Giving a truncation error running as $\dx$.\\\\
-Which we can discretize as
+Which we can discretize as shown in \ref{sec:disc}, giving
 \begin{equation}
 u_{xx} = \frac{u_{i+1}^l - 2u_i^l+u_{i-1}^l}{\dx^2}
 \end{equation}
@@ -148,7 +157,7 @@ u(x,t+\dt) = u(x,t) + \frac{\pu(x,t)}{\pt}\dt + O(\dt^2)
 \end{equation}
 giving a truncation error running as $\dt$.
 \\\\
-We can discretize this as explained in section \ref{sec:disc}, giving
+We can discretize this as shown in \ref{sec:disc}, giving
 \begin{equation}
 u_t = \frac{u_i^{l+1} - u_i^l}{\dt}
 \end{equation}
@@ -175,7 +184,7 @@ u(x,t-\dt) = u(x,t) - \frac{\pu(x,t)}{\pt}\dt + O(\dt^2)
 \end{equation}
 giving a truncation error running as $\dt$.
 \\\\
-We can discretize this as
+We can discretize this as shown in \ref{sec:disc}, giving
 \begin{equation}
 u_t = \frac{u_i^l - u_i^{l-1}}{\dt}
 \end{equation}
@@ -185,10 +194,15 @@ which gives us the approximation to the partial differential equation
 \end{equation}
 which can be rewritten to
 \begin{equation}\label{eqn:implicit}
-u_i^{l-1} = \alpha u_{i+1}^l + (1 - 2\alpha )u_i^l + \alpha u_{i-1}^l
+u_i^{l-1} = -\alpha u_{i+1}^l + (1 + 2\alpha )u_i^l + -\alpha u_{i-1}^l
 \end{equation}
-
-we define
+where we still have $\alpha = \frac{\dt}{\dx^2}$.
+\\\\
+If we write \ref{eqn:implicit} out for all values of $i \in [0,N+1]$, we see that it becomes a set of linear equations, which we can write as the matrix equation
+\begin{equation}
+V_{l-1} = ÂV_l
+\end{equation}
+where we define
 \[
 Â = \begin{bmatrix}
 1+2\alpha & -\alpha & 0 & \cdots & \cdots \\
@@ -203,15 +217,12 @@ and
 u_{0}^l\\
 u_{1}^l\\
 \cdots\\
-u_{n-1}^l\\
 u_{n}^l\\
+u_{n+1}^l\\
 \end{bmatrix}
 \]
-and rewrite \ref{eqn:implicit} as the matrix equation
-\begin{equation}
-ÂV_l = V_{l-1}
-\end{equation}
-which means we can define the state at time $l$, $V_l$ as
+
+which means we can define the state of the system at time $t_l$, $V_l$ as
 \begin{equation}
 V_l = Â^{-l}V_0
 \end{equation}
