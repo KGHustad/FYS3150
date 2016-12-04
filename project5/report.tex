@@ -93,7 +93,7 @@ This is an abstract
 \textbf{TODO}: Remember to cite \cite{hpl_fdm}!
 
 \section{Introduction}
-We wish to study numerical implementation of partial differential equations, using finite difference schemes. The partial differential equation we have chosen, is a simplified case of the diffusion equation, written as \ref{eqn:PDE} in one dimmention, and \ref{eqn:PDE2} in two dimmentions. The spatial derivatives on the left side will be approximated with central difference, and the time-derivative on the right using Forward Euler, Backward Euler, and the Crank-Nicolson scheme.
+We wish to study numerical implementation of partial differential equations, using finite difference schemes. The partial differential equation we have chosen, is a simplified case of the diffusion equation, written as \ref{eqn:PDE} in one dimension, and \ref{eqn:PDE2} in two dimensions. The spatial derivatives on the left side will be approximated with central difference, and the time-derivative on the right using Forward Euler, Backward Euler, and the Crank-Nicolson scheme.
 \begin{equation}\label{eqn:PDE}
 \frac{\ppu(x,t)}{\px^2} = \frac{\pu(x,t)}{\pt}
 \end{equation}
@@ -104,11 +104,11 @@ We wish to study numerical implementation of partial differential equations, usi
 
 \section{Method and Idea}
 \subsection{Discretization and notation}\label{sec:disc}
-The spatial dimentions will be discretized as points
+The spatial dimensions will be discretized as points
 \begin{equation} (x_i), \ i \in [0,n+1] \end{equation}
-in the one dimmentional case, and points 
+in the one dimensional case, and points 
 \begin{equation} (x_i, y_j), \ i,j \in [0,n+1]\end{equation}
-in the two-dimmentional case.\\
+in the two-dimensional case.\\
 The time will be discretized as
 \begin{equation} t_l, \ l \in [0,N+1] \end{equation}
 We will also rewrite this to the following compact notation, in one dimension:
@@ -124,9 +124,10 @@ We will also write the derivatives in \ref{eqn:PDE} and \ref{eqn:PDE2} with the
 \begin{equation} u_{xx} = u_t\end{equation}
 \begin{equation} \ u_{xx} + u_{yy} = u_t \end{equation}
 
-\subsection{One dimentional case}
 
-\subsubsection{Central difference scheme}
+
+\subsection{One dimensional case}
+\subsubsection{The central difference scheme}\label{sec:cent}
 For the spatial derivative of the partial differential equation, we will be using the centered difference scheme, derived from a Taylor expansion in both directions around $u(x,t)$.
 \begin{equation}
 u(x+\Delta x, t) = u(x,t) + \frac{\pu(x,t)}{\px}\dx + \frac{\ppu(x,t)}{2\px^2}\dx^2 + O(\dx^3)
@@ -149,6 +150,8 @@ We can discretize the derivative as shown in \ref{sec:disc}, giving
 \begin{equation}
 u_{xx} = \frac{u_{i+1}^l - 2u_i^l+u_{i-1}^l}{\dx^2}
 \end{equation}
+
+
 
 
 \subsubsection{Forward Euler - Explicit scheme}
@@ -262,13 +265,7 @@ We can rewrite \vref{eqn:crank} to define the state of the system $V_l$ as a fun
 V_l = (2\hat{I}+\alpha \hat{B})^{-1} (2\hat{I} - \alpha \hat{B})V_{l-1}
 \end{equation}
 
-
-
-\subsection{Error and stabitlity}
-\subsubsection{The truncation error}
-
-
-\subsection{An analytical solution}\label{sec:analytical_1d}
+\subsubsection{An analytical solution}\label{sec:analytical_1d}
 \cite{inf-mat2351_book} gives a solution to the diffusion equation
 
 \begin{align}\label{eq:analytical_1d_book}
@@ -284,20 +281,40 @@ We can easily show that \vref{eq:analytical_1d_book} solves \vref{eqn:PDE},
 
 
 
+\subsection{Error and stabitlity}
+\subsubsection{The truncation error}
+
+\subsubsection{Stability of chosen methods}
+
+
+
+
 \subsection{Two dimensional case}
+We will now expand our implementations to two spatial dimmentions, resulting in the partial differential equation, $u_{xx} + u_{yy} = u_t$, or, written out:
 \begin{equation}
 \left(\frac{\ppu(x,y,t)}{\px^2} + \frac{\ppu(x,y,t)}{\py^2}\right) = \frac{\pu(x,y,t)}{\pt}
 \label{eq:diffusion_2d}
 \end{equation}
-Forward Euler
+The central difference scheme derived for one dimension in \ref{sec:cent} can easially be expanded to two spatial dimensions, giving the left side of the PDE:
+\begin{equation}
+u_{xx} + u_{yy} = \frac{u_{i+1,j}^l - 2u_i^l+u_{i-1,j}^l}{\dx^2} + \frac{u_{i,j+1}^l - 2u_i^l+u_{i,j-1}^l}{\dy^2}
+\end{equation}
+
+As we have only introduced a new spatial dimension, the schemes for approximating time derivates remains unchanged. We expand the notation of the Forward Euler method to two dimensions:
+\begin{equation}
+u_t = \frac{u_{i,j}^{l+1} - u_{i,j}^l}{\dt}
+\end{equation}
+
+Choosing $\dx = \dy = h$, and combining these two schemes, we can set up the two dimensional partial differential equation
 \begin{equation}
 \frac{u_{i+1,j}^l - 2u_{i,j}^l + u_{i-1,j}^l}{h^2} + \frac{u_{i,j+1}^l - 2u_{i,j}^l + u_{i,j-1}^l}{h^2} = \frac{u_{i,j}^{l+1} - u_{i,j}^l}{\dt}
 \end{equation}
 
+Solving for $u_{i,j}^{l+1}$ gives us the explicit scheme
 \begin{equation}
 u_{i,j}^{l+1} = u_{i,j}^l + \alpha\left( u_{i+1,j}^l + u_{i-1,j}^l + u_{i,j+1}^l + u_{i,j+1}^l - 4u_{i,j}^l \right)
 \end{equation}
-
+where $\alpha = \frac{\dt}{h^2}$.
 \subsubsection{An analytical solution}
 We can adapt the analytical solution described in \vref{sec:analytical_1d} to solve the 2D problem.
 
