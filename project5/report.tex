@@ -235,7 +235,7 @@ V_l = \hat{A}^{-l}V_0
 
 
 \subsubsection{The Crank-Nicolson scheme}
-\textbf{TODO}: Deriving crank-nicolson scheme more thoroughly?
+\textbf{TODO}: Deriving crank-nicolson scheme more thoroughly, among other tings: showing the truncations error.
 
 While the Forward and Backward Euler methods rely on taking a step forwards and backwards in time to approximate the derivative, the Crank-Nicolson scheme simply takes the average of the two:
 \begin{equation}
@@ -283,28 +283,27 @@ We can easily show that \vref{eq:analytical_1d_book} solves \vref{eqn:PDE},
 
 
 \subsection{Error and stabitlity}
-\subsubsection{The truncation error}
+Since all methods build on the central difference scheme, the trucation error of the spatial derivative runs as $\dx^2$ for all schemes. From deriving the three methods in sections ( \textbf{TODO}:refrencing ) we know that the Euler methods has a truncation error running as $\dt$, while it is $\dt^2$ for the Crank-Nicolson scheme.
+\\\\
+
+
 
 \begin{table}[htb]
 \begin{center}
 \begin{tabular}{lcc}
  		& Truncation Error	& Stability
 \\ \hline \\
-Forward Euler	& $\dt, \dx^2$		& only $\dt \le \frac{1}{2}\dx^2$ \\
+Forward Euler	& $\dt$ and $\dx^2$	& only $\dt \le \frac{1}{2}\dx^2$ \\
 \\ \hline \\
-Backward Euler	& $\dt, \dx^2$		& all $\dt$ and $\dx$ \\
+Backward Euler	& $\dt$ and $\dx^2$	& all $\dt$ and $\dx$ \\
 \\ \hline \\
-Crank-Nicolson	& $\dt^2\dx$		& all $\dt$ and $\dx$ \\
+Crank-Nicolson	& $\dt^2$ and $\dx^2$	& all $\dt$ and $\dx$ \\
 \\ \hline \\
 \end{tabular}
 \end{center}
-\caption{Truncation error and stability requirements for the three solutions}
+\caption{Proportionality of truncation error and stability requirements for the three numerical schemes}
 \label{table:error}
 \end{table}
-
-\subsubsection{Stability of chosen methods}
-
-
 
 
 \subsection{Two dimensional case}
