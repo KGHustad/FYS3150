@@ -235,12 +235,13 @@ V_l = \hat{A}^{-l}V_0
 
 
 \subsubsection{The Crank-Nicolson scheme}
-\textbf{TODO}: Deriving crank-nicolson scheme, resulting in:
+\textbf{TODO}: Deriving crank-nicolson scheme more thoroughly?
 
+While the Forward and Backward Euler methods rely on taking a step forwards and backwards in time to approximate the derivative, the Crank-Nicolson scheme simply takes the average of the two:
 \begin{equation}
-\frac{1}{2\dx^2}\left(u_{i-1}^l - 2u_i^l + u_{i+1}^l\right) - \frac{1}{2\dx^2}\left(u_{i+1}^l - 2u_i^{l-1} + u_{u-1}^{l-1}\right) = \frac{1}{\dt}\left(u_i^l-u_i^{l-1}\right)
+\frac{u_i^l-u_i^{l-1}}{\dt} = \frac{1}{2}\left( \frac{u_{i+1}^l - 2u_i^l + u_{i-1}^l}{\dx^2} + \frac{u_{i+1}^{l-1} - 2u_i^{l-1} + u_{i-1}^{l-1}}{\dx^2}\right)
 \end{equation}
-which, after again defining $\alpha = \frac{\dt}{\dx^2}$, we get
+After again defining $\alpha = \frac{\dt}{\dx^2}$, we can seperate the two timesteps $t_l$ and $t_{l-1}$, giving us the implicit Crank-Nicolson scheme.
 \begin{equation}
 -\alpha u_{i-1}^l + (2+2\alpha)u_i^l - \alpha u_{i+1}^l = \alpha u_{i-1}^{l-1} + (2-2\alpha)u_i^{l-1} + \alpha u_{i+1}^{l-1}
 \end{equation}
@@ -260,7 +261,7 @@ where $V_l$ is defined in \vref{eqn:V}. We also have the identity matrix $\hat{I
 \end{bmatrix}
 \]
 
-We can rewrite \vref{eqn:crank} to define the state of the system $V_l$ as a function of it's inital state $V_0$:
+We can rewrite \vref{eqn:crank} to define the state of the system $V_l$ as a function of it's previous state $V_{l-1}$:
 \begin{equation}
 V_l = (2\hat{I}+\alpha \hat{B})^{-1} (2\hat{I} - \alpha \hat{B})V_{l-1}
 \end{equation}
@@ -283,6 +284,23 @@ We can easily show that \vref{eq:analytical_1d_book} solves \vref{eqn:PDE},
 
 \subsection{Error and stabitlity}
 \subsubsection{The truncation error}
+
+\begin{table}[htb]
+\begin{center}
+\begin{tabular}{lcc}
+ 		& Truncation Error	& Stability
+\\ \hline \\
+Forward Euler	& $\dt, \dx^2$		& only $\dt \le \frac{1}{2}\dx^2$ \\
+\\ \hline \\
+Backward Euler	& $\dt, \dx^2$		& all $\dt$ and $\dx$ \\
+\\ \hline \\
+Crank-Nicolson	& $\dt^2\dx$		& all $\dt$ and $\dx$ \\
+\\ \hline \\
+\end{tabular}
+\end{center}
+\caption{Truncation error and stability requirements for the three solutions}
+\label{table:error}
+\end{table}
 
 \subsubsection{Stability of chosen methods}
 
