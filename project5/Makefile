@@ -5,6 +5,7 @@ LATEX_OPTS=
 report_texdoc=report.tex
 report_pdf=report.pdf
 bibliography=../papers.bib
+chapters=chapters/*.tex
 
 clean_latex_ext=*.aux *.bbl *.blg *.log *.out
 clean_latex_ext += *.fdb_latexmk *.fls 	# from latexmk
@@ -27,7 +28,7 @@ continuous:
 
 report: $(report_pdf)
 #$(report_pdf): $(report_texdoc) $(plots) $(tables) $(benchmarks)
-$(report_pdf): $(report_texdoc) $(bibliography)# $(plots) $(tables)
+$(report_pdf): $(report_texdoc) $(chapters) $(bibliography)# $(plots) $(tables)
 	# need to run several times to fix references
 	$(LATEX) $(LATEX_OPTS) $(report_texdoc)
 	bibtex report
