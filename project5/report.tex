@@ -93,20 +93,22 @@ This is an abstract
 \textbf{TODO}: Remember to cite \cite{hpl_fdm}!
 
 \section{Introduction}
-We will aim to solve the partial differential equation \ref{eqn:PDE} using finite difference schemes. The spacial derivative on the left side will be approximated with central difference, and the time-derivative using Forward Euler, Backward Euler, and the Crank-Nicolson scheme.
+We wish to study numerical implementation of partial differential equations, using finite difference schemes. The partial differential equation we have chosen, is a simplified case of the diffusion equation, written as \ref{eqn:PDE} in one dimmention, and \ref{eqn:PDE2} in two dimmentions. The spatial derivatives on the left side will be approximated with central difference, and the time-derivative on the right using Forward Euler, Backward Euler, and the Crank-Nicolson scheme.
 \begin{equation}\label{eqn:PDE}
 \frac{\ppu(x,t)}{\px^2} = \frac{\pu(x,t)}{\pt}
 \end{equation}
 
+\begin{equation}\label{eqn:PDE2}
+\frac{\ppu(x,y,t)}{\px^2} + \frac{\ppu(x,y,t)}{\py^2} = \frac{\pu(x,t)}{\pt}
+\end{equation}
+
 \section{Method and Idea}
-\subsection{One dimensional case}
-\subsubsection{Discretization and notation}\label{sec:disc}
-The spacial dimentions will be discretized as points
+\subsection{Discretization and notation}\label{sec:disc}
+The spatial dimentions will be discretized as points
 \begin{equation} (x_i), \ i \in [0,n+1] \end{equation}
 in the one dimmentional case, and points 
 \begin{equation} (x_i, y_j), \ i,j \in [0,n+1]\end{equation}
 in the two-dimmentional case.\\
-
 The time will be discretized as
 \begin{equation} t_l, \ l \in [0,N+1] \end{equation}
 We will also rewrite this to the following compact notation, in one dimension:
@@ -118,11 +120,14 @@ and two dimensions:
 u(x+\dx, y+\dy, t+\dt) = u(x_{i+1}, y_{j+1}, t_{l+1}) = u_{i+1,j+1}^{l+1}
 \end{equation}
 
-We will also write the derivatives in \ref{eqn:PDE} with the compact notation
-\begin{equation} u_{xx} = u_t \end{equation}
+We will also write the derivatives in \ref{eqn:PDE} and \ref{eqn:PDE2} with the compact notations
+\begin{equation} u_{xx} = u_t\end{equation}
+\begin{equation} \ u_{xx} + u_{yy} = u_t \end{equation}
+
+\subsection{One dimentional case}
 
 \subsubsection{Central difference scheme}
-For the spacial derivative of the partial differential equation, we will be using the centered difference scheme, derived from a Taylor expansion in both directions around $u(x,t)$.
+For the spatial derivative of the partial differential equation, we will be using the centered difference scheme, derived from a Taylor expansion in both directions around $u(x,t)$.
 \begin{equation}
 u(x+\Delta x, t) = u(x,t) + \frac{\pu(x,t)}{\px}\dx + \frac{\ppu(x,t)}{2\px^2}\dx^2 + O(\dx^3)
 \end{equation}
@@ -140,101 +145,130 @@ u(x+\Delta x, t) + u(x-\Delta x, t) = 2u(x,t) + 2\frac{\ppu(x,t)}{2\px^2}\dx^2 +
 &\approx \frac{u(x+\Delta x, t) - 2u(x,t) + u(x-\Delta x, t)}{\dx^2}
 \end{split}\end{equation}
 Giving a truncation error running as $\dx$.\\\\
-Which we can discretize as shown in \ref{sec:disc}, giving
+We can discretize the derivative as shown in \ref{sec:disc}, giving
 \begin{equation}
 u_{xx} = \frac{u_{i+1}^l - 2u_i^l+u_{i-1}^l}{\dx^2}
 \end{equation}
 
 
 \subsubsection{Forward Euler - Explicit scheme}
-We will be approximating the partial differential equation \ref{eqn:PDE} with the explicit scheme by Taylor expansion around $u(x,t)$. Truncating at the first derivative, we get.
+To approximate the time derivative of the partial differential equation \ref{eqn:PDE}, we will first derive the explicit Forward Euler method, by Taylor expansion around $u(x,t)$. Truncating after the first derivative, we get
 \begin{equation}
 u(x,t+\dt) = u(x,t) + \frac{\pu(x,t)}{\pt}\dt + O(\dt^2)
 \end{equation}
-
+Solving for the time derivative gives
 \begin{equation}
 \frac{\pu(x,t)}{\pt} = \frac{u(x,t+\dt) - u(x,t)}{\dt} + \frac{O(\dt^2)}{\dt} \approx \frac{u(x,t+\dt) - u(x,t)}{\dt}
 \end{equation}
-giving a truncation error running as $\dt$.
+which means we have a truncation error running as $\dt$.
 \\\\
 We can discretize this as shown in \ref{sec:disc}, giving
 \begin{equation}
 u_t = \frac{u_i^{l+1} - u_i^l}{\dt}
 \end{equation}
-which gives
+Combining this with the central difference scheme, we get the approximation to the partial differential equation \vref{eqn:PDE}
 \begin{equation}
 \frac{u_{i+1}^l - 2u_i^l+u_{i-1}^l}{\dx^2} = \frac{u_i^{l+1} - u_i^l}{\dt}
 \end{equation}
 
-Solving for $u_i^{l+1}$
+Solving for $u_i^{l+1}$, and introducing the known constant $\alpha = \frac{\dt}{\dx^2}$, we arrive at the explicit scheme
 \begin{equation}
 u_i^{l+1} = \alpha u_{i-1}^l + (1-2\alpha)u_i^l + \alpha u_{i+1}^l
 \end{equation}
-where $\alpha = \frac{\dt}{\dx^2}$ is a known constant.
-
+We see that the state of the system at a time, $t_{l+1}$(left side), only depends on the conditions of the system in a previous state, $t_l$(right side).
 
 \subsubsection{Backward Euler - Implicit scheme}
-Taylor expanding backwards around $u(x,t)$, truncating after the first derivative.
+We will now derive the implicit Backward Euler method to approximate the time derivative of the partial differential equation. Taylor expanding backwards around $u(x,t)$, truncating after the first derivative, we get
 \begin{equation}
 u(x,t-\dt) = u(x,t) - \frac{\pu(x,t)}{\pt}\dt + O(\dt^2)
 \end{equation}
-
+Solving for the time derivate gives
 \begin{equation}
 \frac{\pu(x,t)}{\pt} = \frac{u(x,t) - u(x,t-\dt)}{\dt} + \frac{O(\dt^2)}{\dt} \approx \frac{u(x,t) - u(x,t-\dt)}{\dt}
 \end{equation}
-giving a truncation error running as $\dt$.
+giving a truncation error running as $\dt$, just as the explicit scheme.
 \\\\
 We can discretize this as shown in \ref{sec:disc}, giving
 \begin{equation}
 u_t = \frac{u_i^l - u_i^{l-1}}{\dt}
 \end{equation}
-which gives us the approximation to the partial differential equation
+Again combining with the central difference, we approximate the partial differential equation as
 \begin{equation}
 \frac{u_{i+1}^l - 2u_i^l+u_{i-1}^l}{\dx^2} = \frac{u_i^l - u_i^{l-1}}{\dt}
 \end{equation}
-which can be rewritten to
+Again introducing $\alpha = \frac{\dt}{\dx^2}$, we can rewrite to
 \begin{equation}\label{eqn:implicit}
 u_i^{l-1} = -\alpha u_{i+1}^l + (1 + 2\alpha )u_i^l + -\alpha u_{i-1}^l
 \end{equation}
-where we still have $\alpha = \frac{\dt}{\dx^2}$.
-\\\\
-If we write \ref{eqn:implicit} out for all values of $i \in [0,N+1]$, we see that it becomes a set of linear equations, which we can write as the matrix equation
+\\
+We see that we cannot write the state of the system as an explicit function of a previous state, making this an implicit scheme. If we write \ref{eqn:implicit} out for all values of $i \in [0,n+1]$, we see that it becomes a set of linear equations, which we will write as the matrix equation
 \begin{equation}
-V_{l-1} = ÂV_l
+V_{l-1} = \hat{A}V_l
 \end{equation}
-where we define
-\[
-Â = \begin{bmatrix}
+where we define the three-diagonal matrix:
+\begin{equation}
+\hat{A} = \begin{bmatrix}
 1+2\alpha & -\alpha & 0 & \cdots & \cdots \\
 -\alpha & 1+2\alpha & -\alpha & \cdots & \vdots \\
 0 & \ddots & \ddots & \ddots & \vdots \\
 \vdots & \ddots & \ddots & \ddots & -\alpha \\
 \vdots & \cdots & \cdots & -\alpha & 1+2\alpha \\
 \end{bmatrix}
-\]
-and
-\[ V_l = \begin{bmatrix}
+\end{equation}
+and the state of the system at a given time $t_l$:
+\begin{equation}\label{eqn:V} V_l = \begin{bmatrix}
 u_{0}^l\\
 u_{1}^l\\
 \cdots\\
 u_{n}^l\\
 u_{n+1}^l\\
 \end{bmatrix}
-\]
-
-which means we can define the state of the system at time $t_l$, $V_l$ as
+\end{equation}
+This means we can define the state of the system, $V_l$, at time, $t_l$, as
 \begin{equation}
-V_l = Â^{-l}V_0
+V_l = \hat{A}^{-l}V_0
 \end{equation}
 
 
+
 \subsubsection{The Crank-Nicolson scheme}
+\textbf{TODO}: Deriving crank-nicolson scheme, resulting in:
+
+\begin{equation}
+\frac{1}{2\dx^2}\left(u_{i-1}^l - 2u_i^l + u_{i+1}^l\right) - \frac{1}{2\dx^2}\left(u_{i+1}^l - 2u_i^{l-1} + u_{u-1}^{l-1}\right) = \frac{1}{\dt}\left(u_i^l-u_i^{l-1}\right)
+\end{equation}
+which, after again defining $\alpha = \frac{\dt}{\dx^2}$, we get
+\begin{equation}
+-\alpha u_{i-1}^l + (2+2\alpha)u_i^l - \alpha u_{i+1}^l = \alpha u_{i-1}^{l-1} + (2-2\alpha)u_i^{l-1} + \alpha u_{i+1}^{l-1}
+\end{equation}
+As with the Backward Euler scheme, we write this as a system of linear equations for $i \in [0,n+1]$, which can be written as the matrix equation
+\begin{equation}\label{eqn:crank}
+(2\hat{I}+\alpha \hat{B})V_l = (2\hat{I}-\alpha \hat{B})V_{l-1}
+\end{equation}
+where $V_l$ is defined in \vref{eqn:V}. We also have the identity matrix $\hat{I}$, and the three-diagononal matrix:
+
+\[
+\hat{B} = \begin{bmatrix}
+2 & -1 & 0 & \cdots & \cdots \\
+-1 & 2 & -1 & 0 & \vdots \\
+\vdots & \ddots & \ddots & \ddots & \vdots \\
+\vdots & \ddots & \ddots & 0 & -1 \\
+\vdots & \cdots & 0 & -1 & 2 \\
+\end{bmatrix}
+\]
+
+We can rewrite \vref{eqn:crank} to define the state of the system $V_l$ as a function of it's inital state $V_0$:
+\begin{equation}
+V_l = (2\hat{I}+\alpha \hat{B})^{-1} (2\hat{I} - \alpha \hat{B})V_{l-1}
+\end{equation}
 
 
+
+\subsection{Error and stabitlity}
 \subsubsection{The truncation error}
 
 
-\subsubsection{An analytical solution}\label{sec:analytical_1d}
+\subsection{An analytical solution}\label{sec:analytical_1d}
 \cite{inf-mat2351_book} gives a solution to the diffusion equation
 
 \begin{align}\label{eq:analytical_1d_book}
