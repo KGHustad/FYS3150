@@ -39,6 +39,9 @@ $(report_pdf): $(report_texdoc) $(chapters) $(bibliography)# $(plots) $(tables)
 
 show: report
 	evince $(report_pdf) &
+spellcheck:
+	aspell -t --lang=en_GB -c $(report_texdoc)
+
 #test: $(test_programs) #$(diffusion_lib_file)
 #	pytest $(pytest_opts) $(test_programs)
 

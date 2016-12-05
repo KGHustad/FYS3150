@@ -106,11 +106,11 @@ Assuming the diffusion coefficient to be constant, the diffusion equation \vref{
 \begin{equation}
 D \nabla^2 u(\textbf{r},t) = \frac{\pu(\textbf{r},t)}{\pt}
 \end{equation}
-Since we are not looking at a specific physical interpretation of the diffusion equation, $D$ is left as an unknown constant. We will further simplify the equation by scaling our variables such that they become dimmentionless, and $D$ disappears. This leaves us with the partial differential equation we will study.
+Since we are not looking at a specific physical interpretation of the diffusion equation, $D$ is left as an unknown constant. We will further simplify the equation by scaling our variables such that they become dimensionless, and $D$ disappears. This leaves us with the partial differential equation we will study.
 \begin{equation}
 \nabla^2 u(\textbf{r},t) = \frac{\pu(\textbf{r},t)}{\pt}
 \end{equation}
-Writing out the Laplace-operator, this becomes \ref{eqn:PDE} in one spatial dimension, and \ref{eqn:PDE2} in two spatial dimensions, where $x$, $y$, and $t$ now are dimmentionless variables.
+Writing out the Laplace-operator, this becomes \ref{eqn:PDE} in one spatial dimension, and \ref{eqn:PDE2} in two spatial dimensions, where $x$, $y$, and $t$ now are dimensionless variables.
 
 \begin{equation}\label{eqn:PDE}
 \frac{\ppu(x,t)}{\px^2} = \frac{\pu(x,t)}{\pt}
@@ -161,9 +161,9 @@ between the spatial discretizations, and a time
 between the time discretizations.\\\\
 The initial conditions of the system are set as
 \begin{equation}
-u(x,t) = 0, \quad 0 < x < L 
+u(x,t) = 0, \quad 0 < x < L
 \end{equation}
-while the boundry conditions of our system are
+while the boundary conditions of our system are
 \begin{equation}
 u(0,t) = 0 \quad \quad u(L,t) = 1
 \end{equation}
@@ -173,7 +173,7 @@ u(0,t) = 0 \quad \quad u(L,t) = 1
 
 \subsection{One dimensional case}
 \subsubsection{The central difference scheme}\label{sec:cent}
-For the spatial derivative of the partial differential equation, we will be using the centered difference scheme, derived from a Taylor expansion in both directions around $u(x,t)$.
+For the spatial derivative of the partial differential equation, we will be using the centred difference scheme, derived from a Taylor expansion in both directions around $u(x,t)$.
 \begin{equation}
 u(x+\Delta x, t) = u(x,t) + \frac{\pu(x,t)}{\px}\dx + \frac{\ppu(x,t)}{2\px^2}\dx^2 + O(\dx^3)
 \end{equation}
@@ -230,7 +230,7 @@ We will now derive the implicit Backward Euler method to approximate the time de
 \begin{equation}
 u(x,t-\dt) = u(x,t) - \frac{\pu(x,t)}{\pt}\dt + O(\dt^2)
 \end{equation}
-Solving for the time derivate gives
+Solving for the time derivative gives
 \begin{equation}
 \frac{\pu(x,t)}{\pt} = \frac{u(x,t) - u(x,t-\dt)}{\dt} + \frac{O(\dt^2)}{\dt} \approx \frac{u(x,t) - u(x,t-\dt)}{\dt}
 \end{equation}
@@ -280,13 +280,13 @@ V_l = \hat{A}^{-l}V_0
 
 
 \subsubsection{The Crank-Nicolson scheme}
-\textbf{TODO}: Deriving crank-nicolson scheme more thoroughly, among other tings: showing the truncations error.
+\textbf{TODO}: Deriving Crank-Nicolson scheme more thoroughly, among other tings: showing the truncation's error.
 
 While the Forward and Backward Euler methods rely on taking a step forwards and backwards in time to approximate the derivative, the Crank-Nicolson scheme simply takes the average of the two:
 \begin{equation}
 \frac{u_i^l-u_i^{l-1}}{\dt} = \frac{1}{2}\left( \frac{u_{i+1}^l - 2u_i^l + u_{i-1}^l}{\dx^2} + \frac{u_{i+1}^{l-1} - 2u_i^{l-1} + u_{i-1}^{l-1}}{\dx^2}\right)
 \end{equation}
-After again defining $\alpha = \frac{\dt}{\dx^2}$, we can seperate the two timesteps $t_l$ and $t_{l-1}$, giving us the implicit Crank-Nicolson scheme.
+After again defining $\alpha = \frac{\dt}{\dx^2}$, we can separate the two time steps $t_l$ and $t_{l-1}$, giving us the implicit Crank-Nicolson scheme.
 \begin{equation}
 -\alpha u_{i-1}^l + (2+2\alpha)u_i^l - \alpha u_{i+1}^l = \alpha u_{i-1}^{l-1} + (2-2\alpha)u_i^{l-1} + \alpha u_{i+1}^{l-1}
 \end{equation}
@@ -294,7 +294,7 @@ As with the Backward Euler scheme, we write this as a system of linear equations
 \begin{equation}\label{eqn:crank}
 (2\hat{I}+\alpha \hat{B})V_l = (2\hat{I}-\alpha \hat{B})V_{l-1}
 \end{equation}
-where $V_l$ is defined in \vref{eqn:V}. We also have the identity matrix $\hat{I}$, and the three-diagononal matrix:
+where $V_l$ is defined in \vref{eqn:V}. We also have the identity matrix $\hat{I}$, and the three-diagonal matrix:
 
 \[
 \hat{B} = \begin{bmatrix}
@@ -327,8 +327,8 @@ We can easily show that \vref{eq:analytical_1d_book} solves \vref{eqn:PDE},
 
 
 
-\subsection{Error and stabitlity}
-Since all methods build on the central difference scheme, the trucation error of the spatial derivative runs as $\dx^2$ for all schemes. From deriving the three methods in sections ( \textbf{TODO}:refrencing ) we know that the Euler methods has a truncation error running as $\dt$, while it is $\dt^2$ for the Crank-Nicolson scheme.
+\subsection{Error and stability}
+Since all methods build on the central difference scheme, the truncation error of the spatial derivative runs as $\dx^2$ for all schemes. From deriving the three methods in sections ( \textbf{TODO}:referencing ) we know that the Euler methods has a truncation error running as $\dt$, while it is $\dt^2$ for the Crank-Nicolson scheme.
 \\\\
 
 
@@ -352,17 +352,17 @@ Crank-Nicolson	& $\dt^2$ and $\dx^2$	& all $\dt$ and $\dx$ \\
 
 
 \subsection{Two dimensional case}
-We will now expand our implementations to two spatial dimmentions, resulting in the partial differential equation, $u_{xx} + u_{yy} = u_t$, or, written out:
+We will now expand our implementations to two spatial dimensions, resulting in the partial differential equation, $u_{xx} + u_{yy} = u_t$, or, written out:
 \begin{equation}
 \left(\frac{\ppu(x,y,t)}{\px^2} + \frac{\ppu(x,y,t)}{\py^2}\right) = \frac{\pu(x,y,t)}{\pt}
 \label{eq:diffusion_2d}
 \end{equation}
-The central difference scheme derived for one dimension in \ref{sec:cent} can easially be expanded to two spatial dimensions, giving the left side of the PDE:
+The central difference scheme derived for one dimension in \ref{sec:cent} can easily be expanded to two spatial dimensions, giving the left side of the PDE:
 \begin{equation}
 u_{xx} + u_{yy} = \frac{u_{i+1,j}^l - 2u_i^l+u_{i-1,j}^l}{\dx^2} + \frac{u_{i,j+1}^l - 2u_i^l+u_{i,j-1}^l}{\dy^2}
 \end{equation}
 
-As we have only introduced a new spatial dimension, the schemes for approximating time derivates remains unchanged. We expand the notation of the Forward Euler method to two dimensions:
+As we have only introduced a new spatial dimension, the schemes for approximating time derivatives remains unchanged. We expand the notation of the Forward Euler method to two dimensions:
 \begin{equation}
 u_t = \frac{u_{i,j}^{l+1} - u_{i,j}^l}{\dt}
 \end{equation}
