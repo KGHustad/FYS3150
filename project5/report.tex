@@ -100,13 +100,13 @@ We wish to study numerical algorithms for solving partial differential equations
 where $D(u,\textbf{r})$ is the diffusion coefficient and \textbf{r} is the position vector.
 \\
 
-The diffusion equation is used to describe so-called Brownian motion, where large systems of random microscopic particles is described by it's macroscopic characteristics. The quantity $u(\textbf{r},t)$ may be physically interpreted as, among other things, the materials density, energy consentration, or temperature gradient, at a given point in time and space.
+The diffusion equation is used to describe so-called Brownian motion, where large systems of random microscopic particles is described by it's macroscopic characteristics. The quantity $u(\textbf{r},t)$ may be physically interpreted as, among other things, the particle density, energy density, or temperature gradient, at a given point in time and space.
 \\\\
-Assuming the diffusion coefficient to be constant, the diffusion equation \vref{eqn:dif} collapses down to the heat equation
+Assuming the diffusion coefficient to be constant, the diffusion equation \vref{eqn:dif} collapses down to the heat equation:
 \begin{equation}
 D \nabla^2 u(\textbf{r},t) = \frac{\pu(\textbf{r},t)}{\pt}
 \end{equation}
-Since we are not looking at a specific physical interpretation of the diffusion equation, D is left as an unknown constant. We will further simplify the equation by scaling our variables such that they become dimmentionless, and D disappears. This leaves us with the partial differential equation we will study.
+Since we are not looking at a specific physical interpretation of the diffusion equation, $D$ is left as an unknown constant. We will further simplify the equation by scaling our variables such that they become dimmentionless, and $D$ disappears. This leaves us with the partial differential equation we will study.
 \begin{equation}
 \nabla^2 u(\textbf{r},t) = \frac{\pu(\textbf{r},t)}{\pt}
 \end{equation}
@@ -124,21 +124,23 @@ The spatial derivatives on the left side will be approximated with central diffe
 \\\\
 
 \section{Method and Idea}
-\subsection{Discretization and notation}\label{sec:disc}
-The spatial dimensions will be discretized as points
+\subsection{Discretization \& Notation}\label{sec:disc}
+Each spatial dimension will be discretized as a total of $n+2$ points.\\
+In one dimension:
 \begin{equation} (x_i), \quad i \in [0,n+1] \end{equation}
-in the one dimensional case, and points 
+and in two dimensions:
 \begin{equation} (x_i, y_j), \quad i,j \in [0,n+1]\end{equation}
-in the two-dimensional case.\\
-The time will be discretized as
+
+The time will be discretized as $N+2$ points.
 \begin{equation} t_l, \quad l \in [0,N+1] \end{equation}
-We will also rewrite this to the following compact notation, in one dimension:
+We will also rewrite this to the following compact notation.\\
+In one dimension:
 \begin{equation}
-u(x+\dx, t+\dt) = u(x_{i+1},t_{l+1}) = u_{i+1}^{l+1}
+u(x+\dx,\ t+\dt) = u(x_{i+1},\ t_{l+1}) = u_{i+1}^{l+1}
 \end{equation}
 and two dimensions:
 \begin{equation}
-u(x+\dx, y+\dy, t+\dt) = u(x_{i+1}, y_{j+1}, t_{l+1}) = u_{i+1,j+1}^{l+1}
+u(x+\dx,\ y+\dy,\ t+\dt) = u(x_{i+1},\ y_{j+1},\ t_{l+1}) = u_{i+1,j+1}^{l+1}
 \end{equation}
 
 
@@ -148,6 +150,25 @@ We will also write the derivatives in \ref{eqn:PDE} and \ref{eqn:PDE2} with the
 
 
 \subsection{Initial Conditions \& Boundary Conditions}
+The system will be interpreted as a rod of length $L$ for the one-dimensional system, and a square with side-lengths $L$ for the two-dimensional system, such that $x,y \in [0,L]$. We will study the system over a time $T$. This gives a length
+\begin{equation}
+\dx = \dy = x_i - x_{i-1} = y_j - y_{j-1} = \frac{n+2}{L}
+\end{equation}
+between the spatial discretizations, and a time
+\begin{equation}
+\dt = t_l - t_{l-1} = \frac{N+2}{T}
+\end{equation}
+between the time discretizations.\\\\
+The initial conditions of the system are set as
+\begin{equation}
+u(x,t) = 0, \quad 0 < x < L 
+\end{equation}
+while the boundry conditions of our system are
+\begin{equation}
+u(0,t) = 0 \quad \quad u(L,t) = 1
+\end{equation}
+
+
 
 
 \subsection{One dimensional case}
