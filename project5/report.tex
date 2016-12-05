@@ -93,7 +93,25 @@ This is an abstract
 \textbf{TODO}: Remember to cite \cite{hpl_fdm}!
 
 \section{Introduction}
-We wish to study numerical implementation of partial differential equations, using finite difference schemes. The partial differential equation we have chosen, is a simplified case of the diffusion equation, written as \ref{eqn:PDE} in one dimension, and \ref{eqn:PDE2} in two dimensions. The spatial derivatives on the left side will be approximated with central difference, and the time-derivative on the right using Forward Euler, Backward Euler, and the Crank-Nicolson scheme.
+We wish to study numerical algorithms for solving partial differential equations, using different finite difference schemes. The partial differential equation we will be employing, is a simplified case of the diffusion equation, normally defined as
+\begin{equation}\label{eqn:dif}
+\nabla \cdot \left[D(u,\textbf{r}) \ \nabla u(\textbf{r},t)\right] = \frac{\pu(\textbf{r},t)}{\pt}
+\end{equation}
+where $D(u,\textbf{r})$ is the diffusion coefficient and \textbf{r} is the position vector.
+\\
+
+The diffusion equation is used to describe so-called Brownian motion, where large systems of random microscopic particles is described by it's macroscopic characteristics. The quantity $u(\textbf{r},t)$ may be physically interpreted as, among other things, the materials density, energy consentration, or temperature gradient, at a given point in time and space.
+\\\\
+Assuming the diffusion coefficient to be constant, the diffusion equation \vref{eqn:dif} collapses down to the heat equation
+\begin{equation}
+D \nabla^2 u(\textbf{r},t) = \frac{\pu(\textbf{r},t)}{\pt}
+\end{equation}
+Since we are not looking at a specific physical interpretation of the diffusion equation, D is left as an unknown constant. We will further simplify the equation by scaling our variables such that they become dimmentionless, and D disappears. This leaves us with the partial differential equation we will study.
+\begin{equation}
+\nabla^2 u(\textbf{r},t) = \frac{\pu(\textbf{r},t)}{\pt}
+\end{equation}
+Writing out the Laplace-operator, this becomes \ref{eqn:PDE} in one spatial dimension, and \ref{eqn:PDE2} in two spatial dimensions, where $x$, $y$, and $t$ now are dimmentionless variables.
+
 \begin{equation}\label{eqn:PDE}
 \frac{\ppu(x,t)}{\px^2} = \frac{\pu(x,t)}{\pt}
 \end{equation}
@@ -102,15 +120,18 @@ We wish to study numerical implementation of partial differential equations, usi
 \frac{\ppu(x,y,t)}{\px^2} + \frac{\ppu(x,y,t)}{\py^2} = \frac{\pu(x,t)}{\pt}
 \end{equation}
 
+The spatial derivatives on the left side will be approximated with central difference, and the time-derivative on the right using Forward Euler, Backward Euler, and the Crank-Nicolson scheme. \textbf{TODO: Write some more about how we wish to implement the differential equation numerically}
+\\\\
+
 \section{Method and Idea}
 \subsection{Discretization and notation}\label{sec:disc}
 The spatial dimensions will be discretized as points
-\begin{equation} (x_i), \ i \in [0,n+1] \end{equation}
+\begin{equation} (x_i), \quad i \in [0,n+1] \end{equation}
 in the one dimensional case, and points 
-\begin{equation} (x_i, y_j), \ i,j \in [0,n+1]\end{equation}
+\begin{equation} (x_i, y_j), \quad i,j \in [0,n+1]\end{equation}
 in the two-dimensional case.\\
 The time will be discretized as
-\begin{equation} t_l, \ l \in [0,N+1] \end{equation}
+\begin{equation} t_l, \quad l \in [0,N+1] \end{equation}
 We will also rewrite this to the following compact notation, in one dimension:
 \begin{equation}
 u(x+\dx, t+\dt) = u(x_{i+1},t_{l+1}) = u_{i+1}^{l+1}
@@ -120,10 +141,13 @@ and two dimensions:
 u(x+\dx, y+\dy, t+\dt) = u(x_{i+1}, y_{j+1}, t_{l+1}) = u_{i+1,j+1}^{l+1}
 \end{equation}
 
+
 We will also write the derivatives in \ref{eqn:PDE} and \ref{eqn:PDE2} with the compact notations
 \begin{equation} u_{xx} = u_t\end{equation}
 \begin{equation} \ u_{xx} + u_{yy} = u_t \end{equation}
 
+
+\subsection{Initial Conditions \& Boundary Conditions}
 
 
 \subsection{One dimensional case}
