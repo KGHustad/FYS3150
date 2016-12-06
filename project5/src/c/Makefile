@@ -1,7 +1,7 @@
-.PHONY: clean MPI
+.PHONY: clean clean-lib clean-objects MPI
 
 CC=cc
-CC_FLAGS = -Wall -O3 -std=gnu89 -fpic -march=native
+CFLAGS = -Wall -O3 -std=gnu89 -fpic -march=native
 LDFLAGS= -lm
 LDFLAGS += -fopenmp
 diffuse_sources = boundary.c common.c diffuse_1d.c diffuse_2d.c tridiagonal.c
@@ -37,7 +37,10 @@ MPI: all
 $(diffuse_lib): $(diffuse_object_files)
 	$(CC) -shared -Wl,-soname,diffuse -o $(diffuse_lib) $(diffuse_object_files) $(LDFLAGS)
 $(diffuse_object_files): $(diffuse_headers) $(diffuse_sources)
-	$(CC) $(CC_FLAGS) $(diffuse_sources) -c $(LDFLAGS)
+	$(CC) $(CFLAGS) $(diffuse_sources) -c $(LDFLAGS)
 
-clean:
-	$(RM) $(diffuse_object_files) $(diffuse_lib) test.o
+clean: clean-lib clean-objects
+clean-lib:
+	$(RM) $(diffuse_lib)
+clean-objects:
+	$(RM) $(diffuse_object_files)
