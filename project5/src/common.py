@@ -38,6 +38,69 @@ def load_lib():
 def load_lib_alt():
     return ctypes.CDLL(os.path.join(get_lib_path(), get_lib_name()))
 
+class 1D_Solver:
+    "This is a singleton for storing information on the implemented solvers"
+    forward_euler = {'c_code': 0}
+    backward_euler = {'c_code': 1}
+    crank_nicolson = {'c_code': 2}
+
+1D_SOLVERS = ('forward_euler', 'backward_euler', 'crank_nicolson')
+
+def diffusion_1d(v, f, iterations, kappa, solver, silent=False):
+    print "ERROR: This function has not yet been properly implemented"
+    return
+
+    check_lib_exists()
+    libdiffuse = load_lib()
+
+    if not solver in 1D_SOLVERS:
+        print "ERROR: %s is not a valid choice of solver!"
+        print "       Implemented solvers: %s" % str(1D_solvers)
+        sys.exit(1)
+
+    # type stuff
+    from ctypes import c_double, c_int
+    c_double_ptr = ctypes.POINTER(c_double)
+    float64_array_1d = np.ctypeslib.ndpointer(dtype=c_double, ndim=1,
+                                              flags="contiguous")
+
+    time_spent = c_double(0)
+
+    solver_func = libdiffuse.solve_1d
+    solver_code = 1D_SOLVERS.indexof(solver)
+
+    solver_func.restype = None
+    solver_func.argtypes = [float64_array_1d,
+                            float64_array_1d,
+                            c_int,
+                            c_int,
+                            c_double,
+                            c_int,
+                            c_int,
+                            c_int,
+                            c_int,
+                            c_int,
+                            c_double_ptr
+                            ]
+    solver_func(v,
+                f,
+                c_int(height),
+                c_int(width),
+                c_double(kappa),
+                c_int(iterations),
+                c_int(bc_left),
+                c_int(bc_right),
+                c_int(bc_top),
+                c_int(bc_bottom),
+                ctypes.byref(time_spent)
+                )
+
+    if not silent:
+        print "Time spent (C): %g" % time_spent.value
+
+    return time_spent.value
+
+
 def diffusion_2d(v, f, iterations, kappa, bc_left=0, bc_right=0,
                  bc_top=0, bc_bottom=0, omp=False, silent=False):
     check_lib_exists()
@@ -48,8 +111,7 @@ def diffusion_2d(v, f, iterations, kappa, bc_left=0, bc_right=0,
     from ctypes import c_double, c_int
     c_double_ptr = ctypes.POINTER(c_double)
     float64_array_2d = np.ctypeslib.ndpointer(dtype=c_double, ndim=2,
-                                          flags="contiguous")
-
+                                              flags="contiguous")
     height, width = v.shape
 
     time_spent = c_double(0)

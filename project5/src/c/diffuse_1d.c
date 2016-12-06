@@ -2,8 +2,9 @@
 #include <string.h>
 
 #include "tridiagonal.h"
+#include "diffuse_1d.h"
 
-void solve_1d_forward_euler(double *v, double alpha, int n, int iters) {
+void diffusion_1d_forward_euler(double *v, double alpha, int n, int iters) {
     int i, it;
 
     /* create buffer array */
@@ -34,7 +35,7 @@ void solve_1d_forward_euler(double *v, double alpha, int n, int iters) {
     }
 }
 
-void solve_1d_backward_euler(double *v, double alpha, int n, int iters) {
+void diffusion_1d_backward_euler(double *v, double alpha, int n, int iters) {
     int i, it;
     size_t data_size = (n+2)*sizeof(double);
     double *a = malloc(data_size);
@@ -68,6 +69,11 @@ void solve_1d_backward_euler(double *v, double alpha, int n, int iters) {
         memcpy(v_dest, v_new, (n+2)*sizeof(double));
     }
 }
-void solve_1d_crank_nicolson(double *v, double alpha, int n, int iters) {
 
+void diffusion_1d_crank_nicolson(double *v, double alpha, int n, int iters) {
+    /* NEEDS TO BE IMPLEMENTED */
+}
+
+void solve_1d(double *v, double alpha, int n, int iters, enum solver s) {
+    /* NEEDS TO BE IMPLEMENTED */
 }
