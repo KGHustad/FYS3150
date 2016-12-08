@@ -110,7 +110,16 @@ def job_handler(argv, cutoff):
     temporary results can be freed after the job is done"""
     energies, mean_magnetization, accepted_configurations, time_spent = metropolis_c(*argv)
     mu_E, mu_M, mu_abs_M, mu_E_sq, mu_M_sq = extract_expectation_values(energies[cutoff:], mean_magnetization[cutoff:])
+
+    # print progress info
+    L = argv[0].shape[0]
+    T = argv[2]
+    print "L = %3d  T = %-8g    finished in %15g s" % (L, T, time_spent)
+
+    # enable garbage collection
     energies, mean_magnetization = None, None
+    argv = None
+
     return mu_E, mu_M, mu_abs_M, mu_E_sq, mu_M_sq
 
 if __name__ == '__main__':
@@ -136,6 +145,7 @@ if __name__ == '__main__':
 
     J = 1
     save_every_nth = 1
+    silent = True
 
     pool = multiprocessing.Pool()
 
@@ -175,7 +185,7 @@ if __name__ == '__main__':
     for L in reversed(L_values):
         for T in T_values:
                 spin = spin_matrices[L].copy()
-                argv = [spin, J, T, sweeps, save_every_nth, seed]
+                argv = [spin, J, T, sweeps, save_every_nth, seed, silent]
                 results[(L, T)] = pool.apply_async(job_handler, [argv, cutoff])
 
     for L in reversed(L_values):
@@ -190,7 +200,6 @@ if __name__ == '__main__':
             specific_heat = (mu_E_sq - mu_E**2)/T**2
 
             entry = {}
-            #print "L=%g  T=%g   mu_E=%g" % (L, T, mu_E)
             entry['mu_E'] = mu_E
             entry['mu_abs_M'] = mu_abs_M
             entry['susceptibility'] = susceptibility
@@ -200,5 +209,5 @@ if __name__ == '__main__':
     with open(out_data_file, 'w') as f:
         pickle.dump(out_data, f)
 
-    #print out_data
+    print
     print format_table(out_data)
