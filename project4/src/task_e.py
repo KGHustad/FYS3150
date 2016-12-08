@@ -162,6 +162,7 @@ if __name__ == '__main__':
     out_data['T_values'] = T_values
     out_data['sweeps'] = sweeps
     out_data['cutoff'] = cutoff
+    out_data['seed'] = seed
 
     print "L values:"
     print L_values
