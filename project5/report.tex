@@ -93,24 +93,9 @@ This is an abstract
 \textbf{TODO}: Remember to cite \cite{hpl_fdm}!
 
 \section{Introduction}
-We wish to study numerical algorithms for solving partial differential equations, using different finite difference schemes. The partial differential equation we will be employing, is a simplified case of the diffusion equation, normally defined as
-\begin{equation}\label{eqn:dif}
-\nabla \cdot \left[D(u,\textbf{r}) \ \nabla u(\textbf{r},t)\right] = \frac{\pu(\textbf{r},t)}{\pt}
-\end{equation}
-where $D(u,\textbf{r})$ is the diffusion coefficient and \textbf{r} is the position vector.
-\\
-
-The diffusion equation is used to describe so-called Brownian motion, where large systems of random microscopic particles is described by it's macroscopic characteristics. The quantity $u(\textbf{r},t)$ may be physically interpreted as, among other things, the particle density, energy density, or temperature gradient, at a given point in time and space.
+In this report, we wish to study partial differential equations, a powerful tool for accurately estimating the characteristics of complex systems over time. Our main focus will be on numerical solutions, as most PDE's are too complicated for analytical solutions. The methods of choice are three different finite difference schemes - Forward Euler, Backward Euler and the Crank-Nicolson scheme.
 \\\\
-Assuming the diffusion coefficient to be constant, the diffusion equation \vref{eqn:dif} collapses down to the heat equation:
-\begin{equation}
-D \nabla^2 u(\textbf{r},t) = \frac{\pu(\textbf{r},t)}{\pt}
-\end{equation}
-Since we are not looking at a specific physical interpretation of the diffusion equation, $D$ is left as an unknown constant. We will further simplify the equation by scaling our variables such that they become dimensionless, and $D$ disappears. This leaves us with the partial differential equation we will study.
-\begin{equation}
-\nabla^2 u(\textbf{r},t) = \frac{\pu(\textbf{r},t)}{\pt}
-\end{equation}
-Writing out the Laplace-operator, this becomes \ref{eqn:PDE} in one spatial dimension, and \ref{eqn:PDE2} in two spatial dimensions, where $x$, $y$, and $t$ now are dimensionless variables.
+We have, however, in order to verify our results, chosen an analytically solvable PDE. The problem we will be employing, is a simplified case of the \textit{diffusion equation}. This specific case will be derived in \vref{sec:dif}, and is shown in one and two spatial dimensions below.
 
 \begin{equation}\label{eqn:PDE}
 \frac{\ppu(x,t)}{\px^2} = \frac{\pu(x,t)}{\pt}
@@ -120,10 +105,38 @@ Writing out the Laplace-operator, this becomes \ref{eqn:PDE} in one spatial dime
 \frac{\ppu(x,y,t)}{\px^2} + \frac{\ppu(x,y,t)}{\py^2} = \frac{\pu(x,t)}{\pt}
 \end{equation}
 
-The spatial derivatives on the left side will be approximated with central difference, and the time-derivative on the right using Forward Euler, Backward Euler, and the Crank-Nicolson scheme. \textbf{TODO: Write some more about how we wish to implement the differential equation numerically}
+
+The diffusion equation is, naturally, used to model the process of diffusion, where large systems of randomely moving particles are described by it's macroscopic behavior. The quantity $u(\textbf{r},t)$ may be physically interpreted as, among other things, the particle density, energy density, or temperature, at a given point in time and space.
 \\\\
+\textbf{TODO: Write some more about how we wish to implement the differential equation numerically}
+
+
+
+
 
 \section{Method and Idea}
+
+\subsection{Studying the diffusion equation}\label{sec:dif}
+
+The diffusion equation is normally defined as
+\begin{equation}\label{eqn:dif}
+\nabla \cdot \left[D(u,\textbf{r}) \ \nabla u(\textbf{r},t)\right] = \frac{\pu(\textbf{r},t)}{\pt}
+\end{equation}
+where $D(u,\textbf{r})$ is the diffusion coefficient and \textbf{r} is the position vector.
+\\
+Assuming the diffusion coefficient to be constant, the diffusion equation \vref{eqn:dif} collapses down to the heat equation:
+\begin{equation}
+D \nabla^2 u(\textbf{r},t) = \frac{\pu(\textbf{r},t)}{\pt}
+\end{equation}
+Since we are not looking at a specific physical interpretation of the diffusion equation, $D$ is left as an unknown constant. We will further simplify the equation by scaling our variables such that they become dimensionless, and $D$ disappears. This leaves us with the partial differential equation we will study:
+\begin{equation}
+\nabla^2 u(\textbf{r},t) = \frac{\pu(\textbf{r},t)}{\pt}
+\end{equation}
+Writing out the Laplace-operator, this becomes the equations \ref{eqn:PDE} and \ref{eqn:PDE2}, shown in the introduction, where $x$, $y$, and $t$ now are dimensionless variables.
+
+
+
+
 \subsection{Discretization \& Notation}\label{sec:disc}
 Each spatial dimension will be discretized as a total of $n+2$ points.\\
 In one dimension:
