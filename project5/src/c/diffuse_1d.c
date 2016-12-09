@@ -105,6 +105,11 @@ void diffusion_1d_crank_nicolson(double *v, double alpha, int n, int iters) {
             b[i] = 2 + 2*alpha;
             c[i] = -alpha;
         }
+        /* ensure no change at the boundaries */
+        b[0] = 1;
+        c[0] = 0;
+        b[n+1] = 1;
+        a[n+1] = 0;
 
         for (i = 1; i <= n; i++) {
             v_old[i] = alpha*v[i-1] + (2 - 2*alpha)*v[i] + alpha*v[i+1];
