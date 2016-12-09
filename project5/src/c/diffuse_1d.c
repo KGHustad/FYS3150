@@ -89,7 +89,6 @@ void diffusion_1d_crank_nicolson(double *v, double alpha, int n, int iters) {
     /* create buffer array */
     double *v_buf = malloc(data_size);
     double *v_new = v_buf;
-    double *v_tmp;
 
     /* save destination array */
     double *v_dest = v;
@@ -107,11 +106,6 @@ void diffusion_1d_crank_nicolson(double *v, double alpha, int n, int iters) {
         }
 
         solve_tridiagonal(v_new, v, a, b, c, n);
-
-        /* swap pointers */
-        //v_tmp = v_new;
-        //v_new = v;
-        //v = v_tmp;
     }
 
     if (v_dest != v_new) {
