@@ -17,6 +17,12 @@ To make the C library run
 make libdiffuse
 ```
 
+## Unit tests
+To run the test suite run
+``` sh
+make test
+```
+
 
 ## Reference test
 __TODO__
