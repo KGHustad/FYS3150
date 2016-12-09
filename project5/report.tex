@@ -426,19 +426,46 @@ which solves \vref{eq:diffusion_2d} since
 \end{align}
 
 \section{Implementation and results}\label{sec:implementation_and_results}
+Note: $dt$ is always set to $\frac{1}{2}dx^2$ unless otherwise mentioned.\\\\
 
+\subsection{Sinus case}
+PDE solvers diverging on the analytical solution. We clearly see the impact of the decreased $dt$ value from 0.1 to 0.01.
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{fig/{plot_T=0.10}.pdf}
 \caption{Different PDE solvers with $dx\in [0.01,0.1]$ plottet against analytical solution for $T=1$.}
-\label{fig:energy_temp}
+\label{fig:}
 \end{figure}
 
+Same scenario as above, this time after ten times as long. Now the impact of the decreased $dx$ is even clearer. We also see Forward Euler diverging the quickest, due to the nature of the problem. This is not always the case, as the Crank-Nicolson is usually more accurate.
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{fig/{plot_T=1.00}.pdf}
 \caption{Different PDE solvers with $dx\in [0.01,0.1]$ plottet against analytical solution for $T=0.1$.}
-\label{fig:energy_temp}
+\label{fig:}
 \end{figure}
 
+Here we see what we suspected from the last plot: the Forward Euler actually has the quickest convergence.
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{fig/{error_T=1.00n=10}.pdf}
+\caption{Absolute error of different PDE solvers for the $T=0.1$, $dx=0.1$, $dt=0.0005$ case.}
+\label{fig:}
+\end{figure}
+
+\subsection{Linear case}
+In this specific case we are not capable of distingushing the different schemes on a plot, as they are behave much alike.
+\begin{figure}[H]
+\includegraphics[width=0.5\textwidth]{fig/{1D_linplot_T=0.10dx=0.10}.pdf}
+\includegraphics[width=0.5\textwidth]{fig/{1D_linplot_T=0.10dx=0.01}.pdf}
+\caption{Comparing $dx = 0.1$ and $dx = 0.01$ for the linear case.}
+\label{fig:}
+\end{figure}
+
+
+Picking one of the methods, the Crank-Nicolson, we study how it diverges (we don't have an anaytical solution here, but we know that it should converge on a linear solution).
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{fig/{1D_linplot_Crank_nicolson}.pdf}
+\caption{}
+\label{fig:}
+\end{figure}
 
 \input{chapters/notes_on_implementation.tex}
 

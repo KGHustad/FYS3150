@@ -10,6 +10,7 @@ def stable_N(n):
     return 2*n**2
 
 
+#Plots for the sinus initial conditions against analytical:
 for T in [0.1,1]:
     for solver in SOLVERS_1D:
         for n in [10,100]:
@@ -41,6 +42,7 @@ for T in [0.1,1]:
     plt.clf()
 
 
+#Absolute error plots:
 for n in [10,100]:
     for T in [0.1,1]:
         N = stable_N(n)
