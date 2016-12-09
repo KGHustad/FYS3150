@@ -241,13 +241,10 @@ u_i^{l+1} = \alpha u_{i-1}^l + (1-2\alpha)u_i^l + \alpha u_{i+1}^l
 \end{equation}
 We see that the state of the system at a time, $t_{l+1}$(left side), only depends on the conditions of the system in a previous state, $t_l$(right side), making this an explicit method.
 
-<<<<<<< fb76b9776e4fdfc1a86054feac68fadb9cdca5ec
-\subsubsection{Backward Euler - Implicit scheme}
-We will now derive the implicit Backward Euler method to approximate the the partial differential equation. Taylor expanding backwards around $u(x,t)$, with time as variable, truncating after the first derivative, we get
-=======
+
 \subsubsection{Backward Euler - Implicit scheme}\label{sec:method_be}
 We will now derive the implicit Backward Euler method to approximate the time derivative of the partial differential equation. Taylor expanding backwards around $u(x,t)$, truncating after the first derivative, we get
->>>>>>> Comments on implementation
+
 \begin{equation}
 u(x,t-\dt) = u(x,t) - \frac{\pu(x,t)}{\pt}\dt + O(\dt^2)
 \end{equation}
