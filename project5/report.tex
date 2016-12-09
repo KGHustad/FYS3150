@@ -264,7 +264,7 @@ Again combining with the central difference scheme, we approximate the partial d
 \end{equation}
 Lastly, introducing $\alpha = \frac{\dt}{\dx^2}$, we can rewrite to
 \begin{equation}\label{eq:1dscheme:be}
-u_i^{l-1} = -\alpha u_{i+1}^l + (1 + 2\alpha )u_i^l + -\alpha u_{i-1}^l
+u_i^{l-1} = -\alpha u_{i+1}^l + (1 + 2\alpha )u_i^l - \alpha u_{i-1}^l
 \end{equation}
 \\
 We see that we cannot write the state of the system as an explicit function of a previous state, making this an implicit scheme. If we write \ref{eq:1dscheme:be} out for all values of $i \in [0,n+1]$, we see that it becomes a set of linear equations, which we will write as the matrix equation
