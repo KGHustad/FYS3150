@@ -47,6 +47,7 @@
 \newcommand{\py}{{\partial y}}
 \newcommand{\pu}{{\partial u}}
 \newcommand{\ppu}{{\partial^2 u}}
+\newcommand{\pppu}{{\partial^3 u}}
 
 \begin{document}
 
@@ -186,7 +187,7 @@ u(0,t) = 0 \quad \quad u(L,t) = 1
 
 \subsection{One dimensional case}
 \subsubsection{The central difference scheme}\label{sec:cent}
-The Forward and Backward Euler (?) shcemes will be relying on the three-point central difference scheme to approximate the spatial derivative. The scheme is derived from a Taylor expansion around $u(x,t)$, with time as variable, both forward and backwards.
+The Forward and Backward Euler (?) shcemes will be relying on the three-point central difference scheme to approximate the spatial derivative. The scheme is derived from a Taylor expansion around $u(x,t)$, with $x$ as variable, both forward and backwards.
 \begin{equation}
 u(x+\Delta x, t) = u(x,t) + \frac{\pu(x,t)}{\px}\dx + \frac{\ppu(x,t)}{2\px^2}\dx^2 + O(\dx^3)
 \end{equation}
@@ -195,16 +196,18 @@ u(x+\Delta x, t) = u(x,t) + \frac{\pu(x,t)}{\px}\dx + \frac{\ppu(x,t)}{2\px^2}\d
 u(x-\Delta x, t) = u(x,t) - \frac{\pu(x,t)}{\px}\dx + \frac{\ppu(x,t)}{2\px^2}\dx^2 + O(\dx^3)
 \end{equation}
 
+adding both sides of the equations together, we get
 \begin{equation}
 u(x+\Delta x, t) + u(x-\Delta x, t) = 2u(x,t) + 2\frac{\ppu(x,t)}{2\px^2}\dx^2 + 2O(\dx^3)
 \end{equation}
 
+which, solving for the second derivative of $x$, gives
 \begin{equation}\begin{split}
 \frac{\ppu(x,t)}{2\px^2} &= \frac{u(x+\Delta x, t) - 2u(x,t) + u(x-\Delta x, t)}{\dx^2} + \frac{2O(\dx^3)}{\dx^2}\\
 &\approx \frac{u(x+\Delta x, t) - 2u(x,t) + u(x-\Delta x, t)}{\dx^2}
 \end{split}\end{equation}
 Giving a truncation error running as $\dx$.\\\\
-We can discretize the derivative as shown in \ref{sec:disc}, giving
+We can discretize the derivative as shown in \ref{sec:disc}.
 \begin{equation}
 u_{xx} = \frac{u_{i+1}^l - 2u_i^l+u_{i-1}^l}{\dx^2}
 \end{equation}
@@ -213,7 +216,7 @@ u_{xx} = \frac{u_{i+1}^l - 2u_i^l+u_{i-1}^l}{\dx^2}
 
 
 \subsubsection{Forward Euler - Explicit scheme}
-To approximate the time derivative of the partial differential equation \ref{eqn:PDE}, we will first derive the explicit Forward Euler method, by Taylor expansion around $u(x,t)$. Truncating after the first derivative, we get
+We will now derive the Explicit Forward Euler method, to approximate the partial differential equation \ref{eqn:PDE}. By Taylor expanding forward around $u(x,t)$, with time as variable, and truncating after the first derivative, we get
 \begin{equation}
 u(x,t+\dt) = u(x,t) + \frac{\pu(x,t)}{\pt}\dt + O(\dt^2)
 \end{equation}
@@ -236,10 +239,10 @@ Solving for $u_i^{l+1}$, and introducing the known constant $\alpha = \frac{\dt}
 \begin{equation}
 u_i^{l+1} = \alpha u_{i-1}^l + (1-2\alpha)u_i^l + \alpha u_{i+1}^l
 \end{equation}
-We see that the state of the system at a time, $t_{l+1}$(left side), only depends on the conditions of the system in a previous state, $t_l$(right side).
+We see that the state of the system at a time, $t_{l+1}$(left side), only depends on the conditions of the system in a previous state, $t_l$(right side), making this an explicit method.
 
 \subsubsection{Backward Euler - Implicit scheme}
-We will now derive the implicit Backward Euler method to approximate the time derivative of the partial differential equation. Taylor expanding backwards around $u(x,t)$, truncating after the first derivative, we get
+We will now derive the implicit Backward Euler method to approximate the the partial differential equation. Taylor expanding backwards around $u(x,t)$, with time as variable, truncating after the first derivative, we get
 \begin{equation}
 u(x,t-\dt) = u(x,t) - \frac{\pu(x,t)}{\pt}\dt + O(\dt^2)
 \end{equation}
@@ -253,11 +256,11 @@ We can discretize this as shown in \ref{sec:disc}, giving
 \begin{equation}
 u_t = \frac{u_i^l - u_i^{l-1}}{\dt}
 \end{equation}
-Again combining with the central difference, we approximate the partial differential equation as
+Again combining with the central difference scheme, we approximate the partial differential equation as
 \begin{equation}
 \frac{u_{i+1}^l - 2u_i^l+u_{i-1}^l}{\dx^2} = \frac{u_i^l - u_i^{l-1}}{\dt}
 \end{equation}
-Again introducing $\alpha = \frac{\dt}{\dx^2}$, we can rewrite to
+Lastly, introducing $\alpha = \frac{\dt}{\dx^2}$, we can rewrite to
 \begin{equation}\label{eqn:implicit}
 u_i^{l-1} = -\alpha u_{i+1}^l + (1 + 2\alpha )u_i^l + -\alpha u_{i-1}^l
 \end{equation}
@@ -295,9 +298,29 @@ V_l = \hat{A}^{-l}V_0
 \subsubsection{The Crank-Nicolson scheme}
 \textbf{TODO}: Deriving Crank-Nicolson scheme more thoroughly, among other tings: showing the truncation's error.
 
-While the Forward and Backward Euler methods rely on taking a step forwards and backwards in time to approximate the derivative, the Crank-Nicolson scheme simply takes the average of the two:
 \begin{equation}
-\frac{u_i^l-u_i^{l-1}}{\dt} = \frac{1}{2}\left( \frac{u_{i+1}^l - 2u_i^l + u_{i-1}^l}{\dx^2} + \frac{u_{i+1}^{l-1} - 2u_i^{l-1} + u_{i-1}^{l-1}}{\dx^2}\right)
+u(x,t+\dt) = u(x,t) + \frac{\pu(x,t)}{\pt}\dt^2 + \frac{\ppu(x,t)}{\pt^3}\frac{\dt}{2} + \frac{\pppu(x,t)}{\pt^3}\frac{\dt^2}{6} + O(\dt^4)
+\end{equation}
+
+\begin{equation}
+u(x,t-\dt) = u(x,t) - \frac{\pu(x,t)}{\pt}\dt^2 + \frac{\ppu(x,t)}{\pt^3}\frac{\dt}{2} - \frac{\pppu(x,t)}{\pt^3}\frac{\dt^2}{6} + O(\dt^4)
+\end{equation}
+
+adding the equations together gives
+\begin{equation}
+u(x,t+\dt) + u(x,t-\dt) = \frac{\ppu(x,t)}{\pt^2}\dt^2 + O(\dt^4)
+\end{equation}
+
+Solving for the derivative gives
+\begin{equation}\begin{split}
+\frac{\ppu(x,t)}{\dt^2} &= \frac{u(x,t+\dt) - u(x,t-\dt)}{\dt^2} + \frac{O(\dt^4)}{\dt^2} \\
+&\approx \frac{u(x,t+\dt) - u(x,t-\dt)}{\dt^2}
+\end{split}\end{equation}
+with a truncation error running as $\dt^2$.
+
+While the Forward and Backward Euler methods rely on taking a step forwards and backwards in time to approximate the derivative, the Crank-Nicolson scheme simply takes the average of the two. Moving the Backward Euler scheme one time step ahead, such that it's time derivative matches the Forward Euler's, we get the average:
+\begin{equation}
+\frac{u_i^{l+1}-u_i^l}{\dt} = \frac{1}{2}\left( \frac{u_{i+1}^l - 2u_i^l + u_{i-1}^l}{\dx^2} + \frac{u_{i+1}^{l+1} - 2u_i^{l+1} + u_{i-1}^{l+1}}{\dx^2}\right)
 \end{equation}
 After again defining $\alpha = \frac{\dt}{\dx^2}$, we can separate the two time steps $t_l$ and $t_{l-1}$, giving us the implicit Crank-Nicolson scheme.
 \begin{equation}
