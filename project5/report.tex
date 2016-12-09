@@ -301,26 +301,6 @@ While we could implement our algorithm using \ref{eq:be_matrix_inverse}, we will
 \subsubsection{The Crank-Nicolson scheme}
 \textbf{TODO}: Deriving Crank-Nicolson scheme more thoroughly, among other tings: showing the truncation's error.
 
-\begin{equation}
-u(x,t+\dt) = u(x,t) + \frac{\pu(x,t)}{\pt}\dt^2 + \frac{\ppu(x,t)}{\pt^3}\frac{\dt}{2} + \frac{\pppu(x,t)}{\pt^3}\frac{\dt^2}{6} + O(\dt^4)
-\end{equation}
-
-\begin{equation}
-u(x,t-\dt) = u(x,t) - \frac{\pu(x,t)}{\pt}\dt^2 + \frac{\ppu(x,t)}{\pt^3}\frac{\dt}{2} - \frac{\pppu(x,t)}{\pt^3}\frac{\dt^2}{6} + O(\dt^4)
-\end{equation}
-
-adding the equations together gives
-\begin{equation}
-u(x,t+\dt) + u(x,t-\dt) = \frac{\ppu(x,t)}{\pt^2}\dt^2 + O(\dt^4)
-\end{equation}
-
-Solving for the derivative gives
-\begin{equation}\begin{split}
-\frac{\ppu(x,t)}{\dt^2} &= \frac{u(x,t+\dt) - u(x,t-\dt)}{\dt^2} + \frac{O(\dt^4)}{\dt^2} \\
-&\approx \frac{u(x,t+\dt) - u(x,t-\dt)}{\dt^2}
-\end{split}\end{equation}
-with a truncation error running as $\dt^2$.
-
 While the Forward and Backward Euler methods rely on taking a step forwards and backwards in time to approximate the derivative, the Crank-Nicolson scheme simply takes the average of the two. Moving the Backward Euler scheme one time step ahead, such that it's time derivative matches the Forward Euler's, we get the average:
 \begin{equation}
 \frac{u_i^{l+1}-u_i^l}{\dt} = \frac{1}{2}\left( \frac{u_{i+1}^l - 2u_i^l + u_{i-1}^l}{\dx^2} + \frac{u_{i+1}^{l+1} - 2u_i^{l+1} + u_{i-1}^{l+1}}{\dx^2}\right)
