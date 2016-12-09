@@ -26,9 +26,13 @@ def get_proj_path():
     proj_path = os.path.abspath(os.path.join(this_file_dir, '..'))
     return proj_path
 
-def ensure_fig_dir():
+def get_fig_dir():
     proj_path = get_proj_path()
     fig_dir = os.path.join(proj_path, 'fig')
+    return fig_dir
+
+def ensure_fig_dir():
+    fig_dir = get_fig_dir()
     if not os.path.isdir(fig_dir):
         os.mkdir(fig_dir)
 
@@ -86,7 +90,7 @@ def diffusion_1d(v, iterations, kappa, solver, silent=False):
     return time_spent
 
 
-def diffusion_2d(v, f, iterations, kappa, bc_left=0, bc_right=0,
+def diffusion_2d(v, iterations, kappa, bc_left=0, bc_right=0,
                  bc_top=0, bc_bottom=0, omp=False, silent=False):
     check_lib_exists()
     #libdiffuse = load_lib()
@@ -105,7 +109,6 @@ def diffusion_2d(v, f, iterations, kappa, bc_left=0, bc_right=0,
 
     solver_func.restype = None
     solver_func.argtypes = [float64_array_2d,
-                            float64_array_2d,
                             c_int,
                             c_int,
                             c_double,
@@ -117,7 +120,6 @@ def diffusion_2d(v, f, iterations, kappa, bc_left=0, bc_right=0,
                             c_double_ptr
                             ]
     solver_func(v,
-                f,
                 c_int(height),
                 c_int(width),
                 c_double(kappa),

@@ -13,6 +13,9 @@ clean_latex_ext += *.fdb_latexmk *.fls 	# from latexmk
 diffusion_lib_dir=src/c
 diffusion_lib_file=src/c/libdiffuse.so
 
+pytest_opts = --doctest-modules --doctest-report=none -v
+test_programs = src/common.py src/tests.py
+ 
 all: report diffusion_lib
 
 $(diffusion_lib_file): diffusion_lib
@@ -42,8 +45,8 @@ show: report
 spellcheck:
 	aspell -t --lang=en_GB -c $(report_texdoc)
 
-#test: $(test_programs) #$(diffusion_lib_file)
-#	pytest $(pytest_opts) $(test_programs)
+test: $(test_programs) $(diffusion_lib_file)
+	pytest $(pytest_opts) $(test_programs)
 
 clean-all: clean clean-plots
 clean: clean-c clean-python clean-latex

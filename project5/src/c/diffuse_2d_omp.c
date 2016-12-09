@@ -6,23 +6,25 @@
 #include "common.h"
 #include "boundary.h"
 
-void diffusion_2d_omp(double **v, double **f,
+void diffusion_2d_omp(double **v,
                       int height, int width,
                       double kappa, int iters,
                       boundary_condition left, boundary_condition right,
                       boundary_condition top, boundary_condition bottom) {
     /* v and v_bar should be different arrays with identical contents */
     double **v_alt = alloc_2d_array(height, width);
-    double **v_bar = v_alt;
-    memcpy_2d_array(v_bar, v, height, width);
+    double **shared_v = v;
+    double **shared_v_bar = v_alt;
+    memcpy_2d_array(shared_v_bar, shared_v, height, width);
 
     /* store destination before any pointer swaps occur */
     double **v_dest = v;
     double** temp;
 
-    printf("Starting threads\n");
     #pragma omp parallel
     {
+        double **v = shared_v;
+        double **v_bar = shared_v_bar;
         int it, i, j;
         for (it = 1; it <= iters; it++) {
             /* update inner points */
@@ -58,12 +60,15 @@ void diffusion_2d_omp(double **v, double **f,
             v = v_bar;
             v_bar = temp;
         }
+        #pragma omp master
+        {
+            shared_v = v;
+        }
     }
-    fprintf(stderr, "Done\n");
 
     /* ensure final data is stored in correct location */
-    if (v != v_dest) {
-        memcpy(v[0], v_dest[0], sizeof(double)*width*height);
+    if (shared_v != v_dest) {
+        memcpy(v_dest[0], shared_v[0], sizeof(double)*width*height);
     }
 
     /* free v_bar */
@@ -71,7 +76,7 @@ void diffusion_2d_omp(double **v, double **f,
 }
 
 
-void solve_2d_omp(double *v_flat, double *f_flat, int width, int height,
+void solve_2d_omp(double *v_flat, int width, int height,
                   double kappa, int iters, int bc_left, int bc_right,
                   int bc_top, int bc_bottom, double *time_spent) {
     /* set signal handler */
@@ -89,12 +94,10 @@ void solve_2d_omp(double *v_flat, double *f_flat, int width, int height,
 
     double pre, post;
     double **v = alloc_2d_array_from_flat(v_flat, height, width);
-    double **f = alloc_2d_array_from_flat(f_flat, height, width);
     pre = omp_get_wtime();
-    diffusion_2d_omp(v, f, height, width, kappa, iters, left, right, top,
+    diffusion_2d_omp(v, height, width, kappa, iters, left, right, top,
                      bottom);
     post = omp_get_wtime();
     free(v);
-    free(f);
     *time_spent = post - pre;
 }
