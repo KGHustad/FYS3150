@@ -37,7 +37,7 @@ for T in [0.1,1]:
     plt.xlabel("x")
     plt.ylabel("u(x,t)")
     plt.legend(loc='best')
-    plt.savefig("fig/plot_T=%.2f.pdf" % (T))
+    plt.savefig(get_fig_dir() + "/plot_T=%.2f.pdf" % (T))
     plt.show()
     plt.clf()
 
@@ -71,5 +71,5 @@ for n in [10,100]:
         plt.xlabel("x")
         plt.ylabel("u(x,t)")
         plt.legend(loc='best')
-        plt.savefig("fig/error_T=%.2fn=%d.pdf" % (T,n))
+        plt.savefig(get_fig_dir() + "/error_T=%.2fn=%d.pdf" % (T,n))
         plt.clf()

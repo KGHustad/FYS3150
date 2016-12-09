@@ -36,7 +36,7 @@ for n in [10,100]:
         plt.xlabel("x")
         plt.ylabel("u(x,t)")
         plt.legend(loc='best')
-        plt.savefig("fig/1D_linplot_T=%.2fdx=%.2f.pdf" % (T,dx))
+        plt.savefig(get_fig_dir() + "/1D_linplot_T=%.2fdx=%.2f.pdf" % (T,dx))
         plt.clf()
 
 
@@ -63,5 +63,5 @@ plt.title("Divergence of Crank-Nicolson over time")
 plt.xlabel("x")
 plt.ylabel("u(x,t)")
 plt.legend(loc='best')
-plt.savefig("fig/1D_linplot_Crank_nicolson.pdf")
+plt.savefig(get_fig_dir() + "/1D_linplot_Crank_nicolson.pdf")
 plt.clf()
