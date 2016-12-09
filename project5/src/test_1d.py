@@ -1,33 +1,75 @@
 from common import *
 from plotting import *
 
-n = int(4)
-N = int(1000)
-T = 1
+def stable_dt(dx):
+    #Returns a time interval for a given space interval that is stable with Forward Euler
+    return 0.5*dx**2
 
-dx = 1./n
-dt = T/float(N)
+def stable_N(n):
+    #Returns a stable N from a given n for Forward Euler
+    return 2*n**2
 
-kappa = dt/dx**2
+for n in [10,100]:
+    for T in [0.05,0.5]:
+        N = stable_N(n)
+        dx = 1./n
+        dt = T/float(N)
+        kappa = dt/dx**2
+        print "dx: %g  dt: %g  kappa: %g" % (dx, dt, kappa)
+        u = np.zeros(n+2)
+        u[-1] = 1
 
-print "dx: %g  dt: %g  kappa: %g" % (dx, dt, kappa)
+        for solver in SOLVERS_1D:
+            v = u.copy()
+            diffusion_1d(v, N, kappa, solver)
+            print "Solver: %s" % solver
+            print v
+            print
 
-u = np.zeros(n+2)
-u[-1] = 1
+            x = np.linspace(0, 1, n+2)
+            plt.plot(x, v, label=solver)
+
+        analytical_solution = analytical_u_1d(x,T)
+
+        plt.plot(x, analytical_solution)
+        plt.rc('font', **{'size' : 14})
+        plt.tight_layout()
+        plt.title("1D case after T=%.2f, with dx=%.2f and dt=%.5f" % (T,dx,dt))
+        plt.xlabel("x")
+        plt.ylabel("u(x,t)")
+        plt.legend(loc='best')
+        plt.show()
 
 
 
-print u
 
-for solver in SOLVERS_1D:
-    v = u.copy()
-    diffusion_1d(v, N, kappa, solver)
-    print "Solver: %s" % solver
-    print v
-    print
+for n in [10,100]:
+    for T in [0.05,0.5]:
+        N = stable_N(n)
+        dx = 1./n
+        dt = T/float(N)
+        kappa = dt/dx**2
+        print "dx: %g  dt: %g  kappa: %g" % (dx, dt, kappa)
+        u = np.zeros(n+2)
+        u[-1] = 1
 
-    x = np.linspace(0, 1, n+2)
-    plt.plot(x, v, label=solver)
+        for solver in SOLVERS_1D:
+            v = u.copy()
+            diffusion_1d(v, N, kappa, solver)
+            print "Solver: %s" % solver
+            print v
+            print
 
-plt.legend(loc='best')
-plt.show()
+            x = np.linspace(0, 1, n+2)
+            analytical_solution = analytical_u_1d(x,T)
+            error = abs(analytical_solution - v)
+            plt.plot(x, error, label=solver)
+
+
+        plt.rc('font', **{'size' : 14})
+        plt.tight_layout()
+        plt.title("Error for T=%.2f, with dx=%.2f and dt=%.5f" % (T,dx,dt))
+        plt.xlabel("x")
+        plt.ylabel("u(x,t)")
+        plt.legend(loc='best')
+        plt.show()
