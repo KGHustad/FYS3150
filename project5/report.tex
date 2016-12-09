@@ -186,7 +186,7 @@ u(0,t) = 0 \quad \quad u(L,t) = 1
 
 \subsection{One dimensional case}
 \subsubsection{The central difference scheme}\label{sec:cent}
-For the spatial derivative of the partial differential equation, we will be using the centred difference scheme, derived from a Taylor expansion in both directions around $u(x,t)$.
+The Forward and Backward Euler (?) shcemes will be relying on the three-point central difference scheme to approximate the spatial derivative. The scheme is derived from a Taylor expansion around $u(x,t)$, with time as variable, both forward and backwards.
 \begin{equation}
 u(x+\Delta x, t) = u(x,t) + \frac{\pu(x,t)}{\px}\dx + \frac{\ppu(x,t)}{2\px^2}\dx^2 + O(\dx^3)
 \end{equation}
