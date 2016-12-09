@@ -56,21 +56,20 @@ void diffusion_1d_backward_euler(double *v, double alpha, int n, int iters) {
     /* save destination array */
     double *v_dest = v;
 
-    /* store boundary values */
-    double left = v[0];
-    double right = v[n+1];
-
     for (it = 0; it < iters; it++) {
-        for (i = 0; i <= n+1; i++) {
+        /* set up matrix */
+        for (i = 1; i <= n; i++) {
             a[i] = -alpha;
             b[i] = 1 + 2*alpha;
             c[i] = -alpha;
         }
-        solve_tridiagonal(v_new, v, a, b, c, n);
+        /* ensure no change at the boundaries */
+        b[0] = 1;
+        c[0] = 0;
+        b[n+1] = 1;
+        a[n+1] = 0;
 
-        /* reset boundaries */
-        v_new[0] = left;
-        v_new[n+1] = right;
+        solve_tridiagonal(v_new, v, a, b, c, n);
 
         /* swap pointers */
         v_tmp = v_new;
