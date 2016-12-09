@@ -54,6 +54,9 @@ void diffusion_2d(double **v, double **f,
 void solve_2d(double *v_flat, double *f_flat, int width, int height,
               double kappa, int iters, int bc_left, int bc_right,
               int bc_top, int bc_bottom, double *time_spent) {
+    /* set signal handler */
+    signal(SIGINT, abort_execution);
+
     boundary_condition left, right, top, bottom;
     left.pos = LEFT;
     left.type = bc_left;

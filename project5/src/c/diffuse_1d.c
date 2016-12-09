@@ -1,6 +1,8 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
+#include "common.h"
 #include "tridiagonal.h"
 #include "diffuse_1d.h"
 
@@ -75,5 +77,25 @@ void diffusion_1d_crank_nicolson(double *v, double alpha, int n, int iters) {
 }
 
 void solve_1d(double *v, double alpha, int n, int iters, enum solver s) {
-    /* NEEDS TO BE IMPLEMENTED */
+    /* set signal handler */
+    signal(SIGINT, abort_execution);
+
+    /* choose solver */
+    switch (s) {
+        case FORWARD_EULER:
+            diffusion_1d_forward_euler(v, alpha, n, iters);
+            break;
+
+        case BACKWARD_EULER:
+            diffusion_1d_backward_euler(v, alpha, n, iters);
+            break;
+
+        case CRANK_NICOLSON:
+            diffusion_1d_crank_nicolson(v, alpha, n, iters);
+            break;
+
+        default:
+            printf("ERROR: Unrecognized solver!\n");
+            exit(EXIT_FAILURE);
+    }
 }

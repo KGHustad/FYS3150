@@ -1,7 +1,13 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "common.h"
+
+void abort_execution(int sig) {
+    fprintf(stderr, "Aborted execution\n");
+    exit(EXIT_SUCCESS);
+}
 
 double** alloc_2d_array_from_flat(double *a_flat, int rows, int columns) {
     double **a = malloc(sizeof(double*)*rows);
