@@ -91,8 +91,6 @@ This is an abstract
 
 
 
-\textbf{TODO}: Remember to cite \cite{hpl_fdm}!
-
 \section{Introduction}
 In this report, we wish to study partial differential equations, a powerful tool for accurately estimating the characteristics of complex systems over time. Our main focus will be on numerical solutions, as most PDE's are too complicated for analytical solutions. The methods of choice are three different finite difference schemes - Forward Euler, Backward Euler and the Crank-Nicolson scheme.
 \\\\
@@ -130,11 +128,13 @@ Assuming the diffusion coefficient to be constant, the diffusion equation \vref{
 D \nabla^2 u(\textbf{r},t) = \frac{\pu(\textbf{r},t)}{\pt}
 \end{equation}
 Since we are not looking at a specific physical interpretation of the diffusion equation, $D$ is left as an unknown constant. We will further simplify the equation by scaling our variables such that they become dimensionless, and $D$ disappears. This leaves us with the partial differential equation we will study:
-\begin{equation}
+\begin{equation}\label{eq:dif_simple}
 \nabla^2 u(\textbf{r},t) = \frac{\pu(\textbf{r},t)}{\pt}
 \end{equation}
 Writing out the Laplace-operator, this becomes the equations \ref{eqn:PDE} and \ref{eqn:PDE2}, shown in the introduction, where $x$, $y$, and $t$ now are dimensionless variables.
 
+\subsubsection{Source term}
+It is possible to extend \vref{eq:dif_simple} with a source term, $f(x, y, t)$, however, it is not necessary for the computations we will be doing, and we will therefore not discuss source terms in this report.
 
 
 
@@ -147,7 +147,7 @@ and in two dimensions:
 
 The time will be discretized as $N+2$ points.
 \begin{equation} t_l, \quad l \in [0,N+1] \end{equation}
-We will also rewrite this to the following compact notation.\\
+We will also rewrite this to the following compact notation from \cite{hpl_fdm} where spatial position is written in subscript and the temporal position in superscript \\
 In one dimension:
 \begin{equation}
 u(x+\dx,\ t+\dt) = u(x_{i+1},\ t_{l+1}) = u_{i+1}^{l+1}
@@ -187,7 +187,7 @@ u(0,t) = 0 \quad \quad u(L,t) = 1
 
 \subsection{One dimensional case}
 \subsubsection{The central difference scheme}\label{sec:cent}
-The Forward and Backward Euler (?) shcemes will be relying on the three-point central difference scheme to approximate the spatial derivative. The scheme is derived from a Taylor expansion around $u(x,t)$, with $x$ as variable, both forward and backwards.
+The Forward and Backward Euler schemes will be relying on the three-point central difference scheme to approximate the spatial derivative. The scheme is derived from a Taylor expansion around $u(x,t)$, with time as variable, both forward and backwards.
 \begin{equation}
 u(x+\Delta x, t) = u(x,t) + \frac{\pu(x,t)}{\px}\dx + \frac{\ppu(x,t)}{2\px^2}\dx^2 + O(\dx^3)
 \end{equation}
@@ -236,7 +236,7 @@ Combining this with the central difference scheme, we get the approximation to t
 \end{equation}
 
 Solving for $u_i^{l+1}$, and introducing the known constant $\alpha = \frac{\dt}{\dx^2}$, we arrive at the explicit scheme
-\begin{equation}
+\begin{equation}\label{eq:1dscheme:fe}
 u_i^{l+1} = \alpha u_{i-1}^l + (1-2\alpha)u_i^l + \alpha u_{i+1}^l
 \end{equation}
 We see that the state of the system at a time, $t_{l+1}$(left side), only depends on the conditions of the system in a previous state, $t_l$(right side), making this an explicit method.
@@ -261,11 +261,11 @@ Again combining with the central difference scheme, we approximate the partial d
 \frac{u_{i+1}^l - 2u_i^l+u_{i-1}^l}{\dx^2} = \frac{u_i^l - u_i^{l-1}}{\dt}
 \end{equation}
 Lastly, introducing $\alpha = \frac{\dt}{\dx^2}$, we can rewrite to
-\begin{equation}\label{eqn:implicit}
+\begin{equation}\label{eq:1dscheme:be}
 u_i^{l-1} = -\alpha u_{i+1}^l + (1 + 2\alpha )u_i^l + -\alpha u_{i-1}^l
 \end{equation}
 \\
-We see that we cannot write the state of the system as an explicit function of a previous state, making this an implicit scheme. If we write \ref{eqn:implicit} out for all values of $i \in [0,n+1]$, we see that it becomes a set of linear equations, which we will write as the matrix equation
+We see that we cannot write the state of the system as an explicit function of a previous state, making this an implicit scheme. If we write \ref{eq:1dscheme:be} out for all values of $i \in [0,n+1]$, we see that it becomes a set of linear equations, which we will write as the matrix equation
 \begin{equation}
 V_{l-1} = \hat{A}V_l
 \end{equation}
