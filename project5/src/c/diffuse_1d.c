@@ -35,6 +35,8 @@ void diffusion_1d_forward_euler(double *v, double alpha, int n, int iters) {
     if (v_dest != v_new) {
         memcpy(v_dest, v_new, (n+2)*sizeof(double));
     }
+
+    free(v_buf);
 }
 
 void diffusion_1d_backward_euler(double *v, double alpha, int n, int iters) {
@@ -70,6 +72,11 @@ void diffusion_1d_backward_euler(double *v, double alpha, int n, int iters) {
     if (v_dest != v_new) {
         memcpy(v_dest, v_new, (n+2)*sizeof(double));
     }
+
+    free(a);
+    free(b);
+    free(c);
+    free(v_buf);
 }
 
 void diffusion_1d_crank_nicolson(double *v, double alpha, int n, int iters) {
