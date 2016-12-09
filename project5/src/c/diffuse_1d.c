@@ -33,8 +33,8 @@ void diffusion_1d_forward_euler(double *v, double alpha, int n, int iters) {
         v = v_tmp;
     }
 
-    if (v_dest != v_new) {
-        memcpy(v_dest, v_new, data_size);
+    if (v_dest != v) {
+        memcpy(v_dest, v, data_size);
     }
 
     free(v_buf);
