@@ -133,3 +133,9 @@ def diffusion_2d(v, f, iterations, kappa, bc_left=0, bc_right=0,
         print "Time spent (C): %g" % time_spent.value
 
     return time_spent.value
+
+def analytical_u_1d(x, t):
+    return np.exp(-np.pi**2*t)*np.sin(np.pi*x)
+
+def analytical_u_2d(x, y, t):
+    return np.exp(-2*np.pi**2*t)*np.sin(np.pi*x)*np.sin(np.pi*y)
