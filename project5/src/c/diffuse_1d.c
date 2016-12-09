@@ -10,7 +10,8 @@ void diffusion_1d_forward_euler(double *v, double alpha, int n, int iters) {
     int i, it;
 
     /* create buffer array */
-    double *v_buf = malloc((n+2)*sizeof(double));
+    size_t data_size = (n+2)*sizeof(double);
+    double *v_buf = malloc(data_size);
     double *v_new = v_buf;
     double *v_tmp;
 
@@ -33,7 +34,7 @@ void diffusion_1d_forward_euler(double *v, double alpha, int n, int iters) {
     }
 
     if (v_dest != v_new) {
-        memcpy(v_dest, v_new, (n+2)*sizeof(double));
+        memcpy(v_dest, v_new, data_size);
     }
 
     free(v_buf);
@@ -49,11 +50,15 @@ void diffusion_1d_backward_euler(double *v, double alpha, int n, int iters) {
     /* create buffer array */
     double *v_buf = malloc(data_size);
     double *v_new = v_buf;
+    memcpy(v_new, v, data_size);
     double *v_tmp;
 
     /* save destination array */
     double *v_dest = v;
 
+    /* store boundary values */
+    double left = v[0];
+    double right = v[n+1];
 
     for (it = 0; it < iters; it++) {
         for (i = 0; i <= n+1; i++) {
@@ -63,14 +68,18 @@ void diffusion_1d_backward_euler(double *v, double alpha, int n, int iters) {
         }
         solve_tridiagonal(v_new, v, a, b, c, n);
 
+        /* reset boundaries */
+        v_new[0] = left;
+        v_new[n+1] = right;
+
         /* swap pointers */
         v_tmp = v_new;
         v_new = v;
         v = v_tmp;
     }
 
-    if (v_dest != v_new) {
-        memcpy(v_dest, v_new, (n+2)*sizeof(double));
+    if (v_dest != v) {
+        memcpy(v_dest, v, data_size);
     }
 
     free(a);
@@ -88,11 +97,8 @@ void diffusion_1d_crank_nicolson(double *v, double alpha, int n, int iters) {
 
     /* create buffer array */
     double *v_buf = malloc(data_size);
-    double *v_new = v_buf;
-
-    /* save destination array */
-    double *v_dest = v;
-
+    double *v_old = v_buf;
+    memcpy(v_old, v, data_size);
 
     for (it = 0; it < iters; it++) {
         for (i = 0; i <= n+1; i++) {
@@ -102,14 +108,10 @@ void diffusion_1d_crank_nicolson(double *v, double alpha, int n, int iters) {
         }
 
         for (i = 1; i <= n; i++) {
-            v[i] = alpha*v_new[i-1] + (2 - 2*alpha)*v_new[i] + alpha*v_new[i+1];
+            v_old[i] = alpha*v[i-1] + (2 - 2*alpha)*v[i] + alpha*v[i+1];
         }
 
-        solve_tridiagonal(v_new, v, a, b, c, n);
-    }
-
-    if (v_dest != v_new) {
-        memcpy(v_dest, v_new, (n+2)*sizeof(double));
+        solve_tridiagonal(v, v_old, a, b, c, n);
     }
 
     free(a);
@@ -122,22 +124,26 @@ void solve_1d(double *v, double alpha, int n, int iters, enum solver s) {
     /* set signal handler */
     signal(SIGINT, abort_execution);
 
+    void (*selected_solver)(double *, double, int, int);
+
     /* choose solver */
     switch (s) {
         case FORWARD_EULER:
-            diffusion_1d_forward_euler(v, alpha, n, iters);
+            selected_solver = diffusion_1d_forward_euler;
             break;
 
         case BACKWARD_EULER:
-            diffusion_1d_backward_euler(v, alpha, n, iters);
+            selected_solver = diffusion_1d_backward_euler;
             break;
 
         case CRANK_NICOLSON:
-            diffusion_1d_crank_nicolson(v, alpha, n, iters);
+            selected_solver = diffusion_1d_crank_nicolson;
             break;
 
         default:
             printf("ERROR: Unrecognized solver!\n");
             exit(EXIT_FAILURE);
     }
+
+    selected_solver(v, alpha, n, iters);
 }
