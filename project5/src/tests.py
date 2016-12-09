@@ -1,7 +1,19 @@
 from common import *
 
 
-#def solve_1d_forwa
+def doctest_solve_1d_forward_euler():
+    """
+    >>> silent = True
+    >>> n = 4
+    >>> iterations = 1
+    >>> alpha = 0.1
+
+    >>> v = np.fromfunction(lambda x: x%2, (n+2,))
+    >>> v
+
+    >>> v = np.zeros(n+2)
+    """
+    pass
 
 def doctest_solve_2d_serial():
     """

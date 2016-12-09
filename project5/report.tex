@@ -399,9 +399,11 @@ Choosing $\dx = \dy = h$, and combining these two schemes, we can set up the two
 
 Solving for $u_{i,j}^{l+1}$ gives us the explicit scheme
 \begin{equation}
-u_{i,j}^{l+1} = u_{i,j}^l + \alpha\left( u_{i+1,j}^l + u_{i-1,j}^l + u_{i,j+1}^l + u_{i,j+1}^l - 4u_{i,j}^l \right)
+u_{i,j}^{l+1} = u_{i,j}^l + \alpha\left( u_{i+1,j}^l + u_{i-1,j}^l + u_{i,j+1}^l + u_{i,j-1}^l - 4u_{i,j}^l \right)
 \end{equation}
 where $\alpha = \frac{\dt}{h^2}$.
+
+
 \subsubsection{An analytical solution}
 We can adapt the analytical solution described in \vref{sec:analytical_1d} to solve the 2D problem.
 
