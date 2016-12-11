@@ -5,21 +5,17 @@
 
 #include "common.h"
 
-void diffusion_2d_mpi(double **v, double **f,
-                           int height, int width,
-                           double kappa, int iters, MPI_Comm comm) {
+void diffusion_2d_mpi(double **v,
+                      int height, int width,
+                      double kappa, int iters, MPI_Comm comm) {
+    /* Assume data is already distributed  */
     int my_rank, num_procs;
     MPI_Comm_rank (comm, &my_rank);
     MPI_Comm_size (comm, &num_procs);
 
-
-    /* TODO: IMPLEMENT SOURCE TERM */
-
-
-    int it, i, j;
-
     /* v and v_bar should be different arrays with identical contents */
-    double **v_bar = alloc_2d_array(height, width);
+    double **v_buf = alloc_2d_array(height, width);
+    double **v_bar = v_buf;
     memcpy_2d_array(v_bar, v, height, width);
 
     /* store destination before any pointer swaps occur */
@@ -27,12 +23,13 @@ void diffusion_2d_mpi(double **v, double **f,
     double** temp;
 
     /* allocate, if necessary, memory to store rows above and below */
+    size_t row_size = sizeof(double)*width;
     double *row_above = NULL, *row_below = NULL;
     if (my_rank != 0) {
-        row_above = malloc(sizeof(double)*width);
+        row_above = malloc(row_size);
     }
     if (my_rank != num_procs-1) {
-        row_below = malloc(sizeof(double)*width);
+        row_below = malloc(row_size);
     }
 
     MPI_Status status;
@@ -49,15 +46,16 @@ void diffusion_2d_mpi(double **v, double **f,
     void* buf = malloc(buf_size);
     MPI_Buffer_attach(buf, buf_size);
 
+    int it, i, j;
     for (it=1; it <= iters; it++) {
         /* buffered send */
         /* to above */
         if (my_rank != 0) {
-            MPI_Bsend(v[0], width, MPI_FLOAT, my_rank-1, it, comm);
+            MPI_Bsend(v[0], width, MPI_DOUBLE, my_rank-1, it, comm);
         }
         /* to below */
         if (my_rank != num_procs-1) {
-            MPI_Bsend(v[height-1], width, MPI_FLOAT, my_rank+1, it,
+            MPI_Bsend(v[height-1], width, MPI_DOUBLE, my_rank+1, it,
                      comm);
         }
 
@@ -73,7 +71,7 @@ void diffusion_2d_mpi(double **v, double **f,
         /* receive */
         /* from above */
         if (my_rank != 0) {
-            MPI_Recv(row_above, width, MPI_FLOAT, my_rank-1, it, comm,
+            MPI_Recv(row_above, width, MPI_DOUBLE, my_rank-1, it, comm,
                      &status);
             i = 0;
             for (j=1; j < width-1; j++) {
@@ -84,7 +82,7 @@ void diffusion_2d_mpi(double **v, double **f,
         }
         /* from below */
         if (my_rank != num_procs-1) {
-            MPI_Recv(row_below, width, MPI_FLOAT, my_rank+1, it, comm,
+            MPI_Recv(row_below, width, MPI_DOUBLE, my_rank+1, it, comm,
                      &status);
             i = height-1;
             for (j=1; j < width-1; j++) {
@@ -94,6 +92,8 @@ void diffusion_2d_mpi(double **v, double **f,
             }
         }
 
+        /* TODO: implement boundary conditions */
+
         /* swap pointers */
         temp = v;
         v = v_bar;
@@ -102,7 +102,7 @@ void diffusion_2d_mpi(double **v, double **f,
 
     /* ensure final data is stored in correct location */
     if (v != v_dest) {
-        memcpy(v[0], v_dest[0], sizeof(double)*width*height);
+        memcpy_2d_array(v_dest, v, height, width);
     }
 
     /* free, if necessary, memory allocated to store rows above and below */
@@ -118,18 +118,16 @@ void diffusion_2d_mpi(double **v, double **f,
     free(buf);
 
     /* free v_bar */
-    free_2d_array(v_bar);
+    free_2d_array(v_buf);
 }
 
 
-void solve_2d_mpi(double *v_flat, double *f_flat, int width, int height,
+void solve_2d_mpi(double *v_flat, int width, int height,
                   double kappa, int iters, MPI_Comm comm) {
     /* THIS FUNCTION WOULD NEED TO DISTRIBUTE THE DATA IF IT IS NOT DONE IN
      * THE LAYER ABOVE (I.E. IN PYTHON)
      */
     double **v = alloc_2d_array_from_flat(v_flat, height, width);
-    double **f = alloc_2d_array_from_flat(f_flat, height, width);
-    diffusion_2d_mpi(v, f, height, width, kappa, iters, comm);
+    diffusion_2d_mpi(v, height, width, kappa, iters, comm);
     free(v);
-    free(f);
 }

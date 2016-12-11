@@ -11,11 +11,10 @@ comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 
 v = np.zeros((height, width), dtype=np.float64)
-f = np.zeros((height, width), dtype=np.float64)
 
 v[:,-1] = 1
 
-diffusion_2d_mpi(v, f, iterations, kappa)
+diffusion_2d_mpi(v, iterations, kappa)
 print v
 
 def show_2d(v):
