@@ -15,7 +15,10 @@ diffusion_lib_file=src/c/libdiffuse.so
 
 pytest_opts = --doctest-modules --doctest-report=none -v
 test_programs = src/common.py src/tests.py
- 
+
+plots = #fig/
+tables =
+
 all: report diffusion_lib
 
 $(diffusion_lib_file): diffusion_lib
@@ -31,7 +34,7 @@ continuous:
 
 report: $(report_pdf)
 #$(report_pdf): $(report_texdoc) $(plots) $(tables) $(benchmarks)
-$(report_pdf): $(report_texdoc) $(chapters) $(bibliography)# $(plots) $(tables)
+$(report_pdf): $(report_texdoc) $(chapters) $(bibliography) $(plots) $(tables)
 	# need to run several times to fix references
 	$(LATEX) $(LATEX_OPTS) $(report_texdoc)
 	bibtex report

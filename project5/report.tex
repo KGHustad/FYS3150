@@ -92,7 +92,7 @@ This is an abstract
 
 
 \section{Introduction}
-In this report, we wish to study partial differential equations, a powerful tool for accurately estimating the characteristics of complex systems over time. Our main focus will be on numerical solutions, as most PDE's are too complicated for analytical solutions. The methods of choice are three different finite difference schemes - Forward Euler, Backward Euler and the Crank-Nicolson scheme.
+In this report, we wish to study partial differential equations, a powerful tool for accurately estimating the characteristics of complex systems over time. Our main focus will be on numerical solutions, as most PDEs are too complicated for analytical solutions. The methods of choice are three different finite difference schemes - Forward Euler, Backward Euler and the Crank-Nicolson scheme.
 \\\\
 We have, however, in order to verify our results, chosen an analytically solvable PDE. The problem we will be employing, is a simplified case of the \textit{diffusion equation}. This specific case will be derived in \vref{sec:dif}, and is shown in one and two spatial dimensions below.
 
@@ -105,13 +105,13 @@ We have, however, in order to verify our results, chosen an analytically solvabl
 \end{equation}
 
 
-The diffusion equation is, naturally, used to model the process of diffusion, where large systems of randomely moving particles are described by it's macroscopic behavior. The quantity $u(\textbf{r},t)$ may be physically interpreted as, among other things, the particle density, energy density, or temperature, at a given point in time and space.
+The diffusion equation is, naturally, used to model the process of diffusion, where large systems of randomly moving particles are described by it's macroscopic behaviour. The quantity $u(\textbf{r},t)$ may be physically interpreted as, among other things, the particle density, energy density, or temperature, at a given point in time and space.
 \\\\
 \textbf{TODO: Write some more about how we wish to implement the differential equation numerically}
 
 
 
-We shall see how the tridiagonal solver described in \cite{hustad_lunde_project1} can be used to solve the backward Euler and Crank-Nicolson schemes efficiently in one dimesion.
+We shall see how the tridiagonal solver described in \cite{hustad_lunde_project1} can be used to solve the backward Euler and Crank-Nicolson schemes efficiently in one dimension.
 
 \section{Method and Idea}
 
@@ -185,7 +185,7 @@ u(0,t) = 0 \quad \quad u(L,t) = 1
 
 
 
-\subsection{One dimensional case}
+\subsection{One dimensional case}\label{sec:method:1d}
 \subsubsection{The central difference scheme}\label{sec:cent}
 The Forward and Backward Euler schemes will be relying on the three-point central difference scheme to approximate the spatial derivative. The scheme is derived from a Taylor expansion around $u(x,t)$, with time as variable, both forward and backwards.
 \begin{equation}
@@ -353,7 +353,8 @@ We can easily show that \vref{eq:analytical_1d_book} solves \vref{eqn:PDE},
 
 
 \subsection{Error and stability}
-Since all methods build on the central difference scheme, the truncation error of the spatial derivative runs as $\dx^2$ for all schemes. From deriving the three methods in sections ( \textbf{TODO}:referencing ) we know that the Euler methods has a truncation error running as $\dt$, while it is $\dt^2$ for the Crank-Nicolson scheme.
+\label{sec:method:1d:error}
+Since all methods build on the central difference scheme, the truncation error of the spatial derivative runs as $\dx^2$ for all schemes. From deriving the three methods in \ref{sec:method:1d} we know that the Euler methods has a truncation error running as $\dt$, while it is $\dt^2$ for the Crank-Nicolson scheme.
 \\\\
 
 
@@ -428,41 +429,51 @@ which solves \vref{eq:diffusion_2d} since
 \end{align}
 
 \section{Implementation and results}\label{sec:implementation_and_results}
-Note: $dt$ is always set to $\frac{1}{2}dx^2$ unless otherwise mentioned.\\\\
+Note: $\dt$ is always set to $\frac{1}{2}\dx^2$ unless otherwise mentioned.\\\\
 
 \subsection{Sinus case}
-PDE solvers diverging on the analytical solution. We clearly see the impact of the decreased $dt$ value from 0.1 to 0.01.
+We will study how the various schemes by comparing them to the analytical solution derived in \ref{sec:analytical_1d}. However, before looking at the results, we should remind ourselves of how the methods differ and what we should expect.
+
+First we should note that our analytical solution, \ref{eq:analytical_1d_book}, has the shape of a sine wave that decays over time. As time approaches infinity, i.e. $\lim_{t \to \infty} u(x, t) = 0$.
+
+Forward Euler uses a forward difference in time, meaning it approximates the rate of change in the next time step from rate of change in the current time step. Since the analytical solution is decaying, this means that Forward Euler is at an advantage in terms of convergence rate.
+
+Backward Euler, which uses a backward difference in time, makes the opposite assumption. The rate of change at the current time step is approximated from the rate of change at the next time step. We will see that this is disadvantageous.
+
+Crank-Nicolson strikes a balance between Forward and Backward Euler. It does, however have a faster convergence rate in terms of $\dt$ as discussed in \ref{sec:method:1d:error}.
+
+We clearly see the impact of the decreased $\dt$ value from 0.1 to 0.01.
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{fig/{plot_T=0.10}.pdf}
-\caption{Different PDE solvers with $dx\in [0.01,0.1]$ plottet against analytical solution for $T=1$.}
+\caption{Different PDE solvers with $\dx \in \{0.01,0.1\}$ plotted against analytical solution for $T=1$.}
 \label{fig:}
 \end{figure}
 
-Same scenario as above, this time after ten times as long. Now the impact of the decreased $dx$ is even clearer. We also see Forward Euler diverging the quickest, due to the nature of the problem. This is not always the case, as the Crank-Nicolson is usually more accurate.
+Same scenario as above, this time after ten times as long. Now the impact of the decreased $\dx$ is even clearer. We also see Forward Euler diverging the quickest, due to the nature of the problem. This is not always the case, as the Crank-Nicolson is usually more accurate.
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{fig/{plot_T=1.00}.pdf}
-\caption{Different PDE solvers with $dx\in [0.01,0.1]$ plottet against analytical solution for $T=0.1$.}
+\caption{Different PDE solvers with $\dx \in \{0.01,0.1\}$ plotted against analytical solution for $T=0.1$.}
 \label{fig:}
 \end{figure}
 
 Here we see what we suspected from the last plot: the Forward Euler actually has the quickest convergence.
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{fig/{error_T=1.00n=10}.pdf}
-\caption{Absolute error of different PDE solvers for the $T=0.1$, $dx=0.1$, $dt=0.0005$ case.}
+\caption{Absolute error of different PDE solvers for the $T=0.1$, $\dx=0.1$, $\dt=0.0005$ case.}
 \label{fig:}
 \end{figure}
 
 \subsection{Linear case}
-In this specific case we are not capable of distingushing the different schemes on a plot, as they are behave much alike.
+In this specific case we are not capable of distinguishing the different schemes on a plot, as they are behave much alike.
 \begin{figure}[H]
 \includegraphics[width=0.5\textwidth]{fig/{1D_linplot_T=0.10dx=0.10}.pdf}
 \includegraphics[width=0.5\textwidth]{fig/{1D_linplot_T=0.10dx=0.01}.pdf}
-\caption{Comparing $dx = 0.1$ and $dx = 0.01$ for the linear case.}
+\caption{Comparing $\dx = 0.1$ and $\dx = 0.01$ for the linear case.}
 \label{fig:}
 \end{figure}
 
 
-Picking one of the methods, the Crank-Nicolson, we study how it diverges (we don't have an anaytical solution here, but we know that it should converge on a linear solution).
+Picking one of the methods, the Crank-Nicolson, we study how it diverges (we don't have an analytical solution here, but we know that it should converge on a linear solution).
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{fig/{1D_linplot_Crank_nicolson}.pdf}
 \caption{}
