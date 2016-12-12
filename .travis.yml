@@ -1,8 +1,10 @@
 language: c
-
 compiler: gcc
 
+sudo: required
+
 before_install:
+    - sudo -H pip install pytest
     - pip install --user tabulate
 
 addons:
