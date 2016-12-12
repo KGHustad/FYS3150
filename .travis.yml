@@ -24,6 +24,8 @@ env:
     - OMP_NUM_THREADS=4
 script:
     - make -C project2 jacobi_lib
+    - make -C project2 clean-c
+    - make -C project2 test
     - make -C project3 solar_system_lib
     - make -C project4 libising
     - make -C project5 diffusion_lib
