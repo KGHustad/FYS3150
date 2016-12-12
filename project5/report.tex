@@ -145,8 +145,8 @@ In one dimension:
 and in two dimensions:
 \begin{equation} (x_i, y_j), \quad i,j \in [0,n+1]\end{equation}
 
-The time will be discretized as $N+2$ points.
-\begin{equation} t_l, \quad l \in [0,N+1] \end{equation}
+The time will be discretized as $\tau+1$ points.
+\begin{equation} t_l, \quad l \in [0,\tau] \end{equation}
 We will also rewrite this to the following compact notation from \cite{hpl_fdm} where spatial position is written in subscript and the temporal position in superscript \\
 In one dimension:
 \begin{equation}
@@ -166,11 +166,11 @@ We will also write the derivatives in \ref{eqn:PDE} and \ref{eqn:PDE2} with the
 \subsection{Initial Conditions \& Boundary Conditions}
 The system will be interpreted as a rod of length $L$ for the one-dimensional system, and a square with side-lengths $L$ for the two-dimensional system, such that $x,y \in [0,L]$. We will study the system over a time $T$. This gives a length
 \begin{equation}
-\dx = \dy = x_i - x_{i-1} = y_j - y_{j-1} = \frac{n+2}{L}
+\dx = \dy = x_i - x_{i-1} = y_j - y_{j-1} = \frac{L}{n+1}
 \end{equation}
 between the spatial discretizations, and a time
 \begin{equation}
-\dt = t_l - t_{l-1} = \frac{N+2}{T}
+\dt = t_l - t_{l-1} = \frac{T}{\tau}
 \end{equation}
 between the time discretizations.\\\\
 The initial conditions of the system are set as
