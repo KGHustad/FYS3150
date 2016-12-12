@@ -23,6 +23,7 @@ addons:
 env:
     - OMP_NUM_THREADS=4
 script:
+    - python --version
     - make -C project2 jacobi_lib
     - make -C project2 clean-c
     - make -C project2 test
