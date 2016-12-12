@@ -32,4 +32,6 @@ See `reference_test.md`
 ## Dependencies
 * Python 2 w/ SciPy stack
 * texlive with most of the bells and whistles
-* Compilers for C and C++
+* Compilers for C and C with MPI (`cc` and `mpicc`)
+* Valgrind
+* mpi4py (can be installed via pip)
