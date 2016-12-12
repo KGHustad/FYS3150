@@ -1,0 +1,17 @@
+\section{Asserting the correctness of the program}
+\subsection{Unit tests}
+A unit test should test the smallest unit of the program, typically a single function. While we could load each C function from our library separately and test it, we have instead opted for unit testing the Python functions acting as interfaces to the underlying C library. Such testing is typically refered to as \emph{black box testing} -- we make no assumptions about the specific implementation, we only study the function from what output is yielded for various input.
+
+The tests we will be performing are simple to write, yet they are able prove that our algorithm is correct.
+
+If the algorithms satisfy the following properties, we can be fairly sure that our \emph{algorithm} is correct. There may still be programmatic errors such as memory leaks and bad type handling, but those are difficult to test without from a black box perspective.
+\begin{enumerate}[label=(\roman*)]
+    \item Running a single iteration of the algorithm yields new values $v^{l+1}$ which are related to the previous values $v^l$ as prescribed by the selected scheme. \label{lst:prop1}
+    \item Running a single iteration two times, yield the same answer as running two iterations in one function call.\label{lst:prop2}
+\end{enumerate}
+
+Notice that this list of properties have the structure of a proof by induction. We first prove that our algorithm is correct for a single step $l = 1$, and then that running a single step after $l = n$ yields $l = n+1$.
+
+While property \ref{lst:prop1} is a mandatory test to perform, it may be less obvious why property \ref{lst:prop2} is relevant from a programmatic point of view. Here we should note that our implementation of the algorithm works by storing a pair of arrays containing $v^l$ and $v^{l+1}$ at any given time step $l$. Instead of always writing into the array for $v^{l+1}$ and then copying its contents into $v^l$ at the end of the time step, we swap their pointers to avoid unneccesary memory writes. It is easy to make errors when performing such pointer swaps, but if we test with both an odd and an even number of iterations, we should be pretty confident that our implementation is correct.
+
+\subsection{Testing for memory leaks with Valgrind}

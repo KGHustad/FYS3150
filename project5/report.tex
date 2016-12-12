@@ -19,6 +19,8 @@
 \usepackage{epigraph}
 \usepackage{hyperref}
 \usepackage{varioref}
+\usepackage[toc,page]{appendix}
+\usepackage{enumitem}
 
 % varioref stuff from Anders
 \labelformat{section}{section~#1}
@@ -88,6 +90,7 @@ This is an abstract
 
 \pagebreak
 
+\tableofcontents
 
 
 
@@ -484,5 +487,9 @@ Picking one of the methods, the Crank-Nicolson, we study how it diverges (we don
 
 \bibliographystyle{IEEEtran}
 \bibliography{../papers}{}
+
+\newpage
+\appendix
+\input{chapters/appx_testing.tex}
 
 \end{document}
