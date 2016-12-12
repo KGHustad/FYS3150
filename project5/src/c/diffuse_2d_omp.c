@@ -3,8 +3,8 @@
 #include <stdio.h>
 #include <omp.h>
 
+#include "diffuse_2d_omp.h"
 #include "common.h"
-#include "boundary.h"
 
 void diffusion_2d_omp(double **v,
                       int height, int width,
@@ -76,7 +76,7 @@ void diffusion_2d_omp(double **v,
 }
 
 
-void solve_2d_omp(double *v_flat, int width, int height,
+void solve_2d_omp(double *v_flat, int height, int width,
                   double kappa, int iters, int bc_left, int bc_right,
                   int bc_top, int bc_bottom, double *time_spent) {
     /* set signal handler */

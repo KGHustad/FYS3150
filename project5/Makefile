@@ -1,4 +1,4 @@
-.PHONY: clean diffusion_lib continuous report show clean-all clean clean-c clean-python clean-latex clean-plots
+.PHONY: clean diffusion_lib continuous report show memtest test clean-all clean clean-c clean-python clean-latex clean-plots
 
 LATEX=pdflatex
 LATEX_OPTS=
@@ -48,7 +48,9 @@ show: report
 spellcheck:
 	aspell -t --lang=en_GB -c $(report_texdoc)
 
-test: $(test_programs) $(diffusion_lib_file)
+memtest:
+	$(MAKE) -C $(diffusion_lib_dir) memtest
+test: $(test_programs) $(diffusion_lib_file) memtest
 	pytest $(pytest_opts) $(test_programs)
 
 clean-all: clean clean-plots

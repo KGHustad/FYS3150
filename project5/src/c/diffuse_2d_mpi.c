@@ -122,7 +122,7 @@ void diffusion_2d_mpi(double **v,
 }
 
 
-void solve_2d_mpi(double *v_flat, int width, int height,
+void solve_2d_mpi(double *v_flat, int height, int width,
                   double kappa, int iters, MPI_Comm comm) {
     /* THIS FUNCTION WOULD NEED TO DISTRIBUTE THE DATA IF IT IS NOT DONE IN
      * THE LAYER ABOVE (I.E. IN PYTHON)
