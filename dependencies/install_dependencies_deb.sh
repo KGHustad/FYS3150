@@ -2,6 +2,9 @@
 # tabulate is used for pretty printing tables
 sudo -H pip install tabulate
 
+# Valgrind for memory checks
+sudo apt-get install valgrind -y
+
 # The GNU Scientific Library is used for RNGs
 sudo apt-get install libgsl-dev -y
 

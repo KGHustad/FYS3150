@@ -39,6 +39,9 @@ dnf_install gcc-c++
 dnf_install libgomp
 dnf_install openmpi-devel
 
+# C tools
+dnf_install valgrind
+
 # MPI for Python
 dnf_install mpi4py-common
 
