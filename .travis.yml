@@ -10,7 +10,7 @@ before_install:
     - sudo pip install --upgrade scipy
     - sudo pip install --upgrade matplotlib
     - sudo pip install pytest
-    - pip install --user tabulate
+    - sudo pip install tabulate
 
 addons:
   apt:
