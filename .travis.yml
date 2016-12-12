@@ -25,8 +25,8 @@ script:
     - make -C project4 libising
     - make -C project5 diffusion_lib
     - make -C project5 clean-c
-    - make -C project5/src/c memtest
-    - make -C project5/ clean-c
+    - make -C project5 test
+    - make -C project5 clean-c
     - make -C project5 diffusion_lib_mpi
 
 notifications:

@@ -1,4 +1,4 @@
-.PHONY: clean diffusion_lib continuous report show memtest test clean-all clean clean-c clean-python clean-latex clean-plots
+.PHONY: clean diffusion_lib continuous report show memtest pytest test clean-all clean clean-c clean-python clean-latex clean-plots
 
 LATEX=pdflatex
 LATEX_OPTS=
@@ -50,8 +50,9 @@ spellcheck:
 
 memtest:
 	$(MAKE) -C $(diffusion_lib_dir) memtest
-test: $(test_programs) $(diffusion_lib_file) memtest
+pytest: $(test_programs) $(diffusion_lib_file)
 	pytest $(pytest_opts) $(test_programs)
+test: memtest pytest
 
 clean-all: clean clean-plots
 clean: clean-c clean-python clean-latex
