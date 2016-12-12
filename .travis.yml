@@ -16,6 +16,9 @@ addons:
     - openmpi-bin
     - libopenmpi-dev
     - valgrind
+    - python-numpy
+    - python-scipy
+    - python-matplotlib
 
 env:
     - OMP_NUM_THREADS=4
