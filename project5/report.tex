@@ -18,8 +18,8 @@
 \usepackage{float}
 \usepackage{epigraph}
 \usepackage{hyperref}
-\usepackage{varioref}
 \usepackage[toc,page]{appendix}
+\usepackage{varioref}
 \usepackage{enumitem}
 
 % varioref stuff from Anders
@@ -29,6 +29,9 @@
 \labelformat{equation}{(#1)}
 \labelformat{figure}{figure~#1}
 \labelformat{table}{table~#1}
+
+
+\newcommand{\program}[1]{\href{https://github.com/KGHustad/FYS3150/blob/master/project5/#1}{#1}}
 
 \newcommand{\indexset}{\mathcal{I}}
 \newcommand{\indexsetinner}{\mathcal{I}_{\mathrm{inner}}}
@@ -490,6 +493,7 @@ Picking one of the methods, the Crank-Nicolson, we study how it diverges (we don
 
 \newpage
 \appendix
+\labelformat{section}{appendix~#1}
 \input{chapters/appx_testing.tex}
 
 \end{document}
