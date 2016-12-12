@@ -53,8 +53,10 @@ $(tables): $(table_programs)
 	python src/benchmark.py $(table_program_opts) > table_non_interacting_rho-max=5.dat
 show: report
 	evince $(report_pdf) &
-test: $(test_programs) $(jacobi_lib_file)
+test: $(test_programs) $(jacobi_lib_file) trigger_weave_compilation
 	pytest $(pytest_opts) $(test_programs)
+trigger_weave_compilation:
+	python src/trigger_weave_compilation.py
 
 clean-all: clean clean-plots
 clean: clean-c clean-python clean-latex
