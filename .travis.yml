@@ -6,10 +6,6 @@ dist: trusty
 sudo: required
 
 before_install:
-    - sudo pip install --upgrade numpy
-    - sudo pip install --upgrade scipy
-    - sudo pip install --upgrade matplotlib
-    - sudo pip install pytest
     - sudo pip install tabulate
 
 addons:
