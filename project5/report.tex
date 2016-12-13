@@ -87,7 +87,7 @@
 
 \begin{abstract}
 \noindent
-This is an abstract
+In this report, we explore 
 \end{abstract}
 
 \vfill
@@ -531,6 +531,36 @@ Here we see what we suspected from the last plot: the Forward Euler actually has
 \label{fig:}
 \end{figure}
 
+
+\subsection{error and stuff}
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{fig/{error_dx}.pdf}
+\caption{Absolute error of all schemes as function of dx.}
+\label{fig:}
+\end{figure}
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{fig/{FE_error_dt}.pdf}
+\caption{Absolute error of Forward Euler scheme as function of dt.}
+\label{fig:}
+\end{figure}
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{fig/{BE_error_dt}.pdf}
+\caption{Absolute error of Backward Euler scheme as function of dt.}
+\label{fig:}
+\end{figure}
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{fig/{CN_error_dx}.pdf}
+\caption{Absolute error of Crank-Nicolson scheme as function of dt.}
+\label{fig:}
+\end{figure}
+
+
+
+
 \subsection{1D -- Linear case}
 In this specific case we are not capable of distinguishing the different schemes on a plot, as they are behave much alike.
 \begin{figure}[H]
@@ -539,6 +569,7 @@ In this specific case we are not capable of distinguishing the different schemes
 \caption{Comparing $\dx = 0.1$ and $\dx = 0.01$ for the linear case.}
 \label{fig:}
 \end{figure}
+
 
 
 Picking one of the methods, the Crank-Nicolson, we study how it diverges (we don't have an analytical solution here, but we know that it should converge on a linear solution).
