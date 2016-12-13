@@ -9,6 +9,11 @@ In C, we check that there are no memory related errors by writing simple test pr
 
 Finally, as described in \ref{appx:testing:travis}, we have instructed Travis CI to run these tests at every push to our GitHub repository so that the test results can be viewed for each version, eliminating the need to run them manually when looking for the last working version for instance.
 
+All tests can be run from the root directory of this project with:
+\begin{minted}[bgcolor=cbg_blue1]{text}
+$ make test
+\end{minted}
+
 \subsection{Unit tests}
 \label{appx:testing:unit_tests}
 A unit test should test the smallest unit of the program, typically a single function. While we could load each C function from our library separately and test it, we have instead opted for unit testing the Python functions acting as interfaces to the underlying C library. Such testing is typically refered to as \emph{black box testing} -- we make no assumptions about the specific implementation, we only study the function from what output is yielded for various input.

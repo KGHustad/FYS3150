@@ -418,6 +418,40 @@ u_{i,j}^{l+1} = u_{i,j}^l + \alpha\left( u_{i+1,j}^l + u_{i-1,j}^l + u_{i,j+1}^l
 \end{equation}
 where $\alpha = \frac{\dt}{h^2}$.
 
+\subsubsection{Extending the 1D case to two dimensions}
+When extending
+\begin{equation}
+u(0,t) = 0 \quad \quad u(L,t) = 1
+\end{equation}
+to two dimensions, it is natural to let
+\begin{equation}
+\label{eq:2d:boundary}
+u(0,y,t) = 0 \quad \quad u(L,y,t) = 1
+\end{equation}
+
+and
+\begin{equation}
+\label{eq:2d:initial}
+u(x,y,0) = 0 \quad x < L
+\end{equation}
+
+
+The real question is how one should treat the boundaries in the $y$ dimension.
+One choice could be
+\begin{equation}
+\fracpy u(x,0,t) = \fracpy u(x,L,t) = 0
+\end{equation}
+
+This would translate to having the boundaries perfectly insulated -- the flow of heat through the boundary is exactly zero. Combined with \ref{eq:2d:boundary} and \ref{eq:2d:initial}, this would imply that $u$ does not vary in the $y$ dimension, i.e.
+\begin{equation}
+u(x,y_i,t) = u(x,y_j,t) \quad i, j \in \indexset
+\end{equation}
+
+A more interesting choice might be
+\begin{equation}
+u(x,0,t)=u(x,L,t)=0 \quad x < L
+\end{equation}
+meaning that the right side is constantly 1 while all the other sides are zero. Here we would expect there to be variation in the $y$ dimension.
 
 \subsubsection{An analytical solution}
 We can adapt the analytical solution described in \vref{sec:analytical_1d} to solve the 2D problem.
@@ -442,10 +476,12 @@ which solves \vref{eq:diffusion_2d} since
 &= -\pi^2 u(x, y, t)
 \end{align}
 
+
+
 \section{Implementation and results}\label{sec:implementation_and_results}
 Note: $\dt$ is always set to $\frac{1}{2}\dx^2$ unless otherwise mentioned.\\\\
 
-\subsection{Sinus case}
+\subsection{1D -- Sinus case}
 We will study how the various schemes by comparing them to the analytical solution derived in \ref{sec:analytical_1d}. However, before looking at the results, we should remind ourselves of how the methods differ and what we should expect.
 
 First we should note that our analytical solution, \ref{eq:analytical_1d_book}, has the shape of a sine wave that decays over time. As time approaches infinity, i.e. $\lim_{t \to \infty} u(x, t) = 0$.
@@ -477,7 +513,7 @@ Here we see what we suspected from the last plot: the Forward Euler actually has
 \label{fig:}
 \end{figure}
 
-\subsection{Linear case}
+\subsection{1D -- Linear case}
 In this specific case we are not capable of distinguishing the different schemes on a plot, as they are behave much alike.
 \begin{figure}[H]
 \includegraphics[width=0.5\textwidth]{fig/{1D_linplot_T=0.10dx=0.10}.pdf}
@@ -501,7 +537,12 @@ Picking one of the methods, the Crank-Nicolson, we study how it diverges (we don
 
 \newpage
 \appendix
+%\renewcommand{\thesection}{Appendix \Alph{section}}
 \labelformat{section}{appendix~#1}
+\section*{\Huge{Appendices}}
+\input{chapters/appx_parallel.tex}
 \input{chapters/appx_testing.tex}
+%\newpage
+%\input{chapters/appx_alternative_applications.tex}
 
 \end{document}
