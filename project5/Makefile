@@ -14,7 +14,7 @@ diffusion_lib_dir=src/c
 diffusion_lib_file=src/c/libdiffuse.so
 
 pytest_opts = --doctest-modules --doctest-report=none -v
-test_programs = src/common.py src/tests.py
+test_programs = src/common.py src/doctests.py src/tests.py
 
 plots = #fig/
 tables =
@@ -47,6 +47,7 @@ show: report
 	evince $(report_pdf) &
 spellcheck:
 	aspell -t --lang=en_GB -c $(report_texdoc)
+
 
 memtest:
 	$(MAKE) -C $(diffusion_lib_dir) memtest

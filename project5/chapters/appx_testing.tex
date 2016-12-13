@@ -1,6 +1,16 @@
 \section{Asserting the correctness of the program}
 \label{appx:testing}
+
+Testing a bilingual software project such as ours is slightly more demanding than testing software written in a single language. The errors may lay in code written in either of the languages or even in the interfacing layer. We therefore conduct a variety of tests to ensure that all of our code is correct.
+
+From Python, we assert that our algorithms are correctly implemented with standard unit tests as described in \ref{appx:testing:unit_tests}. Additionally, we have doctests which have the strength of being easy to read and also make it easy to see where the test failed and what the expected and computed values were.
+
+In C, we check that there are no memory related errors by writing simple test programs that should provoke Valgrind to give an error if there are any memory leaks or uninitialized values. This is described in further detail in \ref{appx:testing:valgrind}.
+
+Finally, as described in \ref{appx:testing:travis}, we have instructed Travis CI to run these tests at every push to our GitHub repository so that the test results can be viewed for each version, eliminating the need to run them manually when looking for the last working version for instance.
+
 \subsection{Unit tests}
+\label{appx:testing:unit_tests}
 A unit test should test the smallest unit of the program, typically a single function. While we could load each C function from our library separately and test it, we have instead opted for unit testing the Python functions acting as interfaces to the underlying C library. Such testing is typically refered to as \emph{black box testing} -- we make no assumptions about the specific implementation, we only study the function from what output is yielded for various input.
 
 The tests we will be performing are simple to write, yet they are able prove that our algorithm is correct.
@@ -20,15 +30,30 @@ These tests can be found in \program{src/tests.py} and they can be run with
 $ make pytest
 \end{minted}
 
+\subsection{Doctests}
+\label{appx:testing:doctests}
+We have written a few doctests which are more of the sort where we look at the result and consider whether it is reasonable or not.
 
-\subsection{Testing for memory leaks with Valgrind}
-We wrote some minimal C programs which call our solvers so that we could run them with Valgrind to discover memory leaks and other memory related errors (which may be hard to detect). These tests can be run from the root directory of this project with:
+These tests can be found in \program{src/doctests.py} and they can be run with
+\begin{minted}[bgcolor=cbg_blue1]{text}
+$ make pytest
+\end{minted}
+
+
+\subsection{Testing for memory related errors with Valgrind}
+\label{appx:testing:valgrind}
+We wrote some minimal C programs which call our solvers so that we could run them with Valgrind to discover memory leaks and other memory related errors which may be hard to detect.
+
+A particularly useful feature of Valgrind is that it can discover errors with uninitialized values, so we have designed our tests to initialize all variables properly and use the resulting $v$ array to compute a sum of all elements. Then we have an if statement which needs to compare that sum to a particular value. If not all elements of $v$ are properly initialized, this will result in Valgrind detecting a conditional jump depending on an uninitialized value.
+
+These tests can be run from the root directory of this project with:
 
 \begin{minted}[bgcolor=cbg_blue1]{text}
 $ make memtest
 \end{minted}
 
 \subsection{Automating the testing with Travis CI}
+\label{appx:testing:travis}
 Travis CI is a web service which allows automated testing of software. It is integrated with GitHub in such a way that when we push to our repository, a build job is scheduled on Travis. An overview of the latest build status is available at \url{https://travis-ci.org/KGHustad/FYS3150}.
 
 Travis allows us to perform regular and reproducible tests and logs the results for us. Due to its integration with GitHub, the \href{https://github.com/KGHustad/FYS3150/commits/master}{list of commits for our repository} shows are green tick or a red cross depending on whether the build passed or failed, respectively.
