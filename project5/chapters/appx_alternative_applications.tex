@@ -10,7 +10,11 @@ However, we found a pair of servers which are not in regular use and reran the c
 
 Obviously, the data would also have \emph{appeared} to be smoother if we had reduced the number of points along the x-axis, but that would limit the precission to which we could find the maximum of the function, so we wanted to avoid that.
 
-\subsection{Looking at the smoothed figures}
+\subsection{Smoothing the data}
+We smoothed the data by applying the Crank-Nicolson scheme with 20 iterations and $\alpha = 0.1$ to the y-data.
+
+The code can be found in the file \program{src/alternative\_applications.py}.
+
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{fig/{project4_smoothed_task_e_dT=0.001_sweeps=2E+06_2016-11-15--18-13-00}.pdf}
 \caption{Specific heat with $\Delta t = 0.001$ computed from the average of sweeps in $(1 \cdot 10^{6}, 2 \cdot 10^{6}]$}
