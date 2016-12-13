@@ -31,19 +31,10 @@ for solver, array in zip(SOLVERS_1D, (FE_error, BE_error, CN_error)):
         array[i] = max_error
 
 plt.plot(dx, FE_error)
-plt.title("Max Error in Forward Euler as function of dx-length")
+plt.title("Max Error as function of dx-length")
 plt.xlabel("dx")
 plt.ylabel("Absolute Error")
-plt.show()
-
 plt.plot(dx, BE_error)
-plt.title("Max Error in Bacward Euler as function of dx-length")
-plt.xlabel("dx")
-plt.ylabel("Absolute Error")
-plt.show()
-
 plt.plot(dx, CN_error)
-plt.title("Max Error in Crank-Nicolson as function of dx-length")
-plt.xlabel("dx")
-plt.ylabel("Absolute Error")
+plt.legend(["Forward Euler","Backward Euler","Crank-Nicolson"],loc='best')
 plt.show()
