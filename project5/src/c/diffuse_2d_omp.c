@@ -38,6 +38,7 @@ void diffusion_2d_omp(double **v,
             }
 
             /* boundaries */
+            #ifdef EXCESSIVE_SYNCHRONIZATION
             #pragma omp sections
             {
                 #pragma omp section
@@ -54,6 +55,16 @@ void diffusion_2d_omp(double **v,
                 #pragma omp section
                 update_boundary(v_bar, right, height, width);
             }
+            #else
+            #pragma omp master
+            {
+                update_boundary(v_bar, top, height, width);
+                update_boundary(v_bar, bottom, height, width);
+                update_boundary(v_bar, left, height, width);
+                update_boundary(v_bar, right, height, width);
+            }
+            #endif
+
 
             /* swap pointers */
             temp = v;

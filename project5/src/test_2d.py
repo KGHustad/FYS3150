@@ -24,9 +24,7 @@ v[:,-1] = 1
 
 diffusion_2d(v, iterations, kappa)
 #print v
-title ="$T = %g$,  $\\Delta t=%f$" % (T, dt)
-print title
-show_2d(v, title=title,
+show_2d(v, title="$T = %g$,  $\\Delta t=%f$" % (T, dt),
         save_to=figdir+"/plot_2d_all_dirichlet.pdf", show=show)
 
 
@@ -35,4 +33,5 @@ show_2d(v, title=title,
 v = np.zeros((height, width), dtype=np.float64)
 v[:,-1] = 1
 diffusion_2d(v, iterations, kappa, bc_left=0, bc_top=1, bc_bottom=1, bc_right=0)
-show_2d(v, save_to=figdir+"/plot_2d_dirichlet_x_and_neumann_y.pdf", show=show)
+show_2d(v, title="$T = %g$,  $\\Delta t=%f$" % (T, dt),
+save_to=figdir+"/plot_2d_dirichlet_x_and_neumann_y.pdf", show=show)

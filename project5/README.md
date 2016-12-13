@@ -14,20 +14,18 @@ make show
 
 To make the C library run
 ``` sh
-make libdiffuse
+make diffusion_lib
 ```
 
 ## Unit tests
-To run the test suite run
+The test suite can be run with
 ``` sh
 make test
 ```
 
 
 ## Reference test
-__TODO__
-
-See `reference_test.md`
+See the unit tests.
 
 ## Dependencies
 * Python 2 w/ SciPy stack

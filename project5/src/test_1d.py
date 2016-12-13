@@ -41,17 +41,19 @@ for n in [10,100]:
 
 
 #Plot showing the divergence of only the Crank-Nicolson scheme for different T values
-for T in [0.01,0.03,0.1,0.3,1]:
+T_values =[0.01,0.03,0.1,0.3,1]
+for T in T_values:
     N = stable_N(n)
     dx = 1./n
-    dt = T/float(N)
+    dt = max(T_values)/float(N)
+    print dt
     kappa = dt/dx**2
     print "dx: %g  dt: %g  kappa: %g" % (dx, dt, kappa)
     u = np.zeros(n+2)
     u[-1] = 1
 
     v = u.copy()
-    diffusion_1d(v, N, kappa, "crank_nicolson")
+    diffusion_1d(v, int(T/dt), kappa, "crank_nicolson")
 
 
     x = np.linspace(0, 1, n+2)
@@ -59,7 +61,7 @@ for T in [0.01,0.03,0.1,0.3,1]:
 
 # plt.rc('font', **{'size' : 14})
 # plt.tight_layout()
-plt.title("Divergence of Crank-Nicolson over time")
+plt.title("Convergence of Crank-Nicolson over time")
 plt.xlabel("x")
 plt.ylabel("u(x,t)")
 plt.legend(loc='best')
