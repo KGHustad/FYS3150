@@ -15,6 +15,24 @@ Notice that this list of properties have the structure of a proof by induction. 
 
 While property \ref{lst:prop1} is a mandatory test to perform, it may be less obvious why property \ref{lst:prop2} is relevant from a programmatic point of view. Here we should note that our implementation of the algorithm works by storing a pair of arrays containing $v^l$ and $v^{l+1}$ at any given time step $l$. Instead of always writing into the array for $v^{l+1}$ and then copying its contents into $v^l$ at the end of the time step, we swap their pointers to avoid unneccesary memory writes. It is easy to make errors when performing such pointer swaps, but if we test with both an odd and an even number of iterations, we should be pretty confident that our implementation is correct.
 
-These tests can be found in \program{src/tests.py}.
+These tests can be found in \program{src/tests.py} and they can be run with
+\begin{minted}[bgcolor=cbg_blue1]{text}
+$ make pytest
+\end{minted}
+
 
 \subsection{Testing for memory leaks with Valgrind}
+We wrote some minimal C programs which call our solvers so that we could run them with Valgrind to discover memory leaks and other memory related errors (which may be hard to detect). These tests can be run from the root directory of this project with:
+
+\begin{minted}[bgcolor=cbg_blue1]{text}
+$ make memtest
+\end{minted}
+
+\subsection{Automating the testing with Travis CI}
+Travis CI is a web service which allows automated testing of software. It is integrated with GitHub in such a way that when we push to our repository, a build job is scheduled on Travis. An overview of the latest build status is available at \url{https://travis-ci.org/KGHustad/FYS3150}.
+
+Travis allows us to perform regular and reproducible tests and logs the results for us. Due to its integration with GitHub, the \href{https://github.com/KGHustad/FYS3150/commits/master}{list of commits for our repository} shows are green tick or a red cross depending on whether the build passed or failed, respectively.
+
+Moreover, one can test different combinations of software to ensure that it works for more than one configuration, so in principle, we could have tested our programs with Python 2.6, 2.7, 3.5, etc., however, we have just tested with Python 2.7 since that is the version we have been using.
+
+We have configured Travis to run all the aforementioned tests in addition to compiling all the C code from this project as well as previous projects.

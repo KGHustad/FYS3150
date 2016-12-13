@@ -1,7 +1,7 @@
 .PHONY: clean diffusion_lib continuous report show memtest pytest test clean-all clean clean-c clean-python clean-latex clean-plots
 
 LATEX=pdflatex
-LATEX_OPTS=
+LATEX_OPTS=-shell-escape
 report_texdoc=report.tex
 report_pdf=report.pdf
 bibliography=../papers.bib

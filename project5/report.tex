@@ -21,6 +21,14 @@
 \usepackage[toc,page]{appendix}
 \usepackage{varioref}
 \usepackage{enumitem}
+\usepackage{minted}
+
+\definecolor{cbg_blue1}{rgb}{0.87843, 0.95686, 1.0}
+
+\newenvironment{code_block}[1]{
+\begin{minted}[bgcolor=cbg_blue1]{#1}}
+{\end{minted}}
+
 
 % varioref stuff from Anders
 \labelformat{section}{section~#1}
