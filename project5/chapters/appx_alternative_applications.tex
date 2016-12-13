@@ -1,0 +1,23 @@
+\section{Alternative applications of the diffusion equation -- Project 4 revisited}
+\label{appx:alternative_applications}
+
+In this brief appendix we an alternative application of the diffusion equation to reduce noise in a plot so that the peak can be found.
+
+\subsection{A glimpse into the past}
+In project 4 \cite{hustad_project4}, we had a very noisy plot where we needed to find the value along the x-axis where the plot peaked. The data we plotted had taken 360 CPU hours to compute, so, being responsible and considerate persons, we were hesitant to start another run with increase precision, taking up a significant portion of the limited computing resources offered by the University of Oslo.
+
+However, we found a pair of servers which are not in regular use and reran the computation with 5 times higher precision with the workload distributed between them. The results were less noisy, but still not as smooth as we would have wanted.
+
+\subsection{Looking at the smoothed figures}
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{fig/{project4_smoothed_task_e_dT=0.001_sweeps=2E+06_2016-11-15--18-13-00}.pdf}
+\caption{}
+\label{fig:appx:alternative_applications:2e6}
+\end{figure}
+
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{fig/{project4_smoothed_joined}.pdf}
+\caption{}
+\label{fig:appx:alternative_applications:1e7}
+\end{figure}
