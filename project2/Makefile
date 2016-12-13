@@ -56,7 +56,7 @@ show: report
 test: $(test_programs) $(jacobi_lib_file) trigger_weave_compilation
 	pytest $(pytest_opts) $(test_programs)
 trigger_weave_compilation:
-	python src/trigger_weave_compilation.py
+	pytest -q src/trigger_weave_compilation.py > /dev/null
 
 clean-all: clean clean-plots
 clean: clean-c clean-python clean-latex
