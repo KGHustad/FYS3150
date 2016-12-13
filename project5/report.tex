@@ -88,7 +88,7 @@
 \begin{abstract}
 \noindent
 In this report, we study the diffusion equation in one and two dimensions. In one dimension we derive, implement and compare the Forward Euler, Backward Euler and Crank-Nicolson schemes. In two dimensions we implement an explicit scheme in both serial and parallel code.\\\\
-In one dimension, we see that the Forward Euler scheme imposes some requirements on the choice of parameters in order to be stable while the two other schemes are more flexible.
+In one dimension, we see that the Forward Euler scheme imposes some requirements on the choice of parameters in order to be stable while the two other schemes are more flexible. We attempt to analyze the error-convergence of different methods against an analytical solution, with unconclusive results.
 
 
 \end{abstract}
@@ -179,8 +179,6 @@ We will also write the derivatives in \ref{eqn:PDE} and \ref{eqn:PDE2} with the
 \begin{equation} u_{xx} = u_t\end{equation}
 \begin{equation} \ u_{xx} + u_{yy} = u_t \end{equation}
 
-
-\subsection{Initial Conditions \& Boundary Conditions}
 The system will be interpreted as a rod of length $L$ for the one-dimensional system, and a square with side-lengths $L$ for the two-dimensional system, such that $x,y \in [0,L]$. We will study the system over a time $T$. This gives a length
 \begin{equation}
 \dx = \dy = x_i - x_{i-1} = y_j - y_{j-1} = \frac{L}{n+1}
@@ -190,14 +188,7 @@ between the spatial discretizations, and a time
 \dt = t_l - t_{l-1} = \frac{T}{\tau}
 \end{equation}
 between the time discretizations.\\\\
-The initial conditions of the system are set as
-\begin{equation}
-u(x,t) = 0, \quad 0 < x < L
-\end{equation}
-while the boundary conditions of our system are
-\begin{equation}
-u(0,t) = 0 \quad \quad u(L,t) = 1
-\end{equation}
+
 
 
 \subsection{One dimensional case}\label{sec:method:1d}
@@ -589,21 +580,29 @@ The error from Crank-Nicolson as a function of $\dx$, shown in \vref{fig:sinus:t
 From \vref{sec:method:1d:error} we remember that only the Forward Euler scheme has stability-constraints. If we keep $\dx$ constant and increase $\alpha$ as shown in \ref{fig:sinus:stability}, we see that Forward Euler is unstable for $\alpha > 0.5$, while the other schemes remains perfectly stable. This is in line with what we expected.
 
 \subsection{1D -- Linear case}
-In this specific case we are not capable of distinguishing the different schemes on a plot, as they are behave much alike.
+We will now employ our schemes to a different case -- that of a rod with initial conditions set as
+\begin{equation}
+u(x,t) = 0, \quad 0 < x < L
+\end{equation}
+while the boundary conditions of our system are
+\begin{equation}
+u(0,t) = 0 \quad \quad u(L,t) = 1
+\end{equation}
+We do not have an analytical solution to this case, but it's obvious that it should converge on a linear increase between the two boundary conditions.\\
+
+We see from the plots in \ref{fig:lin} that we are not capable of distinguishing the different schemes, as they are behave much alike.
 \begin{figure}[H]
 \includegraphics[width=0.5\textwidth]{fig/{1D_linplot_T=0.10dx=0.10}.pdf}
 \includegraphics[width=0.5\textwidth]{fig/{1D_linplot_T=0.10dx=0.01}.pdf}
 \caption{Comparing $\dx = 0.1$ and $\dx = 0.01$ for the linear case.}
-\label{fig:}
+\label{fig:lin}
 \end{figure}
 
-
-
-Picking one of the methods, the Crank-Nicolson, we study how it converges (we don't have an analytical solution here, but we know that it should converge on a linear solution).
+Picking one of the methods, the Crank-Nicolson, we study how it converges over time in \vref{fig:lin_CN}.
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{fig/{1D_linplot_Crank_nicolson}.pdf}
 \caption{Convergence of Crank-Nicolson with $\dx = 0.01$ and $\dt = 5 \cdot 10^{-5}$}
-\label{fig:}
+\label{fig:lin_CN}
 \end{figure}
 
 \subsection{Results in 2D}
@@ -644,7 +643,9 @@ In \ref{fig:2d:dirichlet_x_and_neumann_y} the top and bottom are perfectly insul
 From \ref{table:speedup} we see that we only get a small speedup with our parallelized code. There may be several reasons for this. First of all this computation is not as CPU intensive as it is memory intensive. The memory bandwidth of a system does not scale with the number of cores, and it becomes even more important if we can't fit the data into the CPU's cache. It is also costly to maintain cache coherency, which is enforced after a \texttt{\#pragma omp for} statement.
 
 \section{Conclusion}
-We have studied two cases in 1D, one of which we have an analytical solution for. While our implementation seems to be correct, it seems that we have made a very poor choice of analytical solution since we did not see the convergence behaviour which we expected. Frankly, our results were quite devestating. For future work, we would have tried to find a different analytical solution.
+We have studied two cases in 1D, one of which we have an analytical solution for. While our implementation seems to be correct, it seems that we have made a very poor choice of analytical solution since we did not see the convergence behaviour which we expected, and we were unsuccessful in showing the superiority of the Crank-Nicolson scheme. For future work, we would have tried to find a different analytical solution, perhaps that of the linear case, which seemed very well-behaved in our numerical results.
+
+While the error-analysis did not give the results we were aiming for, the stability-analysis conclusively showed the stability conditions of the explicit scheme, and the unconditional stability of the two implicit schemes.
 
 In two dimensions, we see that different choices of boundary conditions along the top and bottom of the domain give quite different results. Disappointly, we don't see much of a speedup when parallelizing our code.
 
