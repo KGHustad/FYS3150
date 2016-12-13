@@ -87,7 +87,10 @@
 
 \begin{abstract}
 \noindent
-In this report, we explore
+In this report, we study the diffusion equation in one and two dimensions. In one dimension we derive, implement and compare the Forward Euler, Backward Euler and Crank-Nicolson schemes. In two dimensions we implement an explicit scheme in both serial and parallel code.\\\\
+In one dimension, we see that the Forward Euler scheme imposes some requirements on the choice of parameters in order to be stable while the two other schemes are more flexible.
+
+
 \end{abstract}
 
 \vfill
@@ -120,12 +123,12 @@ We have, however, in order to verify our results, chosen an analytically solvabl
 
 
 The diffusion equation is, naturally, used to model the process of diffusion, where large systems of randomly moving particles are described by it's macroscopic behaviour. The quantity $u(\textbf{r},t)$ may be physically interpreted as, among other things, the particle density, energy density, or temperature, at a given point in time and space.
-\\\\
-\textbf{TODO: Write some more about how we wish to implement the differential equation numerically}
-
-
 
 We shall see how the tridiagonal solver described in \cite{hustad_lunde_project1} can be used to solve the backward Euler and Crank-Nicolson schemes efficiently in one dimension.
+
+In two dimensions we will implement the Forward Euler scheme in both OpenMP and MPI and consider the efficiency of the parallelized code with a thorough theoretical analysis in \ref{appx:parallel}.
+
+We implement a full-fledged test suite which we discuss in great detail in \ref{appx:testing}.
 
 \section{Method and Idea}
 
@@ -457,6 +460,7 @@ u(x,y,0) = 0 \quad x < L
 The real question is how one should treat the boundaries in the $y$ dimension.
 One choice could be
 \begin{equation}
+\label{eq:2d:boundary:neumann}
 \fracpy u(x,0,t) = \fracpy u(x,L,t) = 0
 \end{equation}
 
@@ -467,6 +471,7 @@ u(x,y_i,t) = u(x,y_j,t) \quad i, j \in \indexset
 
 A more interesting choice might be
 \begin{equation}
+\label{eq:2d:boundary:dirichlet}
 u(x,0,t)=u(x,L,t)=0 \quad x < L
 \end{equation}
 meaning that the right side is constantly 1 while all the other sides are zero. Here we would expect there to be variation in the $y$ dimension.
@@ -510,56 +515,66 @@ Backward Euler, which uses a backward difference in time, makes the opposite ass
 
 Crank-Nicolson strikes a balance between Forward and Backward Euler. It does, however have a faster convergence rate in terms of $\dt$ as discussed in \ref{sec:method:1d:error}.
 
-We clearly see the impact of the decreased $\dt$ value from 0.1 to 0.01.
+We clearly see the impact of the decreased $\dt$ value from 0.1 to 0.01 in \ref{fig:1d:sinus:T=0.1} and \ref{fig:1d:sinus:T=1.0}. At $\dt = 0.01$ it's hard to tell the difference.
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{fig/{plot_T=0.10}.pdf}
 \caption{Different PDE solvers with $\dx \in \{0.01,0.1\}$ plotted against analytical solution for $T=1$.}
-\label{fig:}
+\label{fig:1d:sinus:T=0.1}
 \end{figure}
 
 Same scenario as above, this time after ten times as long. Now the impact of the decreased $\dx$ is even clearer. We also see Forward Euler diverging the quickest, due to the nature of the problem. This is not always the case, as the Crank-Nicolson is usually more accurate.
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{fig/{plot_T=1.00}.pdf}
 \caption{Different PDE solvers with $\dx \in \{0.01,0.1\}$ plotted against analytical solution for $T=0.1$.}
-\label{fig:}
+\label{fig:1d:sinus:T=1.0}
 \end{figure}
 
 Here we see what we suspected from the last plot: the Forward Euler actually has the quickest convergence.
-\begin{figure}[H]
-\includegraphics[width=\textwidth]{fig/{error_T=1.00n=10}.pdf}
-\caption{Absolute error of different PDE solvers for the $T=0.1$, $\dx=0.1$, $\dt=0.0005$ case.}
-\label{fig:}
-\end{figure}
 
 
-\subsection{error and stuff}
+
+\subsubsection{Truncation error}
 
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{fig/{error_dx}.pdf}
 \caption{Absolute error of all schemes as function of dx.}
-\label{fig:}
+\label{fig:sinus:trunc:dx}
 \end{figure}
+
+From \vref{fig:sinus:trunc:dx} we see that all schemes have the same error with the respect to $\dx$. This is in agreement with \vref{table:error}.
 
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{fig/{FE_error_dt}.pdf}
 \caption{Absolute error of Forward Euler scheme as function of dt.}
-\label{fig:}
+\label{fig:sinus:trunc:dt:fe}
 \end{figure}
+
+We were surprised to find in \ref{fig:sinus:trunc:dt:fe} that our Forward Euler scheme seemingly has a smaller error when we \emph{increase} $\dt$. We saw some very strange behaviour with this scheme, and we suspect it may be related to our choice of analytical solution.
 
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{fig/{BE_error_dt}.pdf}
 \caption{Absolute error of Backward Euler scheme as function of dt.}
-\label{fig:}
+\label{fig:sinus:trunc:dt:be}
 \end{figure}
+
+We see from \vref{fig:sinus:trunc:dt:be} Backward Euler does have a smaller error when we decrease $\dt$, but it appears to grow quadratically, as opposed to linearly, which \vref{table:error} suggests.
 
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{fig/{CN_error_dx}.pdf}
 \caption{Absolute error of Crank-Nicolson scheme as function of dt.}
-\label{fig:}
+\label{fig:sinus:trunc:dt:cn}
 \end{figure}
 
+The Crank-Nicolson plot in \vref{fig:sinus:trunc:dt:cn} is identical to \vref{fig:sinus:trunc:dx}, as expected, since the error for Crank-Nicolson runs as $\dt^2$ and $\dx^2$.
 
+\subsubsection{Stability}
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{fig/{plot_stability_1d}.pdf}
+\caption{$T=0.01$, $\dx=0.01$. Plotting the error against $\alpha$.}
+\label{fig:sinus:stability}
+\end{figure}
 
+If we keep $\dx$ constant and increase $\alpha$ as in \ref{fig:sinus:stability}, we see that Forward Euler is unstable for $\alpha > 0.5$.
 
 \subsection{1D -- Linear case}
 In this specific case we are not capable of distinguishing the different schemes on a plot, as they are behave much alike.
@@ -572,19 +587,29 @@ In this specific case we are not capable of distinguishing the different schemes
 
 
 
-Picking one of the methods, the Crank-Nicolson, we study how it diverges (we don't have an analytical solution here, but we know that it should converge on a linear solution).
+Picking one of the methods, the Crank-Nicolson, we study how it converges (we don't have an analytical solution here, but we know that it should converge on a linear solution).
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{fig/{1D_linplot_Crank_nicolson}.pdf}
-\caption{}
+\caption{Convergence of Crank-Nicolson with $\dx = 0.01$ and $\dt = 5 \cdot 10^{-5}$}
 \label{fig:}
 \end{figure}
 
 \subsection{Results in 2D}
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{fig/{plot_2d_all_dirichlet}.pdf}
-\caption{$T$}
+\caption{Dirichlet boundary conditions on all sides as in \ref{eq:2d:boundary:dirichlet}.}
 \label{fig:2d:all_dirichlet}
 \end{figure}
+
+With Dirichlet boundary conditions as in \ref{fig:2d:dirichlet_x_and_neumann_y}, all sides remain constant, and we see that the temperature is lower close to the top and bottom since the heat can flow out through these.
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{fig/{plot_2d_dirichlet_x_and_neumann_y}.pdf}
+\caption{Neumann boundary conditions as in \ref{eq:2d:boundary:neumann} on the top and bottom.}
+\label{fig:2d:dirichlet_x_and_neumann_y}
+\end{figure}
+
+In \ref{fig:2d:dirichlet_x_and_neumann_y} the top and bottom are perfectly insulated such that no heat flows through, we see that there is no variation along the $y$ axis, and the case is practically one dimensional.
 
 \input{chapters/notes_on_implementation.tex}
 
@@ -598,6 +623,7 @@ Picking one of the methods, the Crank-Nicolson, we study how it diverges (we don
 \section*{\Huge{Appendices}}
 \input{chapters/appx_parallel.tex}
 \input{chapters/appx_testing.tex}
+\input{chapters/appx_extra_figures.tex}
 %\newpage
 %\input{chapters/appx_alternative_applications.tex}
 

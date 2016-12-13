@@ -10,6 +10,7 @@ In C, we check that there are no memory related errors by writing simple test pr
 Finally, as described in \ref{appx:testing:travis}, we have instructed Travis CI to run these tests at every push to our GitHub repository so that the test results can be viewed for each version, eliminating the need to run them manually when looking for the last working version for instance.
 
 All tests can be run from the root directory of this project with:
+
 \begin{minted}[bgcolor=cbg_blue1]{text}
 $ make test
 \end{minted}
@@ -31,6 +32,7 @@ Notice that this list of properties have the structure of a proof by induction. 
 While property \ref{lst:prop1} is a mandatory test to perform, it may be less obvious why property \ref{lst:prop2} is relevant from a programmatic point of view. Here we should note that our implementation of the algorithm works by storing a pair of arrays containing $v^l$ and $v^{l+1}$ at any given time step $l$. Instead of always writing into the array for $v^{l+1}$ and then copying its contents into $v^l$ at the end of the time step, we swap their pointers to avoid unneccesary memory writes. It is easy to make errors when performing such pointer swaps, but if we test with both an odd and an even number of iterations, we should be pretty confident that our implementation is correct.
 
 These tests can be found in \program{src/tests.py} and they can be run with
+
 \begin{minted}[bgcolor=cbg_blue1]{text}
 $ make pytest
 \end{minted}
@@ -40,6 +42,7 @@ $ make pytest
 We have written a few doctests which are more of the sort where we look at the result and consider whether it is reasonable or not.
 
 These tests can be found in \program{src/doctests.py} and they can be run with
+
 \begin{minted}[bgcolor=cbg_blue1]{text}
 $ make pytest
 \end{minted}
