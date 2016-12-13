@@ -28,9 +28,9 @@ for T in [0.1,1]:
             print "Solver: %s" % solver
             print v
             print
-            plt.plot(x, v, label=solver + " dx=%.2f" % (dx))
+            plt.plot(x, v, label=solver_abbreviation[solver] + " $\\Delta x=%.2f$" % (dx))
 
-    plt.plot(x, analytical_solution, label="analytical_solution")
+    plt.plot(x, analytical_solution, label="exact")
     # plt.rc('font', **{'size' : 14})
     # plt.tight_layout()
     plt.title("1D case simulated for T=%.2f" % (T))

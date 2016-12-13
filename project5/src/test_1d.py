@@ -28,7 +28,7 @@ for n in [10,100]:
             print
 
             x = np.linspace(0, 1, n+2)
-            plt.plot(x, v, label=solver)
+            plt.plot(x, v, label=solver_abbreviation[solver])
 
         # plt.rc('font', **{'size' : 14})
         # plt.tight_layout()
