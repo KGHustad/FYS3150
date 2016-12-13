@@ -88,7 +88,7 @@
 \begin{abstract}
 \noindent
 In this report, we study the diffusion equation in one and two dimensions. In one dimension we derive, implement and compare the Forward Euler, Backward Euler and Crank-Nicolson schemes. In two dimensions we implement an explicit scheme in both serial and parallel code.\\\\
-In one dimension, we see that the Forward Euler scheme imposes some requirements on the choice of parameters in order to be stable while the two other schemes are more flexible. We attempt to analyze the error-convergence of different methods against an analytical solution, with unconclusive results.
+In one dimension, we see that the Forward Euler scheme imposes some requirements on the choice of parameters in order to be stable while the two other schemes are more flexible. We attempt to analyse the error-convergence of different methods against an analytical solution, with inconclusive results.
 
 
 \end{abstract}
@@ -497,11 +497,11 @@ which solves \vref{eq:diffusion_2d} since
 Note that in the discussions in this section, $\dt$ is always set to $\frac{1}{2}\dx^2$ unless otherwise mentioned.
 
 \subsection{Program structure}
-We went with a hybrid Python-C approach where the heavy computations are carried out in highly optimized C code while we pull the strings from Python, setting up the arrays and plotting them afterwards.
+We went with a hybrid Python-C approach where the heavy computations are carried out in highly optimised C code while we pull the strings from Python, setting up the arrays and plotting them afterwards.
 
 
 \subsection{Implementing boundary conditions in two dimensions}
-We generalized our code to allow for Dirichlet conditions, i.e. $u_{\mathrm{boundary}} = f(x, y)$ and Neumann conditions $\fracpx u_{\mathrm{x-boundary}} = 0$, $\fracpy u_{\mathrm{y-boundary}} = 0$. Each side can be set to either of these two boundary conditions.
+We generalised our code to allow for Dirichlet conditions, i.e. $u_{\mathrm{boundary}} = f(x, y)$ and Neumann conditions $\fracpx u_{\mathrm{x-boundary}} = 0$, $\fracpy u_{\mathrm{y-boundary}} = 0$. Each side can be set to either of these two boundary conditions.
 
 
 \subsection{Tests}
@@ -647,7 +647,7 @@ We have studied two cases in 1D, one of which we have an analytical solution for
 
 While the error-analysis did not give the results we were aiming for, the stability-analysis conclusively showed the stability conditions of the explicit scheme, and the unconditional stability of the two implicit schemes.
 
-In two dimensions, we see that different choices of boundary conditions along the top and bottom of the domain give quite different results. Disappointly, we don't see much of a speedup when parallelizing our code.
+In two dimensions, we see that different choices of boundary conditions along the top and bottom of the domain give quite different results. Disappointingly, we don't see much of a speedup when parallelizing our code.
 
 
 \bibliographystyle{IEEEtran}
