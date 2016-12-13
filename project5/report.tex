@@ -517,7 +517,7 @@ We generalized our code to allow for Dirichlet conditions, i.e. $u_{\mathrm{boun
 We implemented a series of tests for checking that all the algorithms work properly. These are described more elaborately in \vref*{appx:testing}.
 
 \subsection{1D -- Sinus case}
-We will study how the various schemes by comparing them to the analytical solution derived in \ref{sec:analytical_1d}. However, before looking at the results, we should remind ourselves of how the methods differ and what we should expect.
+We will study how the various schemes behaves by comparing them to the analytical solution derived in \ref{sec:analytical_1d}. However, before looking at the results, we should remind ourselves of how the methods differ and what we should expect.
 
 First we should note that our analytical solution, \ref{eq:analytical_1d_book}, has the shape of a sine wave that decays over time. As time approaches infinity, i.e. $\lim_{t \to \infty} u(x, t) = 0$.
 
@@ -527,7 +527,7 @@ Backward Euler, which uses a backward difference in time, makes the opposite ass
 
 Crank-Nicolson strikes a balance between Forward and Backward Euler. It does, however have a faster convergence rate in terms of $\dt$ as discussed in \ref{sec:method:1d:error}.
 
-We clearly see the impact of the decreased $\dt$ value from 0.1 to 0.01 in \ref{fig:1d:sinus:T=0.1} and \ref{fig:1d:sinus:T=1.0}. At $\dt = 0.01$ it's hard to tell the difference.
+We clearly see the impact of the decreased $\dx$ value from 0.1 to 0.01 in \ref{fig:1d:sinus:T=0.1} and \ref{fig:1d:sinus:T=1.0}. At $\dt = 0.01$ it's hard to tell the schemes apart from one another, while it becomes more clear at $\dt = 0.1$, particularly in the latter plot.
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{fig/{plot_T=0.10}.pdf}
 \caption{Different PDE solvers with $\dx \in \{0.01,0.1\}$ plotted against analytical solution for $T=1$.}
@@ -577,7 +577,7 @@ We see from \vref{fig:sinus:trunc:dt:be} Backward Euler does have a smaller erro
 \label{fig:sinus:trunc:dt:cn}
 \end{figure}
 
-The Crank-Nicolson plot in \vref{fig:sinus:trunc:dt:cn} is identical to \vref{fig:sinus:trunc:dx}, as expected, since the error for Crank-Nicolson runs as $\dt^2$ and $\dx^2$.
+The error from Crank-Nicolson as a function of $\dx$, shown in \vref{fig:sinus:trunc:dt:cn}, looks identical to it's error as a function of $\dt$, as we saw in \vref{fig:sinus:trunc:dx}. This was expected, as the error for Crank-Nicolson runs as $\dt^2$ and $\dx^2$.
 
 \subsubsection{Stability}
 \begin{figure}[H]
@@ -586,7 +586,7 @@ The Crank-Nicolson plot in \vref{fig:sinus:trunc:dt:cn} is identical to \vref{fi
 \label{fig:sinus:stability}
 \end{figure}
 
-If we keep $\dx$ constant and increase $\alpha$ as in \ref{fig:sinus:stability}, we see that Forward Euler is unstable for $\alpha > 0.5$.
+From \vref{sec:method:1d:error} we remember that only the Forward Euler scheme has stability-constraints. If we keep $\dx$ constant and increase $\alpha$ as shown in \ref{fig:sinus:stability}, we see that Forward Euler is unstable for $\alpha > 0.5$, while the other schemes remains perfectly stable. This is in line with what we expected.
 
 \subsection{1D -- Linear case}
 In this specific case we are not capable of distinguishing the different schemes on a plot, as they are behave much alike.
