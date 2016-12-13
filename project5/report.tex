@@ -128,7 +128,7 @@ We shall see how the tridiagonal solver described in \cite{hustad_lunde_project1
 
 In two dimensions we will implement the Forward Euler scheme in both OpenMP and MPI and consider the efficiency of the parallelized code with a thorough theoretical analysis in \ref{appx:parallel}.
 
-We implement a full-fledged test suite which we discuss in great detail in \ref{appx:testing}.
+We also implement a full-fledged test suite which we discuss in great detail in \ref{appx:testing}.
 
 \section{Method and Idea}
 
@@ -390,11 +390,12 @@ We can easily show that \vref{eq:analytical_1d_book} solves \vref{eqn:PDE},
 \subsection{Error and stability}
 \label{sec:method:1d:error}
 Since all methods build on the central difference scheme, the truncation error of the spatial derivative runs as $\dx^2$ for all schemes. From deriving the three methods in \ref{sec:method:1d} we know that the Euler methods has a truncation error running as $\dt$, while it is $\dt^2$ for the Crank-Nicolson scheme.
-\\\\
+
+From the discussion in the section \textit{Analysis of schemes for the diffusion equation} in \cite{hpl_fdm}, we know that Forward Euler is stable only for $\alpha \leq 0.5$, i.e. $\dt \leq \half \dx^2$, while the two other schemes are stable for all choices of $\dt$ and $\dx$.
 
 
 
-\begin{table}[htb]
+\begin{table}[H]
 \begin{center}
 \begin{tabular}{lcc}
  		& Truncation Error	& Stability
@@ -502,7 +503,18 @@ which solves \vref{eq:diffusion_2d} since
 
 
 \section{Implementation and results}\label{sec:implementation_and_results}
-Note: $\dt$ is always set to $\frac{1}{2}\dx^2$ unless otherwise mentioned.\\\\
+Note that in the discussions in this section, $\dt$ is always set to $\frac{1}{2}\dx^2$ unless otherwise mentioned.
+
+\subsection{Program structure}
+We went with a hybrid Python-C approach where the heavy computations are carried out in highly optimized C code while we pull the strings from Python, setting up the arrays and plotting them afterwards.
+
+
+\subsection{Implementing boundary conditions in two dimensions}
+We generalized our code to allow for Dirichlet conditions, i.e. $u_{\mathrm{boundary}} = f(x, y)$ and Neumann conditions $\fracpx u_{\mathrm{x-boundary}} = 0$, $\fracpy u_{\mathrm{y-boundary}} = 0$. Each side can be set to either of these two boundary conditions.
+
+
+\subsection{Tests}
+We implemented a series of tests for checking that all the algorithms work properly. These are described more elaborately in \vref*{appx:testing}.
 
 \subsection{1D -- Sinus case}
 We will study how the various schemes by comparing them to the analytical solution derived in \ref{sec:analytical_1d}. However, before looking at the results, we should remind ourselves of how the methods differ and what we should expect.
@@ -611,7 +623,31 @@ With Dirichlet boundary conditions as in \ref{fig:2d:dirichlet_x_and_neumann_y},
 
 In \ref{fig:2d:dirichlet_x_and_neumann_y} the top and bottom are perfectly insulated such that no heat flows through, we see that there is no variation along the $y$ axis, and the case is practically one dimensional.
 
-\input{chapters/notes_on_implementation.tex}
+\subsection{Speedup from parallelization}
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{rrr}
+\hline
+     $n$ &   Serial &   OpenMP \\
+\hline
+ $1\cdot 10^{3}$ &  $0.12$ &  $0.11$ \\
+ $2\cdot 10^{3}$ &  $0.53$ &  $0.45$ \\
+ $4\cdot 10^{3}$ &  $2.00$ &  $1.80$ \\
+ $8\cdot 10^{3}$ &  $8.50$ &  $7.10$ \\
+\hline
+\end{tabular}
+\end{center}
+\caption{Time used for 100 iterations in 2D with various values of $n$.}
+\label{table:speedup}
+\end{table}
+
+From \ref{table:speedup} we see that we only get a small speedup with our parallelized code. There may be several reasons for this. First of all this computation is not as CPU intensive as it is memory intensive. The memory bandwidth of a system does not scale with the number of cores, and it becomes even more important if we can't fit the data into the CPU's cache. It is also costly to maintain cache coherency, which is enforced after a \texttt{\#pragma omp for} statement.
+
+\section{Conclusion}
+We have studied two cases in 1D, one of which we have an analytical solution for. While our implementation seems to be correct, it seems that we have made a very poor choice of analytical solution since we did not see the convergence behaviour which we expected. Frankly, our results were quite devestating. For future work, we would have tried to find a different analytical solution.
+
+In two dimensions, ...
+
 
 \bibliographystyle{IEEEtran}
 \bibliography{../papers}{}
