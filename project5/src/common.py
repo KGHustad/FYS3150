@@ -43,6 +43,7 @@ def load_lib_alt():
     return ctypes.CDLL(os.path.join(get_lib_path(), get_lib_name()))
 
 SOLVERS_1D = ('forward_euler', 'backward_euler', 'crank_nicolson')
+solver_abbreviation = {'forward_euler': 'FE', 'backward_euler': 'BE', 'crank_nicolson': 'CN'}
 
 def diffusion_1d(v, iterations, kappa, solver, silent=False):
     #print "ERROR: This function has not yet been properly implemented"
