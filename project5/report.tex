@@ -332,7 +332,7 @@ Solving for $\frac{\pu(x,t)}{\pt}$, we get
 \end{align}
 
 The Crank-Nicolson scheme uses \ref{eq:central_diff:t} with $d = \frac{\dt}{2}$
-While the Forward and Backward Euler methods rely on taking a step forwards and backwards in time to approximate the derivative, the Crank-Nicolson scheme simply takes the average of the two, or one could say it takes half a step back and half a step forward from a fictitiuos point $u_i^{l+\half}$.
+While the Forward and Backward Euler methods rely on taking a step forwards and backwards in time to approximate the derivative, the Crank-Nicolson scheme simply takes the average of the two, or one could say it takes half a step back and half a step forward from a fictitious point $u_i^{l+\half}$.
 
 \begin{equation}
 \frac{u_i^{l+1}-u_i^l}{\dt} = \frac{1}{2}\left( \frac{u_{i+1}^l - 2u_i^l + u_{i-1}^l}{\dx^2} + \frac{u_{i+1}^{l+1} - 2u_i^{l+1} + u_{i-1}^{l+1}}{\dx^2}\right)
