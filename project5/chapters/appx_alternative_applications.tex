@@ -6,18 +6,26 @@ In this brief appendix we an alternative application of the diffusion equation t
 \subsection{A glimpse into the past}
 In project 4 \cite{hustad_project4}, we had a very noisy plot where we needed to find the value along the x-axis where the plot peaked. The data we plotted had taken 360 CPU hours to compute, so, being responsible and considerate persons, we were hesitant to start another run with increase precision, taking up a significant portion of the limited computing resources offered by the University of Oslo.
 
-However, we found a pair of servers which are not in regular use and reran the computation with 5 times higher precision with the workload distributed between them. The results were less noisy, but still not as smooth as we would have wanted.
+However, we found a pair of servers which are not in regular use and reran the computation with 5 times higher precision (meaning it required 1800 CPU hours) with the workload distributed between them. The results were less noisy, but still not as smooth as we would have wanted.
+
+Obviously, the data would also have \emph{appeared} to be smoother if we had reduced the number of points along the x-axis, but that would limit the precission to which we could find the maximum of the function, so we wanted to avoid that.
 
 \subsection{Looking at the smoothed figures}
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{fig/{project4_smoothed_task_e_dT=0.001_sweeps=2E+06_2016-11-15--18-13-00}.pdf}
-\caption{}
+\caption{Specific heat with $\Delta t = 0.001$ computed from the average of sweeps in $(1 \cdot 10^{6}, 2 \cdot 10^{6}]$}
 \label{fig:appx:alternative_applications:2e6}
 \end{figure}
 
+We see from \ref{fig:appx:alternative_applications:2e6} that the smoothed plot manages to capture the shape of the function quite well. In particular, for $L=140$, the global maximum of the original plot lies slightly to the right of what we perceive as the maximum of the function, and the smoothing amends this.
 
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{fig/{project4_smoothed_joined}.pdf}
-\caption{}
+\caption{Specific heat with $\Delta t = 0.001$ computed from the average of sweeps in $(1 \cdot 10^{6},  10^{7}]$}
 \label{fig:appx:alternative_applications:1e7}
 \end{figure}
+
+In \ref{fig:appx:alternative_applications:1e7} we see that the smoothed plot looks very reasonable, dampening the noise from the data significantly.
+
+\subsection{Evaluation}
+We see that the diffusion equation can be used in some instances to dampen data noise and make the underlying trend of the data more clear.
