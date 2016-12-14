@@ -1,6 +1,12 @@
 # Project 5 - Partial Differential Equations
 
 
+## Pre/post-deadline versions
+A few minor bugs have been corrected after the deadline. To get the last version before the deadline, run
+``` sh
+git checkout project5-delivery
+```
+
 ## Instructions
 To generate the report run
 ``` sh
