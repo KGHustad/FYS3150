@@ -56,7 +56,7 @@ void diffusion_2d_omp(double **v,
                 update_boundary(v_bar, right, height, width);
             }
             #else
-            #pragma omp master
+            #pragma omp single
             {
                 update_boundary(v_bar, top, height, width);
                 update_boundary(v_bar, bottom, height, width);
