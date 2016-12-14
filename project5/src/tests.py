@@ -1,6 +1,8 @@
 from common import *
 
 def _test_solve_1d(solver, LHS_formula, RHS_formula):
+    np.random.seed(3150)
+
     silent = True
     n = 4
     alpha = 0.1
@@ -52,6 +54,8 @@ def test_solve_1d_crank_nicolson():
     _test_solve_1d('crank_nicolson', LHS, RHS)
 
 def _test_solve_2d(solver, omp):
+    np.random.seed(3150)
+
     silent = True
     n = 4
     alpha = 0.1
