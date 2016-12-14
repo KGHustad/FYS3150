@@ -7,6 +7,11 @@ A few minor bugs have been corrected after the deadline. To get the last version
 git checkout project5-delivery
 ```
 
+To return to the latest commit, run
+``` sh
+git checkout master
+```
+
 ## Instructions
 To generate the report run
 ``` sh

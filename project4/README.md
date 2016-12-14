@@ -10,6 +10,11 @@ Some minor changes have been made after the deadline. To get the last version be
 git checkout project4-delivery
 ```
 
+To return to the latest commit, run
+``` sh
+git checkout master
+```
+
 ## Instructions
 To make the C library run
 ``` sh
