@@ -45,6 +45,9 @@ dnf_install valgrind
 # MPI for Python
 dnf_install mpi4py-common
 
+# Pytest
+pip_install pytest
+
 # Python tabulate for pretty tables
 pip_install tabulate
 
