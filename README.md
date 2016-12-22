@@ -1,7 +1,7 @@
 # FYS3150 - Computational physics
 [![Build Status](https://travis-ci.org/KGHustad/FYS3150.svg?branch=master)](https://travis-ci.org/KGHustad/FYS3150)
 
-This repository contains the course work of Kristian Gregorius Hustad and Jonas Gahr Sturtzel Lunde from the autumn of 2016.
+This repository contains the coursework of Kristian Gregorius Hustad and Jonas Gahr Sturtzel Lunde from the autumn of 2016.
 
 ## Dependencies
 To install (hopefully) all dependencies, run
