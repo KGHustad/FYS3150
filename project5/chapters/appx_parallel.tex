@@ -1,8 +1,8 @@
 
-\section{Parallelization of the 2D explicit scheme}
+\section{Parallelisation of the 2D explicit scheme}
 \label{appx:parallel}
 
-In this appendix, we will analyze the isoefficiency of the parallel algorithms we discuss as described in \cite{inf3380_bok}. We will let $N$ denote the number of spatial points in along either axis (recall that $\dx = \dy$) and $\tau+1$ the number of temporal points.
+In this appendix, we will analyse the isoefficiency of the parallel algorithms we discuss as described in \cite{inf3380_bok}. We will let $N$ denote the number of spatial points in along either axis (recall that $\dx = \dy$) and $\tau+1$ the number of temporal points.
 
 The time needed to perform the computation serially is thus given by
 \begin{equation}
@@ -12,14 +12,14 @@ T_S = \bigtheta(\tau N^2)
 %But since there is a strict dependence between the currect time step and the previous one, we could just as well study the time needed to compute a single time step (with the single communication).
 
 \subsection{Work distribution and granularity}
-With the explicit scheme, we can compute $v_{ij}^l$ for all $i, j \in \indexsetinner$, if all values at the previous time step are known. With Dirichlet boundary conditions, no action is required -- the boundary remains constant. Boundaries with Neumann conditions do need to be updated, and this must be done after the corresponding inner point has been computed.
+With the explicit scheme, we can compute $v_{ij}^l$ for all $i, j \in \indexsetinner$, if all values at the previous time step are known. With Dirichlet boundary conditions, no action is required -- the boundary remains constant. Boundaries with Newman conditions do need to be updated, and this must be done after the corresponding inner point has been computed.
 
 
 \subsubsection{2D decomposition}
 \label{appx:parallel:analysis:2d}
 Since there are $(N)^2$ independent values to be computed, the finest decomposition we could make, would be a 2D decomposition with $N^2$ workers. Such a decomposition would, however, be terribly inefficient due to the overhead incurred from the needed communication.
 
-If one assumes that the values have already been distributed among the $\frac{N^2}{n^2}$ workers, and that each worker is responsible for computing $n^2$ values. This would lead to each worker having to communicate $4n$ values to its neighbour workers at each time step \footnote{The workers at the boundaries do not, of course, need to send the boundary points, but due to the implicit synchronization occuring when the workers wait for the required data to arrive, this does not affect the overall time used.}.
+If one assumes that the values have already been distributed among the $\frac{N^2}{n^2}$ workers, and that each worker is responsible for computing $n^2$ values. This would lead to each worker having to communicate $4n$ values to its neighbour workers at each time step \footnote{The workers at the boundaries do not, of course, need to send the boundary points, but due to the implicit synchronisation occurring when the workers wait for the required data to arrive, this does not affect the overall time used.}.
 If we further assume that the workers are connected in a 2D mesh network, so that each worker is directly connected to its 4 neighbours, then we see that we have the communication at each time step runs in $\bigtheta (n)$ time. The work required to compute the $n^2$ values is obviously $\bigtheta(n^2)$.
 
 This yields a parallel time of
@@ -56,7 +56,7 @@ which is asymptotically equal to the number of workers, and hence this decomposi
 
 
 \subsection{Implementation of the parallel algorithm}
-Since the 2D decomposition discussed in \ref{appx:parallel:analysis:2d} involves an order of magnitude more hazzle, we chose to use the 1D decomposition discussed in \ref{appx:parallel:analysis:1d}.
+Since the 2D decomposition discussed in \ref{appx:parallel:analysis:2d} involves an order of magnitude more hassle, we chose to use the 1D decomposition discussed in \ref{appx:parallel:analysis:1d}.
 
-We have made two implementation, one by extending our serial C code with OpenMP directives and one with explicit message passing with MPI.
-Unfortunately, the part of the MPI code which carried out the data distribution was lost shortly after being written as one of authors' computer's motherboard fell into eternal sleep causing the encrypted data on local drive to be impossible to read.
+We have made two implementations, one by extending our serial C code with OpenMP directives and one with explicit message passing with MPI.
+Unfortunately, the part of the MPI code which carried out the data distribution was lost shortly after being written as one of authors' computer's motherboard fell into eternal sleep causing the encrypted data on the local drive to be impossible to recover.

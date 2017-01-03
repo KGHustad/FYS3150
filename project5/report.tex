@@ -126,7 +126,7 @@ The diffusion equation is, naturally, used to model the process of diffusion, wh
 
 We shall see how the tridiagonal solver described in \cite{hustad_lunde_project1} can be used to solve the backward Euler and Crank-Nicolson schemes efficiently in one dimension.
 
-In two dimensions we will implement the Forward Euler scheme in both OpenMP and MPI and consider the efficiency of the parallelized code with a thorough theoretical analysis in \ref{appx:parallel}.
+In two dimensions we will implement the Forward Euler scheme in both OpenMP and MPI and consider the efficiency of the parallelised code with a thorough theoretical analysis in \ref{appx:parallel}.
 
 We also implement a full-fledged test suite which we discuss in great detail in \ref{appx:testing}.
 
@@ -622,7 +622,7 @@ With Dirichlet boundary conditions as in \ref{fig:2d:dirichlet_x_and_neumann_y},
 
 In \ref{fig:2d:dirichlet_x_and_neumann_y} the top and bottom are perfectly insulated such that no heat flows through, we see that there is no variation along the $y$ axis, and the case is practically one dimensional.
 
-\subsection{Speedup from parallelization}
+\subsection{Speedup from parallelisation}
 \begin{table}[H]
 \begin{center}
 \begin{tabular}{rrr}
@@ -640,14 +640,14 @@ In \ref{fig:2d:dirichlet_x_and_neumann_y} the top and bottom are perfectly insul
 \label{table:speedup}
 \end{table}
 
-From \ref{table:speedup} we see that we only get a small speedup with our parallelized code. There may be several reasons for this. First of all this computation is not as CPU intensive as it is memory intensive. The memory bandwidth of a system does not scale with the number of cores, and it becomes even more important if we can't fit the data into the CPU's cache. It is also costly to maintain cache coherency, which is enforced after a \texttt{\#pragma omp for} statement.
+From \ref{table:speedup} we see that we only get a small speedup with our parallelised code. There may be several reasons for this. First of all this computation is not as CPU intensive as it is memory intensive. The memory bandwidth of a system does not scale with the number of cores, and it becomes even more important if we can't fit the data into the CPU's cache. It is also costly to maintain cache coherency, which is enforced after a \texttt{\#pragma omp for} statement.
 
 \section{Conclusion}
 We have studied two cases in 1D, one of which we have an analytical solution for. While our implementation seems to be correct, it seems that we have made a very poor choice of analytical solution since we did not see the convergence behaviour which we expected, and we were unsuccessful in showing the superiority of the Crank-Nicolson scheme. For future work, we would have tried to find a different analytical solution, perhaps that of the linear case, which seemed very well-behaved in our numerical results.
 
 While the error-analysis did not give the results we were aiming for, the stability-analysis conclusively showed the stability conditions of the explicit scheme, and the unconditional stability of the two implicit schemes.
 
-In two dimensions, we see that different choices of boundary conditions along the top and bottom of the domain give quite different results. Disappointingly, we don't see much of a speedup when parallelizing our code.
+In two dimensions, we see that different choices of boundary conditions along the top and bottom of the domain give quite different results. Disappointingly, we don't see much of a speedup when parallelising our code.
 
 
 \bibliographystyle{IEEEtran}

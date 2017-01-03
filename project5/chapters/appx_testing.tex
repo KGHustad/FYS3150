@@ -5,7 +5,7 @@ Testing a bilingual software project such as ours is slightly more demanding tha
 
 From Python, we assert that our algorithms are correctly implemented with standard unit tests as described in \ref{appx:testing:unit_tests}. Additionally, we have doctests which have the strength of being easy to read and also make it easy to see where the test failed and what the expected and computed values were.
 
-In C, we check that there are no memory related errors by writing simple test programs that should provoke Valgrind to give an error if there are any memory leaks or uninitialized values. This is described in further detail in \ref{appx:testing:valgrind}.
+In C, we check that there are no memory related errors by writing simple test programs that should provoke Valgrind to give an error if there are any memory leaks or uninitialised values. This is described in further detail in \ref{appx:testing:valgrind}.
 
 Finally, as described in \ref{appx:testing:travis}, we have instructed Travis CI to run these tests at every push to our GitHub repository so that the test results can be viewed for each version, eliminating the need to run them manually when looking for the last working version for instance.
 
@@ -17,7 +17,7 @@ $ make test
 
 \subsection{Unit tests}
 \label{appx:testing:unit_tests}
-A unit test should test the smallest unit of the program, typically a single function. While we could load each C function from our library separately and test it, we have instead opted for unit testing the Python functions acting as interfaces to the underlying C library. Such testing is typically refered to as \emph{black box testing} -- we make no assumptions about the specific implementation, we only study the function from what output is yielded for various input.
+A unit test should test the smallest unit of the program, typically a single function. While we could load each C function from our library separately and test it, we have instead opted for unit testing the Python functions acting as interfaces to the underlying C library. Such testing is typically referred to as \emph{black box testing} -- we make no assumptions about the specific implementation, we only study the function from what output is yielded for various input.
 
 The tests we will be performing are simple to write, yet they are able prove that our algorithm is correct.
 
@@ -29,7 +29,7 @@ If the algorithms satisfy the following properties, we can be fairly sure that o
 
 Notice that this list of properties have the structure of a proof by induction. We first prove that our algorithm is correct for a single step $l = 1$, and then that running a single step after $l = n$ yields $l = n+1$.
 
-While property \ref{lst:prop1} is a mandatory test to perform, it may be less obvious why property \ref{lst:prop2} is relevant from a programmatic point of view. Here we should note that our implementation of the algorithm works by storing a pair of arrays containing $v^l$ and $v^{l+1}$ at any given time step $l$. Instead of always writing into the array for $v^{l+1}$ and then copying its contents into $v^l$ at the end of the time step, we swap their pointers to avoid unneccesary memory writes. It is easy to make errors when performing such pointer swaps, but if we test with both an odd and an even number of iterations, we should be pretty confident that our implementation is correct.
+While property \ref{lst:prop1} is a mandatory test to perform, it may be less obvious why property \ref{lst:prop2} is relevant from a programmatic point of view. Here we should note that our implementation of the algorithm works by storing a pair of arrays containing $v^l$ and $v^{l+1}$ at any given time step $l$. Instead of always writing into the array for $v^{l+1}$ and then copying its contents into $v^l$ at the end of the time step, we swap their pointers to avoid unnecessary memory writes. It is easy to make errors when performing such pointer swaps, but if we test with both an odd and an even number of iterations, we should be pretty confident that our implementation is correct.
 
 These tests can be found in \program{src/tests.py} and they can be run with
 
@@ -52,7 +52,7 @@ $ make pytest
 \label{appx:testing:valgrind}
 We wrote some minimal C programs which call our solvers so that we could run them with Valgrind to discover memory leaks and other memory related errors which may be hard to detect.
 
-A particularly useful feature of Valgrind is that it can discover errors with uninitialized values, so we have designed our tests to initialize all variables properly and use the resulting $v$ array to compute a sum of all elements. Then we have an if statement which needs to compare that sum to a particular value. If not all elements of $v$ are properly initialized, this will result in Valgrind detecting a conditional jump depending on an uninitialized value.
+A particularly useful feature of Valgrind is that it can discover errors with uninitialised values, so we have designed our tests to initialise all variables properly and use the resulting $v$ array to compute a sum of all elements. Then we have an if statement which needs to compare that sum to a particular value. If not all elements of $v$ are properly initialised, this will result in Valgrind detecting a conditional jump depending on an uninitialised value.
 
 These tests can be run from the root directory of this project with:
 
@@ -64,7 +64,7 @@ $ make memtest
 \label{appx:testing:travis}
 Travis CI is a web service which allows automated testing of software. It is integrated with GitHub in such a way that when we push to our repository, a build job is scheduled on Travis. An overview of the latest build status is available at \url{https://travis-ci.org/KGHustad/FYS3150}.
 
-Travis allows us to perform regular and reproducible tests and logs the results for us. Due to its integration with GitHub, the \href{https://github.com/KGHustad/FYS3150/commits/master}{list of commits for our repository} shows are green tick or a red cross depending on whether the build passed or failed, respectively.
+Travis allows us to perform regular and reproducible tests and logs the results for us. Due to its integration with GitHub, the \href{https://github.com/KGHustad/FYS3150/commits/master}{list of commits for our repository} shows a green tick or a red cross depending on whether the build passed or failed, respectively.
 
 Moreover, one can test different combinations of software to ensure that it works for more than one configuration, so in principle, we could have tested our programs with Python 2.6, 2.7, 3.5, etc., however, we have just tested with Python 2.7 since that is the version we have been using.
 

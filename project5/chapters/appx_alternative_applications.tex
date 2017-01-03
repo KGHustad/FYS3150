@@ -8,7 +8,7 @@ In project 4 \cite{hustad_project4}, we had a very noisy plot where we needed to
 
 However, we found a pair of servers which are not in regular use and reran the computation with 5 times higher precision (meaning it required 1800 CPU hours) with the workload distributed between them. The results were less noisy, but still not as smooth as we would have wanted.
 
-Obviously, the data would also have \emph{appeared} to be smoother if we had reduced the number of points along the x-axis, but that would limit the precission to which we could find the maximum of the function, so we wanted to avoid that.
+Obviously, the data would also have \emph{appeared} to be smoother if we had reduced the number of points along the x-axis, but that would limit the precision to which we could find the maximum of the function, so we wanted to avoid that.
 
 \subsection{Smoothing the data}
 We smoothed the data by applying the Crank-Nicolson scheme with 20 iterations and $\alpha = 0.1$ to the y-data.
@@ -17,7 +17,7 @@ The code can be found in the file \program{src/alternative\_applications.py}.
 
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{fig/{project4_smoothed_task_e_dT=0.001_sweeps=2E+06_2016-11-15--18-13-00}.pdf}
-\caption{Specific heat with $\Delta t = 0.001$ computed from the average of sweeps in $(1 \cdot 10^{6}, 2 \cdot 10^{6}]$}
+\caption{Specific heat with $\Delta t = 0.001$ computed from the sweeps in $(1 \cdot 10^{6}, 2 \cdot 10^{6}]$}
 \label{fig:appx:alternative_applications:2e6}
 \end{figure}
 
@@ -25,7 +25,7 @@ We see from \ref{fig:appx:alternative_applications:2e6} that the smoothed plot m
 
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{fig/{project4_smoothed_joined}.pdf}
-\caption{Specific heat with $\Delta t = 0.001$ computed from the average of sweeps in $(1 \cdot 10^{6},  10^{7}]$}
+\caption{Specific heat with $\Delta t = 0.001$ computed from the sweeps in $(1 \cdot 10^{6},  10^{7}]$}
 \label{fig:appx:alternative_applications:1e7}
 \end{figure}
 
