@@ -19,16 +19,16 @@ def solve_general(f_func, n, a, b, c):
     v = np.zeros(n+2)
 
     # Forward Substitution
-    for i in range(2, n+1):
+    for i in range(1, n+2):
         row_factor = a[i]/b[i-1]      # 1 FLOP
-        b[i] -= c[i-1]*row_factor     # 2 FLOPS
-        s[i] -= s[i-1]*row_factor     # 2 FLOPS
+        b[i] -= c[i-1]*row_factor     # 2 FLOPs
+        s[i] -= s[i-1]*row_factor     # 2 FLOPs
 
     #Backward Substitution
     v[n] = s[n]/b[n]
 
-    for i in range(n-1,0,-1):
-        v[i] = (s[i] - c[i]*v[i+1]) / b[i]  # 3 FLOPS
+    for i in range(n,-1,-1):
+        v[i] = (s[i] - c[i]*v[i+1]) / b[i]  # 3 FLOPs
 
     return x, v
 
@@ -44,13 +44,13 @@ def solve_specific(f_func, n):
 
     # forward substitution
     for i in range(2,n+1):
-        s[i] += s[i-1]/b[i-1] # 2 FLOPS
+        s[i] += s[i-1]/b[i-1] # 2 FLOPs
 
     # backward substitution
     v[n] = s[n]/b[n]
 
     for i in range(n-1,0,-1):
-        v[i] = (s[i]+v[i+1])/b[i]   # 2 FLOPS
+        v[i] = (s[i]+v[i+1])/b[i]   # 2 FLOPs
 
     return x, v
 
