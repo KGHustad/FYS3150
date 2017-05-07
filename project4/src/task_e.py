@@ -108,13 +108,16 @@ def job_handler(argv, cutoff):
     """This job handler should carry out the entire job, including
     extracting the wanted results, such that memory used for storing
     temporary results can be freed after the job is done"""
+    time_started = time.strftime('%H:%M:%S')
     energies, mean_magnetization, accepted_configurations, time_spent = metropolis_c(*argv)
     mu_E, mu_M, mu_abs_M, mu_E_sq, mu_M_sq = extract_expectation_values(energies[cutoff:], mean_magnetization[cutoff:])
+    time_finished = time.strftime('%Y-%m-%d %H:%M:%S')
+
 
     # print progress info
     L = argv[0].shape[0]
     T = argv[2]
-    print "L = %3d  T = %-8g    finished in %15g s" % (L, T, time_spent)
+    print "[%s] L = %3d  T = %-8g    finished in %15g s" % (time_finished, L, T, time_spent)
 
     # enable garbage collection
     energies, mean_magnetization = None, None
