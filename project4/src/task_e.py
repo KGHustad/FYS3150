@@ -133,6 +133,7 @@ if __name__ == '__main__':
     parser.add_argument('--T_start', dest='T_start', type=float, default=2.0)
     parser.add_argument('--T_stop', dest='T_stop', type=float, default=2.3)
     parser.add_argument('--cutoff', dest='cutoff', type=float, default=0)
+    parser.add_argument('--L_values', dest='L_values', type=int, nargs='+', default=[40, 60, 100, 140])
     args = parser.parse_args()
 
     dT = args.dT
@@ -141,6 +142,7 @@ if __name__ == '__main__':
     T_start = args.T_start
     T_stop = args.T_stop
     cutoff = int(args.cutoff)
+    L_values = args.L_values
 
     n = int(round((T_stop - T_start)/dT))+1
 
@@ -153,7 +155,7 @@ if __name__ == '__main__':
     pool = multiprocessing.Pool()
 
     #L_values = [20, 40]
-    L_values = [40, 60, 100, 140]
+    #L_values = [40, 60, 100, 140]
     L_values = np.asarray(L_values)
     spin_matrices = {L: homogeneous_spin_matrix(L, 1) for L in L_values}
 
