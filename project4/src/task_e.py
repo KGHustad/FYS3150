@@ -127,13 +127,18 @@ def job_handler(argv, cutoff):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-S', '--sweeps', dest='sweeps', type=float, default=int(1E4))
-    parser.add_argument('-dT', '--temp_step', dest='dT', type=float, default=0.1)
+    parser.add_argument('-S', '--sweeps', dest='sweeps', type=float,
+                        default=int(1E4))
+    parser.add_argument('-dT', '--temp_step', dest='dT', type=float,
+                        default=0.1)
     parser.add_argument('--seed', dest='seed', type=int, default=3150)
     parser.add_argument('--T_start', dest='T_start', type=float, default=2.0)
     parser.add_argument('--T_stop', dest='T_stop', type=float, default=2.3)
     parser.add_argument('--cutoff', dest='cutoff', type=float, default=0)
-    parser.add_argument('--L_values', dest='L_values', type=int, nargs='+', default=[40, 60, 100, 140])
+    parser.add_argument('--L_values', dest='L_values', type=int, nargs='+',
+                        default=[40, 60, 100, 140])
+    parser.add_argument('-np', '--num_procs', dest='num_processes', type=int,
+                        default=multiprocessing.cpu_count())
     args = parser.parse_args()
 
     dT = args.dT
@@ -143,6 +148,7 @@ if __name__ == '__main__':
     T_stop = args.T_stop
     cutoff = int(args.cutoff)
     L_values = args.L_values
+    num_processes = args.num_processes
 
     n = int(round((T_stop - T_start)/dT))+1
 
@@ -152,7 +158,8 @@ if __name__ == '__main__':
     save_every_nth = 1
     silent = True
 
-    pool = multiprocessing.Pool()
+    print "Creating pool with %d processes" % (num_processes)
+    pool = multiprocessing.Pool(processes=num_processes)
 
     #L_values = [20, 40]
     #L_values = [40, 60, 100, 140]
