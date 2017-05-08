@@ -131,7 +131,7 @@ if __name__ == '__main__':
                         default=int(1E4))
     parser.add_argument('-dT', '--temp_step', dest='dT', type=float,
                         default=0.1)
-    parser.add_argument('--seed', dest='seed', type=int, default=3150)
+    parser.add_argument('--seed', dest='seed', type=int, default=0)
     parser.add_argument('--T_start', dest='T_start', type=float, default=2.0)
     parser.add_argument('--T_stop', dest='T_stop', type=float, default=2.3)
     parser.add_argument('--cutoff', dest='cutoff', type=float, default=0)
