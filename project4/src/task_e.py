@@ -147,7 +147,7 @@ if __name__ == '__main__':
     T_start = args.T_start
     T_stop = args.T_stop
     cutoff = int(args.cutoff)
-    L_values = args.L_values
+    L_values = sorted(args.L_values)
     num_processes = args.num_processes
 
     n = int(round((T_stop - T_start)/dT))+1
