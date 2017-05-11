@@ -12,7 +12,7 @@ void solve_tridiagonal(double *v, double *s, double *a, double *b, double *c,
     }
 
     /* backward substitution */
-    v[n] = s[n]/b[n];
+    v[n+1] = s[n+1]/b[n+1];
     for (i = n; i >= 0; i--) {
         v[i] = (s[i] - c[i]*v[i+1]) / b[i];
     }

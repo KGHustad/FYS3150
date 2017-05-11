@@ -25,7 +25,7 @@ def solve_general(f_func, n, a, b, c):
         s[i] -= s[i-1]*row_factor     # 2 FLOPs
 
     #Backward Substitution
-    v[n] = s[n]/b[n]
+    v[n+1] = s[n+1]/b[n+1]
 
     for i in range(n,-1,-1):
         v[i] = (s[i] - c[i]*v[i+1]) / b[i]  # 3 FLOPs
