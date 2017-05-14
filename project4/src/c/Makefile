@@ -9,6 +9,7 @@ ising_object_files = ising.o lattice.o random.o
 ising_lib = libising.so
 
 bench_random = bench_random.o
+bench_ising = bench_ising.o
 
 all: $(ising_lib)
 
@@ -18,7 +19,10 @@ $(ising_object_files): $(ising_headers) $(ising_sources)
 	$(CC) $(CC_FLAGS) $(ising_sources) -c $(LDFLAGS)
 bench_random: $(bench_random)
 $(bench_random): random.o bench_random.c
-	$(CC) $(CC_FLAGS) bench_random.c random.o -o bench_random.o $(LDFLAGS)
+	$(CC) $(CC_FLAGS) bench_random.c random.o -o $(bench_random) $(LDFLAGS)
+bench_ising: $(bench_ising)
+$(bench_ising): $(ising_object_files) bench_ising.c
+	$(CC) $(CC_FLAGS) bench_ising.c $(ising_object_files) -o $(bench_ising) $(LDFLAGS)
 #test.o: test.c $(ising_object_files)
 #	$(CC) -Wall -std=gnu89 -o test.o test.c ising.o -lm
 #valgrind: test.o

@@ -1,3 +1,6 @@
+#ifndef __LATTICE_H
+#define __LATTICE_H
+
 #include <stdint.h>
 
 typedef struct {
@@ -10,3 +13,5 @@ typedef struct {
 
 lattice alloc_lattice(int8_t *spin_flat, int L);
 void free_lattice(lattice lat);
+
+#endif
