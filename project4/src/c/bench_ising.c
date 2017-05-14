@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "ising.h"
 
@@ -10,11 +11,12 @@ int main(int argc, char *argv[]) {
     double T = 2.27;
 
     int L = 100;
-    int sweeps = 10000;
+    int sweeps = 1000;
 
-    int8_t *spin_flat = malloc(sizeof(int8_t)*L*L);
-    double *energies = malloc(sizeof(double)*sweeps);
-    long *tot_magnetization = malloc(sizeof(double)*sweeps);
+    int8_t *spin_flat = malloc(L*L*sizeof(int8_t));
+    memset(spin_flat, 1, L*L);
+    double *energies = malloc(sizeof(double)*(sweeps+1));
+    long *tot_magnetization = malloc(sizeof(long)*(sweeps+1));
     long accepted_configurations;
     long save_every_nth = 1;
     unsigned long seed = 0;
