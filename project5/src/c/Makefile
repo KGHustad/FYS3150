@@ -1,5 +1,6 @@
 .PHONY: clean clean-lib clean-objects clean-executables MPI memtest
 
+SHELL=/bin/bash
 CC=cc
 CFLAGS = -Wall -O3 -std=gnu89 -march=native
 LDFLAGS= -lm
