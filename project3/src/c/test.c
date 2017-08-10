@@ -16,9 +16,11 @@ int main() {
     int num_bodies = 2;
     size_t tot_size = sizeof(double)*2*num_bodies*(steps+1);
 
+    int minima_capacity = 100;
     double *pos_flat = malloc(tot_size);
     double *vel_flat = malloc(tot_size);
     double *masses = malloc(sizeof(double)*num_bodies);
+    double *minima_flat = malloc(sizeof(planet_state)*minima_capacity);
 
     /*
     memset(pos_flat, 0, tot_size);
@@ -43,8 +45,8 @@ int main() {
     vel_flat[2] = 0;
     vel_flat[3] = mercuryspeed;
 
-    python_interface(pos_flat, vel_flat, masses, num_bodies, steps,
-                     dt, 0, 1, 1);
+    python_interface(pos_flat, vel_flat, masses, minima_flat, num_bodies,
+                     steps, dt, 0, minima_capacity, 1, 1);
 
     /*
     int i;
@@ -59,5 +61,6 @@ int main() {
     free(masses);
     free(pos_flat);
     free(vel_flat);
+    free(minima_flat);
     return 0;
 }
