@@ -3,12 +3,12 @@
 /* type for representing pair of x, y values*/
 typedef struct {
     double x, y;
-} vec;
+} __attribute__((__packed__)) vec;
 
 typedef struct {
     vec pos, vel;
     double dist, time;
-} planet_state;
+} __attribute__((__packed__)) planet_state;
 
 /* type for a function pointer to one of the integration_algorithms */
 typedef void (*integration_func_ptr)(vec*, vec*, vec*, vec*, vec*,
