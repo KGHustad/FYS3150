@@ -3,10 +3,10 @@ python:
     - "2.7"
 
 dist: trusty
-sudo: required
+sudo: false 
 
 before_install:
-    - sudo pip install tabulate
+    - pip install tabulate
 
 addons:
   apt:
