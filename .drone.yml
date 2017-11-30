@@ -1,10 +1,12 @@
 pipeline:
   build:
-    image: fedora
+    image: ${IMAGE}
     commands:
-      - set -x && sudo bash dependencies/install_dependencies_fed.sh
+      - cd dependencies
+      - set -x && bash install_dependencies_minimal.sh ${IMAGE} && set +x
+      - cd ..
       - python --version
-      - python -c "import numpy"
+      - python -c "import numpy; print numpy.__version__"
       - make -C project2 jacobi_lib
       - make -C project3 solar_system_lib
       - make -C project4 libising
@@ -12,4 +14,9 @@ pipeline:
       - make -C project5 clean-c
       - make -C project5 test
       - make -C project5 clean-c
-      - make -C project5 diffusion_lib_mpi
+      #- make -C project5 diffusion_lib_mpi
+
+matrix:
+  IMAGE:
+    - fedora
+    - ubuntu
