@@ -126,19 +126,25 @@ def job_handler(argv, cutoff):
     return mu_E, mu_M, mu_abs_M, mu_E_sq, mu_M_sq
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-S', '--sweeps', dest='sweeps', type=float,
-                        default=int(1E4))
+                        default=int(1E4), help='Number of sweeps over the lattice')
     parser.add_argument('-dT', '--temp_step', dest='dT', type=float,
-                        default=0.1)
-    parser.add_argument('--seed', dest='seed', type=int, default=0)
-    parser.add_argument('--T_start', dest='T_start', type=float, default=2.0)
-    parser.add_argument('--T_stop', dest='T_stop', type=float, default=2.3)
-    parser.add_argument('--cutoff', dest='cutoff', type=float, default=0)
+                        default=0.1, help='Temperature step size')
+    parser.add_argument('--seed', dest='seed', type=int, default=0,
+                        help='Seed for RNG (if set to 0 a random seed is generated)')
+    parser.add_argument('--T_start', dest='T_start', type=float, default=2.0,
+                        help='Start of temperature range')
+    parser.add_argument('--T_stop', dest='T_stop', type=float, default=2.3,
+                        help='End of temperature range')
+    parser.add_argument('--cutoff', dest='cutoff', type=float, default=0,
+                        help='Discard the results from the first X sweeps')
     parser.add_argument('--L_values', dest='L_values', type=int, nargs='+',
-                        default=[40, 60, 100, 140])
+                        default=[40, 60, 100, 140],
+                        help='Lattice sizes (L * L)')
     parser.add_argument('-np', '--num_procs', dest='num_processes', type=int,
-                        default=multiprocessing.cpu_count())
+                        default=multiprocessing.cpu_count(),
+                        help='Number of processes')
     args = parser.parse_args()
 
     dT = args.dT
