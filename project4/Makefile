@@ -35,7 +35,7 @@ clean_kgh:
 # jgsl's report in separate directory
 report_jgsl:
 	$(MAKE) -C $(report_jgsl_dir)
-show_jgsl: report_kgh
+show_jgsl: report_jgsl
 	$(MAKE) -C $(report_jgsl_dir) show
 clean_jgsl:
 	$(MAKE) -C $(report_jgsl_dir) clean
