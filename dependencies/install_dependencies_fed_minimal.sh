@@ -20,6 +20,7 @@ function pip_install {
     fi
 }
 
+dnf_install glibc-locale-source
 localedef -v -c -i en_US -f UTF-8 en_US.UTF-8
 
 # Python 2 w/ SciPy stack (unused parts commented out)
@@ -45,6 +46,9 @@ dnf_install valgrind
 
 # MPI for Python
 dnf_install mpi4py-common
+
+# Weave
+pip_install weave
 
 # Pytest
 pip_install pytest
