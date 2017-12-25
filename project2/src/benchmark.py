@@ -53,10 +53,10 @@ if __name__ == '__main__':
     if latex_table_format:
         headers = ["$N$", "$\lambda_1$", "$\lambda_2$", "$\lambda_3$",
                    "iterations", "$\\frac{iterations}{N^2}$", "time"]
-        print tabulate.tabulate(data, headers, tablefmt='latex')
+        print tabulate.tabulate(data, headers, tablefmt='latex').encode('utf-8')
     else:
         """
         headers = ["N", "lambda_1", "lambda_2", "lambda_3",
                    "iterations", "time"]
         """
-        print tabulate.tabulate(data, headers, tablefmt='simple')
+        print tabulate.tabulate(data, headers, tablefmt='simple').encode('utf-8')
