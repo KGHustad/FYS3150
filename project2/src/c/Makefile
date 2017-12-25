@@ -9,7 +9,7 @@ endif
 jacobi_sources = jacobi.c
 jacobi_headers = jacobi.h
 jacobi_object_files = jacobi.o
-jacobi_lib = jacobi.so
+jacobi_lib = libjacobi.so
 
 all: $(jacobi_lib)
 

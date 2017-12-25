@@ -2,6 +2,8 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 import time
+import os
+import subprocess
 import ctypes
 import scipy.integrate as integrate
 weave_imported = True
@@ -14,6 +16,52 @@ except ImportError:
         weave_imported = False
 
 from operator import itemgetter
+
+# utility functions for smart path handling
+def get_lib_name():
+    return 'libjacobi.so'
+
+def get_lib_path():
+    this_file_dir = os.path.dirname(__file__)
+    relative_lib_path = os.path.join(this_file_dir, 'c')
+    return relative_lib_path
+
+def make_lib():
+    args = ['make', '-C', get_lib_path()]
+    p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err = p.communicate()
+    if p.returncode != 0:
+        print out
+        print err
+        print "Failed to build %s" % (get_lib_name)
+        return False
+    return True
+
+def check_lib_exists(make_if_missing=True):
+    lib_file = os.path.join(get_lib_path(), get_lib_name())
+    if not os.path.isfile(lib_file):
+        if make_if_missing:
+            print "Trying to build %s" % (get_lib_name())
+            success = make_lib()
+            if not success:
+                sys.exit(1)
+        else:
+            print "ERROR: Cannot find the library file '%s'" % lib_file
+            print "Try to make the library with 'make jacobi_lib'"
+            sys.exit(1)
+
+def get_proj_path():
+    this_file_dir = os.path.dirname(__file__)
+    # assume this file lies in <project_dir>/src
+    proj_path = os.path.abspath(os.path.join(this_file_dir, '..'))
+    return proj_path
+
+def get_fig_dir(make_if_missing=True):
+    proj_path = get_proj_path()
+    fig_dir = os.path.join(proj_path, 'fig')
+    if not os.path.isdir(fig_dir):
+        os.mkdir(fig_dir)
+    return fig_dir
 
 def find_max_nondiagonal_symmetrical_pure_python(A):
     """Finds the largest (in absolute value) non-diagonal element, a_kl, in an
@@ -343,7 +391,8 @@ def solve_c(A, R, tol=1E-8, silent=False):
     n = A.shape[0]
 
     #
-    libjacobi = np.ctypeslib.load_library("jacobi.so", "src/c")
+    check_lib_exists()
+    libjacobi = np.ctypeslib.load_library(get_lib_name(), get_lib_path())
 
     float64_array = np.ctypeslib.ndpointer(dtype=ctypes.c_double, ndim=1, flags="contiguous")
     libjacobi.jacobi.argstypes = [float64_array, float64_array,
@@ -405,8 +454,9 @@ def plot_lowest_energy_levels(n, interacting, omega, rho_max, solver='c',
         title += 'n=%g,  %d it. (tol=%.0E)' % (n, iterations, tol)
         plt.title(title)
         info = interaction_info + "_omega=%g" % omega
-        filename = 'fig/plot_%d-lowest_%s_rho-max=%g_n=%03d.pdf' \
+        filename = 'plot_%d-lowest_%s_rho-max=%g_n=%03d.pdf' \
                     % (levels, info, rho_max, n)
+        filename = os.path.join(get_fig_dir(), filename)
         print "Saving plot to %s" % filename
         plt.savefig(filename)
         if show:
@@ -455,8 +505,9 @@ def plot_varying_omega(n, interacting, omega_values, rho_max,
     info += "_omega=%s" % omega_values_str
     plot_type = "varying-omega"
     if filename == None:
-        filename = 'fig/plot_%s_%s_rho-max=%g_n=%03d.pdf' \
+        filename = 'plot_%s_%s_rho-max=%g_n=%03d.pdf' \
                     % (plot_type, info, rho_max, n)
+        filename = os.path.join(get_fig_dir(), filename)
     print "Saving plot to %s" % filename
     plt.savefig(filename)
     if show:

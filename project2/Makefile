@@ -12,7 +12,7 @@ test_programs=src/common.py
 pytest_opts=--doctest-modules --doctest-report=none -v
 
 jacobi_lib_dir=src/c
-jacobi_lib_file=src/c/jacobi.so
+jacobi_lib_file=src/c/libjacobi.so
 
 benchmarks=benchmark.dat
 benchmark_programs=src/benchmark.py
