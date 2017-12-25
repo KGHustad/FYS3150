@@ -5,6 +5,9 @@ pipeline:
       - cd dependencies
       - set -x && bash install_dependencies_minimal.sh ${IMAGE} && set +x
       - cd ..
+      - export LANG=en_US.UTF-8
+      - export LC_ALL=en_US.UTF-8
+      - locale
       - python --version
       - python -c "import numpy; print numpy.__version__"
       - gcc --version
