@@ -3,7 +3,7 @@
 SONAME = -soname
 ifeq ($(shell uname -s),Darwin)
     SONAME = -install_name
-		CC = clang
+    CC = clang -fopenmp
 endif
 
 SHELL=/bin/bash
@@ -27,8 +27,7 @@ memtest_executables_2d = memtest_2d_serial memtest_2d_omp
 memtest_executables = $(memtest_executables_1d) $(memtest_executables_2d)
 valgrind_memtest_flags = -q
 
-#LDFLAGS += -fopenmp
-OMP_FLAG = -fopenmp
+LDFLAGS += -fopenmp
 diffuse_sources += $(diffuse_sources_omp)
 diffuse_headers += $(diffuse_headers_omp)
 diffuse_object_files += $(diffuse_object_files_omp)
@@ -49,9 +48,9 @@ MPI: all
 
 #$(diffuse_lib): CFLAGS += -fpic
 $(diffuse_lib): $(diffuse_object_files)
-	$(CC) $(OMP_FLAG) -shared -Wl,$(SONAME),diffuse -o $(diffuse_lib) $(diffuse_object_files) $(LDFLAGS)
+	$(CC) -shared -Wl,$(SONAME),diffuse -o $(diffuse_lib) $(diffuse_object_files) $(LDFLAGS)
 $(diffuse_object_files): $(diffuse_headers) $(diffuse_sources)
-	$(CC) $(OMP_FLAG) $(CFLAGS) -fpic $(diffuse_sources) -c $(LDFLAGS)
+	$(CC) $(CFLAGS) -fpic $(diffuse_sources) -c $(LDFLAGS)
 
 memtest: $(memtest_executables)
 	valgrind $(valgrind_memtest_flags) ./memtest_1d
