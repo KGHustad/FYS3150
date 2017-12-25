@@ -10,6 +10,8 @@ pipeline:
       - gcc --version
       - gcc -march=native -Q --help=target
       - make -C project2 jacobi_lib
+      - make -C project2 benchmarks
+      - make -C project2 test
       - make -C project3 solar_system_lib
       - make -C project4 libising
       - make -C project5 diffusion_lib
