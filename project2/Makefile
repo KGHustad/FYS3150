@@ -38,9 +38,8 @@ $(report_pdf): $(report_texdoc) $(bibliography) $(plots) $(tables)
 	bibtex report
 	$(LATEX) $(LATEX_OPTS) $(report_texdoc)
 	$(LATEX) $(LATEX_OPTS) $(report_texdoc)
-benchmarks: $(benchmarks)
-$(benchmarks): $(benchmark_programs) $(jacobi_lib_file) $(util_programs)
-	python src/benchmark.py
+benchmarks: $(benchmark_programs) $(jacobi_lib_file) $(util_programs)
+	python src/benchmark.py > benchmark.dat
 plots: $(plots)
 $(plots): $(plot_programs) $(jacobi_lib_file) $(util_programs)
 	@mkdir -p $(@D)
