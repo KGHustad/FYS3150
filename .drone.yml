@@ -11,6 +11,7 @@ pipeline:
       - locale
       - python --version
       - python -c "import numpy; print numpy.__version__"
+      - python -c "import scipy; print scipy.__version__"
       - gcc --version
       - gcc -march=native -Q --help=target
       - make -C project2 jacobi_lib
