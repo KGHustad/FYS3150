@@ -4,7 +4,15 @@ import matplotlib.pyplot as plt
 import time
 import ctypes
 import scipy.integrate as integrate
-from scipy import weave
+weave_imported = True
+try:
+    from scipy import weave
+except ImportError:
+    try:
+        import weave
+    except ImportError:
+        weave_imported = False
+
 from operator import itemgetter
 
 def find_max_nondiagonal_symmetrical_pure_python(A):
@@ -90,8 +98,12 @@ def find_max_nondiagonal_symmetrical_weave(A):
     return maximum, max_k, max_l
 
 
-# use weave
-find_max_nondiagonal_symmetrical = find_max_nondiagonal_symmetrical_weave
+# use weave if available
+if weave_imported:
+    find_max_nondiagonal_symmetrical = find_max_nondiagonal_symmetrical_weave
+else:
+    # fall back to pure Python
+    find_max_nondiagonal_symmetrical = find_max_nondiagonal_symmetrical_pure_python
 
 def solve(A, R, tol=1E-8, silent=False):
     pre = time.clock()

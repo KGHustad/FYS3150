@@ -1,7 +1,11 @@
 .PHONY: clean clean-lib clean-objects clean-executables MPI memtest
 
+SONAME = -soname
+ifeq ($(shell uname -s),Darwin)
+    SONAME = -install_name
+endif
+
 SHELL=/bin/bash
-CC=cc
 CFLAGS = -Wall -O3 -std=gnu89 -march=native
 LDFLAGS= -lm
 diffuse_sources = boundary.c common.c diffuse_1d.c diffuse_2d.c tridiagonal.c
@@ -43,7 +47,7 @@ MPI: all
 
 #$(diffuse_lib): CFLAGS += -fpic
 $(diffuse_lib): $(diffuse_object_files)
-	$(CC) -shared -Wl,-soname,diffuse -o $(diffuse_lib) $(diffuse_object_files) $(LDFLAGS)
+	$(CC) -shared -Wl,$(SONAME),diffuse -o $(diffuse_lib) $(diffuse_object_files) $(LDFLAGS)
 $(diffuse_object_files): $(diffuse_headers) $(diffuse_sources)
 	$(CC) $(CFLAGS) -fpic $(diffuse_sources) -c $(LDFLAGS)
 
