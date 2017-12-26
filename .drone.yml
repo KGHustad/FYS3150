@@ -15,7 +15,7 @@ pipeline:
       - gcc --version
       - gcc -march=native -Q --help=target
       - mkdir -p ~/.config/matplotlib
-      - 'echo "Backend : Agg" > ~/.config/matplotlib/matplotlibrc'
+      - 'echo "backend : Agg" > ~/.config/matplotlib/matplotlibrc'
       - make -C project2 jacobi_lib
       - make -C project2 benchmarks
       - make -C project2 test
