@@ -3,10 +3,59 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys
 import time
+import os
+import subprocess
 import ctypes
 
 G = 4*np.pi**2
 c = 63197.8
+
+# utility functions for smart path handling
+def get_lib_name():
+    return 'libsolarsystem.so'
+
+def get_lib_path():
+    this_file_dir = os.path.dirname(__file__)
+    relative_lib_path = os.path.join(this_file_dir, 'c')
+    return relative_lib_path
+
+def make_lib():
+    args = ['make', '-C', get_lib_path()]
+    p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err = p.communicate()
+    if p.returncode != 0:
+        print out
+        print err
+        print "Failed to build %s" % (get_lib_name)
+        return False
+    return True
+
+def check_lib_exists(make_if_missing=True):
+    lib_file = os.path.join(get_lib_path(), get_lib_name())
+    if not os.path.isfile(lib_file):
+        if make_if_missing:
+            print "Trying to build %s" % (get_lib_name())
+            success = make_lib()
+            if not success:
+                sys.exit(1)
+        else:
+            print "ERROR: Cannot find the library file '%s'" % lib_file
+            print "Try to make the library with 'make solar_system_lib'"
+            sys.exit(1)
+
+def get_proj_path():
+    this_file_dir = os.path.dirname(__file__)
+    # assume this file lies in <project_dir>/src
+    proj_path = os.path.abspath(os.path.join(this_file_dir, '..'))
+    return proj_path
+
+def get_fig_dir(make_if_missing=True):
+    proj_path = get_proj_path()
+    fig_dir = os.path.join(proj_path, 'fig')
+    if not os.path.isdir(fig_dir):
+        os.mkdir(fig_dir)
+    return fig_dir
+
 
 class SolarSystem:
     def __init__(self):
@@ -153,7 +202,8 @@ class SolarSystem:
         pre = time.clock()
 
         # ctypes magic
-        lib_ss = np.ctypeslib.load_library("solar_system_lib.so", "src/c")
+        check_lib_exists()
+        lib_ss = np.ctypeslib.load_library(get_lib_name(), get_lib_path())
 
         float64_array = np.ctypeslib.ndpointer(dtype=ctypes.c_double, ndim=1,
                                                flags="contiguous")
@@ -221,7 +271,8 @@ class SolarSystem:
             plt.xlabel("time in years")
             plt.ylabel("energy in SolarMasses*AU^2/Year^2")
             plt.tight_layout()
-            plt.savefig("fig/energy_conservation_v=%gpi.pdf" % vel_fac)
+            plt.savefig(os.path.join(get_fig_dir(),
+                        "energy_conservation_v=%gpi.pdf" % vel_fac))
             if show:
                 plt.show()
             plt.clf()
@@ -237,7 +288,8 @@ class SolarSystem:
             print "Relative error in angular momentum over 15 years: %e" % (( np.min(AngularMomentum) - np.max(AngularMomentum) ) / np.min(AngularMomentum))
             plt.axis([0,15,0,4e-5])
             plt.tight_layout()
-            plt.savefig("fig/angular_momentum_v=%gpi.pdf" % vel_fac)
+            plt.savefig(os.path.join(get_fig_dir(),
+                        "angular_momentum_v=%gpi.pdf" % vel_fac))
             if show:
                 plt.show()
             plt.clf()
@@ -263,7 +315,8 @@ class SolarSystem:
         plt.ylabel("AU")
         #plt.title("Comparing timesteps with Velocity Verlet and Forward Euler")
         plt.legend(["dt=1/20year,FE","dt=1/20 year,VV","dt=1/100 year,FE","dt=1/100 year,VV"], loc='best')
-        plt.savefig("fig/timestep_test.pdf")
+        plt.savefig(os.path.join(get_fig_dir(),
+                    "timestep_test.pdf"))
         if show:
             plt.show()
         plt.clf()

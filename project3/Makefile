@@ -9,14 +9,14 @@ bibliography=../papers.bib
 clean_latex_ext=*.aux *.bbl *.blg *.log *.out
 
 solar_system_lib_dir=src/c
-solar_system_lib_file=src/c/solar_system.so
+solar_system_lib_file=src/c/libsolarsystem.so
 
 all: report solar_system_lib
 
 #solar_system_lib: $(solar_system_lib_file)
 #$(solar_system_lib_file):
-$(solar_system_lib_file): solar_system_lib
-solar_system_lib:
+solar_system_lib: $(solar_system_lib_file)
+$(solar_system_lib_file):
 	$(MAKE) -C $(solar_system_lib_dir)
 
 report: $(report_pdf)

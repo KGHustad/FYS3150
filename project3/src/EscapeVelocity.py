@@ -1,6 +1,7 @@
-from common import SolarSystem
+from common import *
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 
 for i in range(4):
     MySolarSystem = SolarSystem()
@@ -15,5 +16,6 @@ plt.xlabel("AU")
 plt.ylabel("AU")
 plt.plot(p[:,0,0], p[:,0,1], "yo")
 plt.legend(["Planet1, v = 2.7$\pi$","Planet2, v = 2.75$\pi$","Planet3 v = 2.80$\pi$", "Planet4, v = 2.85$\pi$","Sun"])
-plt.savefig("fig/escape_velocity.pdf")
+plt.savefig(os.path.join(get_fig_dir(),
+            "escape_velocity.pdf"))
 plt.show()

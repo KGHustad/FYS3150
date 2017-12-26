@@ -1,9 +1,10 @@
-from common import SolarSystem
+from common import *
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.signal
 import math
 import argparse
+import os
 
 def find_perihelion(pos_star, pos_celbody):
     dist = np.linalg.norm(pos_star - pos_celbody, axis=1)
@@ -100,7 +101,8 @@ plt.legend(["Classical Mechanics case", "Relativistic case"], loc="best")
 plt.xlabel("time in years")
 plt.ylabel("angle in seconds of arc")
 plt.tight_layout()
-plt.savefig("fig/perihelion_%03dyears_dt=%g.pdf" % (years, dt))
+plt.savefig(os.path.join(get_fig_dir(),
+            "perihelion_%03dyears_dt=%g.pdf" % (years, dt)))
 if show:
     plt.show()
 plt.clf()

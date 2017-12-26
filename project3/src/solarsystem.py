@@ -1,6 +1,7 @@
-from common import SolarSystem
+from common import *
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 from operator import itemgetter
 
 masses = { 'mercury' : 0.166e-6, 'venus' : 2.081e-6, 'earth' : 3.003e-6, 'mars' : 0.323e-6, 'jupiter' : 954.7e-6, 'saturn' : 285.8e-6, 'uranus' : 43.6e-6, 'neptune' : 51.5e-6}
@@ -54,6 +55,7 @@ for i in range(len(masses)+1):
 #plt.axis([-10,10,-10,10])
 plt.title("Solar System simulated over 100 years")
 plt.legend(bodies, loc='best')
-plt.savefig("fig/solar_system.pdf")
+plt.savefig(os.path.join(get_fig_dir(),
+            "solar_system.pdf"))
 plt.show()
 #"""

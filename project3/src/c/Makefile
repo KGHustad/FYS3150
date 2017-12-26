@@ -9,7 +9,7 @@ endif
 solar_system_sources = solar_system.c
 solar_system_headers = solar_system.h
 solar_system_object_files = solar_system.o
-solar_system_lib = solar_system_lib.so
+solar_system_lib = libsolarsystem.so
 
 all: $(solar_system_lib)
 
