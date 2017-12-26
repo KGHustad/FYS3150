@@ -126,6 +126,9 @@ def job_handler(argv, cutoff):
     return mu_E, mu_M, mu_abs_M, mu_E_sq, mu_M_sq
 
 if __name__ == '__main__':
+    # make sure the library file has been built before spawning processes
+    check_lib_exists()
+
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-S', '--sweeps', dest='sweeps', type=float,
                         default=int(1E4), help='Number of sweeps over the lattice')
