@@ -6,6 +6,8 @@ import os
 import subprocess
 import ctypes
 import scipy.integrate as integrate
+import sys
+
 weave_imported = True
 try:
     from scipy import weave
