@@ -18,7 +18,9 @@ pipeline:
       - make -C project2 benchmarks
       - make -C project2 test
       - make -C project3 solar_system_lib
+      - make -C project3 reference_test
       - make -C project4 libising
+      - make -C project4 reference_test
       - make -C project5 diffusion_lib
       - make -C project5 clean-c
       - make -C project5 test
