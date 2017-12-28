@@ -1,6 +1,6 @@
 os:
     - linux
-    - osx
+#    - osx
 
 language: python
 python:
@@ -10,7 +10,7 @@ dist: trusty
 sudo: false
 
 before_install:
-    - echo $CONDA_DIR
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then echo $CONDA_DIR; fi
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then wget --quiet https://repo.continuum.io/miniconda/Miniconda2-latest-MacOSX-x86_64.sh && bash Miniconda2-latest-MacOSX-x86_64.sh -b -p $CONDA_DIR; fi
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source ~/.bash_profile; fi
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then conda config --system --append channels conda-forge; fi
@@ -36,8 +36,7 @@ addons:
     - python-matplotlib
 
 env:
-    - OMP_NUM_THREADS=4
-    - CONDA_DIR=$HOME/conda
+    - OMP_NUM_THREADS=4 CONDA_DIR=$HOME/conda
 script:
     - python --version
     - python -c "import numpy; print numpy.__version__"
@@ -53,3 +52,8 @@ script:
 
 notifications:
     email: false
+
+matrix:
+    include:
+        - language: generic
+          os: osx
