@@ -1,3 +1,7 @@
+os:
+    - linux
+    - osx
+
 language: python
 python:
     - "2.7"
@@ -6,6 +10,17 @@ dist: trusty
 sudo: false
 
 before_install:
+    - echo $CONDA_DIR
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then wget --quiet https://repo.continuum.io/miniconda/Miniconda2-latest-MacOSX-x86_64.sh && bash Miniconda2-latest-MacOSX-x86_64.sh -b -p $CONDA_DIR; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source ~/.bash_profile; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then conda config --system --append channels conda-forge; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then conda update --all -y; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then conda create -n dev python=2.7 -y; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source activate dev; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then bash dependencies/install_dependencies_conda.sh; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source deactivate; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source activate dev; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pip install weave; fi
     - pip install tabulate
 
 addons:
@@ -22,17 +37,19 @@ addons:
 
 env:
     - OMP_NUM_THREADS=4
+    - CONDA_DIR=$HOME/conda
 script:
     - python --version
-    - python -c "import numpy"
+    - python -c "import numpy; print numpy.__version__"
+    - python -c "import scipy; print scipy.__version__"
     - make -C project2 jacobi_lib
     - make -C project3 solar_system_lib
     - make -C project4 libising
     - make -C project5 diffusion_lib
     - make -C project5 clean-c
-    - make -C project5 test
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then make -C project5 test; else make -C project5 pytest; fi
     - make -C project5 clean-c
-    - make -C project5 diffusion_lib_mpi
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then make -C project5 diffusion_lib_mpi; fi
 
 notifications:
     email: false
