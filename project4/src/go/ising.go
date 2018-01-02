@@ -78,7 +78,7 @@ func relative_change_of_energy(lat_ptr *Lattice, i int, j int) int {
 }
 
 func metropolis(lat_ptr *Lattice, sweeps int64, J float64, energies []float64,
-	tot_magnetization []int64, /*gsl_rng *r,*/ dE_cache []float64,
+	tot_magnetization []int64, r *rand.Rand, dE_cache []float64,
 	save_every_nth int64) {
 	L := lat_ptr.L
 	lat := *lat_ptr
@@ -92,15 +92,13 @@ func metropolis(lat_ptr *Lattice, sweeps int64, J float64, energies []float64,
 	var L_sq int64 = int64(L*L)
 	for sweep = 1; sweep <= sweeps; sweep++ {
 		for count := 0; count < L*L; count++ {
-			//pos_1d = gsl_rng_uniform_int(r, L_sq);
-			pos_1d = rand.Int63n(L_sq)
+			pos_1d = r.Int63n(L_sq)
 			i := int(pos_1d / int64(L))
 			j := int(pos_1d % int64(L))
 
 			relative_dE = relative_change_of_energy(lat_ptr, i, j)
 			dE := dE_cache[4+relative_dE]
-			//ran = gsl_rng_uniform(r);
-			ran = rand.Float64()
+			ran = r.Float64()
 
 			if dE > ran {
 				/* ACCEPT */
@@ -132,10 +130,11 @@ func Solve(lat_ptr *Lattice, sweeps int64, J float64, T float64,
 		dE_cache[i] = math.Exp(-beta*float64(2*(i-4)))
 	}
 
-	rand.Seed(seed)
-	metropolis(lat_ptr, sweeps, J, energies, tot_magnetization, /*r,*/ dE_cache,
-				save_every_nth)
+	// create new Rand
+	var r = rand.New(rand.NewSource(seed))
 
+	metropolis(lat_ptr, sweeps, J, energies, tot_magnetization, r, dE_cache,
+				save_every_nth)
 }
 
 func Init_lattice(lat_ptr *Lattice, L int) {
