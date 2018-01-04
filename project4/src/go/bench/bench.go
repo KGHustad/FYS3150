@@ -3,10 +3,26 @@ package main
 import (
 	"fmt"
 	"ising"
+	"flag"
+	"os"
+	"runtime/pprof"
+	"log"
 )
+
+var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
 
 func main() {
 	fmt.Println("Benchmarking ising")
+
+	flag.Parse()
+	if *cpuprofile != "" {
+			f, err := os.Create(*cpuprofile)
+			if err != nil {
+					log.Fatal(err)
+			}
+			pprof.StartCPUProfile(f)
+			defer pprof.StopCPUProfile()
+	}
 
 	var J float64 = 1
 	var T float64 = 2.27
