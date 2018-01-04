@@ -39,7 +39,7 @@ def check_lib_exists(make_if_missing=True):
                 sys.exit(1)
         else:
             print "ERROR: Cannot find the library file '%s'" % lib_file
-            print "Try to make the library with 'make diffusion_lib'"
+            print "Try to make the library with 'make libising'"
             sys.exit(1)
 
 def get_proj_path():

@@ -3,6 +3,7 @@ import os
 import sys
 import ctypes
 import time
+import subprocess
 
 # utility functions for smart path handling
 def get_lib_name():
@@ -13,12 +14,29 @@ def get_lib_path():
     relative_lib_path = os.path.join(this_file_dir, 'c')
     return relative_lib_path
 
-def check_lib_exists():
+def make_lib():
+    args = ['make', '-C', get_lib_path()]
+    p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err = p.communicate()
+    if p.returncode != 0:
+        print out
+        print err
+        print "Failed to build %s" % (get_lib_name)
+        return False
+    return True
+
+def check_lib_exists(make_if_missing=True):
     lib_file = os.path.join(get_lib_path(), get_lib_name())
     if not os.path.isfile(lib_file):
-        print "ERROR: Cannot find the library file '%s'" % lib_file
-        print "Try to make the library with 'make diffusion_lib'"
-        sys.exit(1)
+        if make_if_missing:
+            print "Trying to build %s" % (get_lib_name())
+            success = make_lib()
+            if not success:
+                sys.exit(1)
+        else:
+            print "ERROR: Cannot find the library file '%s'" % lib_file
+            print "Try to make the library with 'make diffusion_lib'"
+            sys.exit(1)
 
 def get_proj_path():
     this_file_dir = os.path.dirname(__file__)
