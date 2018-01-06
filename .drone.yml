@@ -1,6 +1,6 @@
 pipeline:
   build:
-    image: ${IMAGE}
+    image: ${IMAGE}:${TAG}
     commands:
       - cd dependencies
       - set -x && bash install_dependencies_minimal.sh ${IMAGE} && set +x
@@ -30,6 +30,10 @@ pipeline:
       #- make -C project5 diffusion_lib_mpi
 
 matrix:
-  IMAGE:
-    - fedora
-    - ubuntu
+  include:
+    - IMAGE: fedora
+      TAG: latest
+    - IMAGE: ubuntu
+      TAG: latest     # latest LTS release
+    - IMAGE: ubuntu
+      TAG: rolling    # latest release
