@@ -1,7 +1,6 @@
 #/usr/bin/env sh
 apt-get update
-apt-get install locales -y
-echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
+
 apt-get install python-pip -y
 
 apt-get install python-numpy -y
