@@ -1,11 +1,10 @@
-
 function wraparound(i, offset, len)
   return ((len + (i-1 + offset)) % len)+1
 end
 
 mutable struct Lattice
-    Spin::Array{Int8, 2}   # spin values (may be +1 or -1)
-    L::Int           # dimension of lattice
+    Spin::Array{Int8, 2}    # spin values (may be +1 or -1)
+    L::Int                  # dimension of lattice
     Energy::Float64
     Tot_magnetization::Int64
     Accepted_configurations::Int64
@@ -14,12 +13,10 @@ end
 function find_energy(lat::Lattice, J)
     L = lat.L
     A = lat.Spin
-    
+
     E = 0
     for i = 1:L
         for j = 1:L
-            #E += A[i][j] * A[(i+1) % L][j]         # horizontal neighbour
-            #E += A[i][j] * A[i][(j+1) % L]         # vertical neighbour
             E += A[i,j] * A[wraparound(i, 1, L), j] # horizontal neighbour
             E += A[i,j] * A[i, wraparound(j, 1, L)] # vertical neighbour
         end
@@ -64,20 +61,13 @@ function relative_change_of_energy(lat::Lattice, i::Int, j::Int)
     return E_old
 end
 
-function metropolis(lat::Lattice, sweeps::Int64, J::Float64, energies::Array{Float64}, 
-    tot_magnetization::Array{Int64}, r::MersenneTwister, dE_cache::Array{Float64}, 
+function metropolis(lat::Lattice, sweeps::Int64, J::Float64, energies::Array{Float64},
+    tot_magnetization::Array{Int64}, r::MersenneTwister, dE_cache::Array{Float64},
     save_every_nth::Int64)
     L = lat.L
     spin = lat.Spin
     accepted_configurations = 0
-    #=
-    var ran float64
-    var relative_dE int
-    var accepted_configurations int64
-    var pos_1d int64
-    var sweep int64
-    =#
-    
+
     for sweep = 1:sweeps
         for count = 0:L*L
             pos_1d = rand(r, 0:L*L-1)
@@ -95,14 +85,13 @@ function metropolis(lat::Lattice, sweeps::Int64, J::Float64, energies::Array{Flo
                 lat.Tot_magnetization += 2*spin[i,j]
                 accepted_configurations += 1
             end
-            
+
         end
-        
+
         if (sweep % save_every_nth) == 0
             energies[div(sweep, save_every_nth)] = lat.Energy
             tot_magnetization[div(sweep, save_every_nth)] = lat.Tot_magnetization
         end
-
     end
 
     lat.Accepted_configurations = accepted_configurations
@@ -145,7 +134,6 @@ function bench()
     tot_magnetization = Array{Int64}(sweeps+1)
     save_every_nth = 1
     seed = 0
-
     lat = Lattice(spin, L, 0, 0, 0)
 
     solve(lat, sweeps, J, T, energies, tot_magnetization, save_every_nth, seed)
