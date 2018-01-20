@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
     double T = 2.27;
 
     int L = 100;
-    int sweeps = 1000;
+    int sweeps = 10000;
 
     int8_t *spin_flat = malloc(L*L*sizeof(int8_t));
     memset(spin_flat, 1, L*L);

@@ -28,7 +28,7 @@ func main() {
 	var T float64 = 2.27
 
 	var L int = 100
-	var sweeps int64 = 1000
+	var sweeps int64 = 10000
 
 	var spin [][]int8 = make([][]int8, L)
 	for i := 0; i < L; i++ {

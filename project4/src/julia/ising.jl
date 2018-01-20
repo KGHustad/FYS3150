@@ -122,7 +122,7 @@ function bench()
     T = 2.27
 
     L = 100
-    sweeps = 1000
+    sweeps = 10000
 
     spin = Array{Int8, 2}(L, L)
     for i = 1:L
