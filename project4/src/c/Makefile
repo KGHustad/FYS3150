@@ -1,4 +1,4 @@
-.PHONY: clean bench_ising bench_random
+.PHONY: clean bench_ising bench_random run-benchmark
 
 CC_FLAGS = -Wall -O3 -std=gnu89 -fpic -march=native
 #LDFLAGS= -lm -lgsl -lcblas -latlas
@@ -29,6 +29,9 @@ $(bench_random): random.o bench_random.c
 bench_ising: $(bench_ising)
 $(bench_ising): $(ising_object_files) bench_ising.c
 	$(CC) $(CC_FLAGS) bench_ising.c $(ising_object_files) -o $(bench_ising) $(LDFLAGS)
+
+run-benchmark: $(bench_ising)
+	time -p ./$(bench_ising)
 
 clean:
 	$(RM) $(ising_object_files) $(ising_lib) $(bench_random) $(bench_ising) test.o

@@ -9,6 +9,7 @@ __pycache__/
 *.out
 *.o
 *.so
+*.x
 
 
 # LaTeX
@@ -17,6 +18,7 @@ __pycache__/
 *.blg
 *.log
 *.out
+**/_minted-*
 
 #LaTeXmk
 *.bcf
