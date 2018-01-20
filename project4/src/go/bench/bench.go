@@ -1,29 +1,31 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"ising"
-	"flag"
+	"log"
 	"os"
 	"runtime/pprof"
-	"log"
+	"time"
 )
 
 var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
 
 func main() {
-	fmt.Println("Benchmarking ising")
+	fmt.Println("Benchmarking go implementation")
 
 	flag.Parse()
 	if *cpuprofile != "" {
-			f, err := os.Create(*cpuprofile)
-			if err != nil {
-					log.Fatal(err)
-			}
-			pprof.StartCPUProfile(f)
-			defer pprof.StopCPUProfile()
+		f, err := os.Create(*cpuprofile)
+		if err != nil {
+			log.Fatal(err)
+		}
+		pprof.StartCPUProfile(f)
+		defer pprof.StopCPUProfile()
 	}
 
+	start := time.Now()
 	var J float64 = 1
 	var T float64 = 2.27
 
@@ -47,5 +49,7 @@ func main() {
 	lat.L = L
 
 	ising.Solve(&lat, sweeps, J, T, energies, tot_magnetization, save_every_nth, seed)
+	elapsed := time.Since(start)
+	fmt.Println("Finished in ", elapsed)
 	//fmt.Println(lat)
 }
