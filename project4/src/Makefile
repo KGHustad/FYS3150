@@ -2,11 +2,11 @@
 
 bench: bench-c bench-go bench-julia
 
-bench-c: c/bench_ising.x
+bench-c:
 	make -C c run-benchmark
 
-bench-go: go/bench/bench
+bench-go:
 	make -C go run-benchmark
 
-bench-julia: go/bench/bench
+bench-julia:
 	make -C julia run-benchmark
