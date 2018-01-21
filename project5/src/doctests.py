@@ -1,5 +1,8 @@
 from common import *
-
+try:
+    np.set_printoptions(legacy="1.13")
+except:
+    pass
 
 def doctest_solve_1d_forward_euler():
     """
