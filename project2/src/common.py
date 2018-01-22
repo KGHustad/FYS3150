@@ -17,6 +17,13 @@ except ImportError:
     except ImportError:
         weave_imported = False
 
+# Make doctests compatible with numpy >= 1.14
+np.set_printoptions(linewidth=100)
+try:
+    np.set_printoptions(legacy="1.13")
+except:
+    pass
+
 from operator import itemgetter
 
 # utility functions for smart path handling

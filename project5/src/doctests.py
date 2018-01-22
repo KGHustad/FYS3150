@@ -1,4 +1,5 @@
 from common import *
+np.set_printoptions(linewidth=100)
 try:
     np.set_printoptions(legacy="1.13")
 except:
