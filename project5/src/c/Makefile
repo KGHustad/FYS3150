@@ -7,7 +7,7 @@ ifeq ($(shell uname -s),Darwin)
 endif
 
 SHELL=/bin/bash
-CFLAGS = -Wall -O3 -std=gnu89 -march=native
+CFLAGS = -Wall -g -O3 -std=gnu89 #-march=native
 LDFLAGS= -lm
 diffuse_sources = boundary.c common.c diffuse_1d.c diffuse_2d.c tridiagonal.c
 diffuse_sources_omp = diffuse_2d_omp.c
