@@ -13,6 +13,7 @@ before_install:
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then conda create -n dev python=2.7 -y; fi
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source activate dev; fi
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then bash dependencies/install_dependencies_conda.sh; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then conda install numpy\<1.14 -y; fi
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source deactivate; fi
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source activate dev; fi
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pip install weave; fi
