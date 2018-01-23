@@ -1,0 +1,63 @@
+{
+    "units": {
+        "distance": "AU (Astronomical Units)",
+        "mass": "solar masses",
+        "velocity": "AU/year (Astronomical Units per year)"
+    },
+    "bodies": [
+        {
+            "distance": 0,
+            "mass": 1,
+            "name": "Sun",
+            "velocity": 0
+        },
+        {
+            "distance": 0.39,
+            "mass": 1.66e-07,
+            "name": "Mercury",
+            "velocity": 9.992156999999999
+        },
+        {
+            "distance": 0.72,
+            "mass": 2.081e-06,
+            "name": "Venus",
+            "velocity": 7.378175
+        },
+        {
+            "distance": 1,
+            "mass": 3.003e-06,
+            "name": "Earth",
+            "velocity": 6.281989
+        },
+        {
+            "distance": 1.52,
+            "mass": 3.23e-07,
+            "name": "Mars",
+            "velocity": 5.0804005000000005
+        },
+        {
+            "distance": 5.2,
+            "mass": 0.0009547,
+            "name": "Jupiter",
+            "velocity": 2.7615455
+        },
+        {
+            "distance": 9.58,
+            "mass": 0.0002858,
+            "name": "Saturn",
+            "velocity": 2.0448085
+        },
+        {
+            "distance": 19.23,
+            "mass": 4.36e-05,
+            "name": "Uranus",
+            "velocity": 1.433474
+        },
+        {
+            "distance": 30.1,
+            "mass": 5.15e-05,
+            "name": "Neptune",
+            "velocity": 1.138347
+        }
+    ]
+}
