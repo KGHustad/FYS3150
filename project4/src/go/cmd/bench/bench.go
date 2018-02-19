@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"ising"
+	"github.com/KGHustad/FYS3150/project4/src/go/ising"
 	"log"
 	"os"
 	"runtime/pprof"
