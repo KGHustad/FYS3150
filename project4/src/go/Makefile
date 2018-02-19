@@ -1,2 +1,2 @@
 run-benchmark:
-	make -C bench run-benchmark
+	make -C cmd/bench run-benchmark
