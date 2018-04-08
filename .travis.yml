@@ -15,7 +15,6 @@ before_install:
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then bash dependencies/install_dependencies_conda.sh; fi
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source deactivate; fi
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source activate dev; fi
-    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pip install weave; fi
     - pip install tabulate
     - mkdir -p ~/.config/matplotlib
     - 'echo "backend : Agg" > ~/.config/matplotlib/matplotlibrc'
