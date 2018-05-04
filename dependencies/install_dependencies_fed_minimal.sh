@@ -20,6 +20,8 @@ function pip_install {
     fi
 }
 
+dnf install redhat-lsb-core
+
 # Python 2 w/ SciPy stack (unused parts commented out)
 dnf_install python
 dnf_install python-pip

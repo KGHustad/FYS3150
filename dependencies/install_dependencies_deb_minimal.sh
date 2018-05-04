@@ -1,6 +1,8 @@
 #/usr/bin/env sh
 apt-get update
 
+apt-get install lsb-release -y
+
 apt-get install python-pip -y
 
 apt-get install python-numpy -y
