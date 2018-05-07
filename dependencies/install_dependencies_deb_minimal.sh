@@ -1,7 +1,7 @@
 #/usr/bin/env bash
 
 function apt_install {
-    echo -e "\nAttempting to install $1 via dnf"
+    echo -e "\nAttempting to install $1 via apt"
     apt-get -q -y install $@
     if [ $? -ne 0 ]; then
         echo "could not install $1 - abort"
@@ -17,6 +17,9 @@ function pip_install {
         exit 1
     fi
 }
+
+# avoid interactive prompt to set timezone
+echo "Europe/Oslo" > /etc/localtime
 
 apt-get update
 
