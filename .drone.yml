@@ -4,7 +4,7 @@ pipeline:
     pull: true
     commands:
       - cd dependencies
-      - set -x && bash install_dependencies_minimal.sh ${IMAGE} && set +x
+      - bash install_dependencies_minimal.sh ${IMAGE}
       - cd ..
       - lsb_release -a
       - python --version
