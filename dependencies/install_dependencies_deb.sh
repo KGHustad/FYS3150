@@ -1,4 +1,4 @@
-#/usr/bin/env sh
+#/usr/bin/env bash
 # tabulate is used for pretty printing tables
 sudo -H pip install tabulate
 

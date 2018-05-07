@@ -1,15 +1,13 @@
-#/usr/bin/env sh
-#set -x # print all commands
+#/usr/bin/env bash
 
 function dnf_install {
     echo -e "\nAttempting to install $1 via dnf"
-    dnf -q -y install $1
+    dnf -q -y install $@
     if [ $? -ne 0 ]; then
         echo "could not install $1 - abort"
         exit 1
     fi
 }
-
 
 function pip_install {
     echo -e "\nAttempting to install $1 via pip"
