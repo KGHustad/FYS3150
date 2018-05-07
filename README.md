@@ -1,5 +1,5 @@
 # FYS3150 - Computational physics
-[![Build Status](https://travis-ci.org/KGHustad/FYS3150.svg?branch=master)](https://travis-ci.org/KGHustad/FYS3150)
+Travis [![Travis CI Build Status](https://travis-ci.org/KGHustad/FYS3150.svg?branch=master)](https://travis-ci.org/KGHustad/FYS3150) Drone [![Drone CI Build Status](https://drone.doconce.org/api/badges/KGHustad/FYS3150/status.svg)](https://drone.doconce.org/api/badges/KGHustad/FYS3150/status.svg)
 
 This repository contains the coursework of Kristian Gregorius Hustad and Jonas Gahr Sturtzel Lunde from the autumn of 2016.
 
