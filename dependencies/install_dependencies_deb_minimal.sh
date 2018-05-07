@@ -32,6 +32,8 @@ apt_install python-scipy
 apt_install python-matplotlib
 apt_install python-nose
 
+pip_install weave
+
 pip_install pytest
 
 # tabulate is used for pretty printing tables
