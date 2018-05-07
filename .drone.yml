@@ -6,6 +6,7 @@ pipeline:
       - cd dependencies
       - bash install_dependencies_minimal.sh ${IMAGE}
       - cd ..
+      - export PYTEST_ADDOPTS="--color=yes"
       - lsb_release -a
       - python --version
       - python -c "import numpy; print numpy.__version__"
