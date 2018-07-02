@@ -1,4 +1,4 @@
-#/usr/bin/env bash
+#!/usr/bin/env bash
 
 function dnf_install {
     echo -e "\nAttempting to install $1 via dnf"

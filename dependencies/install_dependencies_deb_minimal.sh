@@ -1,4 +1,4 @@
-#/usr/bin/env bash
+#!/usr/bin/env bash
 
 function apt_install {
     echo -e "\nAttempting to install $1 via apt"
