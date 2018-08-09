@@ -2,9 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <time.h>
+
 #include "ising.h"
 
 int main(int argc, char *argv[]) {
+    struct timespec start, end;
     printf("bench_ising\n");
 
     double J = 1;
@@ -13,6 +16,7 @@ int main(int argc, char *argv[]) {
     int L = 100;
     int sweeps = 10000;
 
+    clock_gettime(CLOCK_MONOTONIC_RAW, &start);
     int8_t *spin_flat = malloc(L*L*sizeof(int8_t));
     memset(spin_flat, 1, L*L);
     double *energies = malloc(sizeof(double)*(sweeps+1));
@@ -27,6 +31,10 @@ int main(int argc, char *argv[]) {
     free(spin_flat);
     free(energies);
     free(tot_magnetization);
+
+    clock_gettime(CLOCK_MONOTONIC_RAW, &end);
+    double time_spent = end.tv_sec - start.tv_sec + 1E-9 * (end.tv_nsec - start.tv_nsec);
+    printf("Finished in %g seconds\n", time_spent);
 
     return 0;
 }

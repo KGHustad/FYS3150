@@ -1,3 +1,5 @@
+using Random
+
 function wraparound(i, offset, len)
   return ((len + (i-1 + offset)) % len)+1
 end
@@ -105,7 +107,7 @@ function solve(lat::Lattice, sweeps::Int64, J::Float64, T::Float64,
     find_energy(lat, J)
     find_tot_magnetization(lat)
 
-    dE_cache = Array{Float64}(9)
+    dE_cache = Array{Float64}(undef, 9)
     for i = 1:2:9
         dE_cache[i] = exp(-beta*2*(i-4))
     end
