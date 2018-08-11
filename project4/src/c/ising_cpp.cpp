@@ -132,7 +132,6 @@ void metropolis(lattice *lat_ptr, int sweeps, double J, double *energies,
     long sweep, count, accepted_configurations=0;
     int i, j;
     long pos_1d;
-    long L_sq = L*L;
     for (sweep=1; sweep <= sweeps; sweep++) {
         for (count=0; count < L*L; count++) {
 #ifdef USE_GSL

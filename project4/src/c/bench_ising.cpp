@@ -4,7 +4,10 @@
 
 #include <time.h>
 
-#include "ising.h"
+void python_interface(int8_t *spin_flat, int L, int sweeps, double J,
+                      double T, double *energies,
+                      long *tot_magnetization,
+                      long *accepted_configurations_ptr, long save_every_nth, unsigned long seed);
 
 int main(int argc, char *argv[]) {
     struct timespec start, end;
