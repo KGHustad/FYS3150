@@ -299,7 +299,7 @@ A_4 &= \left(\begin{array}{ccccc}
 \end{align*}
 
 At this point we should be recognising a pattern along the diagonal. Namely, that $b_i = \frac{i+1}{i}$. This allows us to precalculate $b_i$. Furthermore, the formulae for $s_i$ and $v_i$ can be simplified by exploiting the fact that $a_i = -1 \quad \forall \quad i \in \mathcal{I}_i$.
-These observations gives rise to a new algorithm.
+These observations give rise to a new algorithm.
 
 \begin{algorithm}
 \caption{Gaussian elimination for a special tridiagonal matrix with $a_i = c_i = -1$ and $b_i = 2$ $\quad \forall \quad i \in \mathcal{I}_i$} \label{alg:gaussian-special-tridiagonal}
@@ -324,7 +324,7 @@ We see that algorithm \ref{alg:gaussian-special-tridiagonal} requires a number o
 If we want to solve a series of matrix equations $A\mathbf{v} = \mathbf{s}$ with the same matrix $A$, we could invest some time in performing an LU decomposition of $A$ in $\Theta(n^3)$ time, while we could solve $U\mathbf{v} = \mathbf{w}, L\mathbf{w} = \mathbf{s}$ in $\Theta(n^2)$ time. However, we would need to store a full $n \times n$ matrix, so our memory requirements are on the order of $\Theta(n^2)$.
 
 \section{Implementation and results}\label{sec:implementation_and_results}
-We chose Python as our implementation language because it allows for rapid development and has a syntax which is very close to the algorithmic language we are translating from. For future projects, we will consider using C++, but it's main advantage lies is its efficiency, which wasn't a big problem with our programs.
+We chose Python as our implementation language because it allows for rapid development and has a syntax which is very close to the algorithmic language we are translating from. For future projects, we will consider using C++, but its main advantage lies is its efficiency, which was not a big problem with our programs.
 
 
 
