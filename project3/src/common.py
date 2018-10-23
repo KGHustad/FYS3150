@@ -24,9 +24,9 @@ def make_lib():
     p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()
     if p.returncode != 0:
-        print out
-        print err
-        print "Failed to build %s" % (get_lib_name)
+        print(out)
+        print(err)
+        print("Failed to build %s" % (get_lib_name))
         return False
     return True
 
@@ -34,13 +34,13 @@ def check_lib_exists(make_if_missing=True):
     lib_file = os.path.join(get_lib_path(), get_lib_name())
     if not os.path.isfile(lib_file):
         if make_if_missing:
-            print "Trying to build %s" % (get_lib_name())
+            print("Trying to build %s" % (get_lib_name()))
             success = make_lib()
             if not success:
                 sys.exit(1)
         else:
-            print "ERROR: Cannot find the library file '%s'" % lib_file
-            print "Try to make the library with 'make solar_system_lib'"
+            print("ERROR: Cannot find the library file '%s'" % lib_file)
+            print("Try to make the library with 'make solar_system_lib'")
             sys.exit(1)
 
 def get_proj_path():
@@ -148,7 +148,7 @@ class SolarSystem:
             acc_method = self.Acc
         num_objects = self.NumberOfObjects
         dt = float(years)/steps
-        print "dt = %g" % dt
+        print("dt = %g" % dt)
         p = np.zeros( shape = ( steps+1, num_objects, 2 ) )
         v = np.zeros( shape = ( steps+1, num_objects, 2 ) )
         p[0] = self.ObjectPositions[:][:]
@@ -165,7 +165,7 @@ class SolarSystem:
         post = time.clock()
         time_spent = post - pre
         if not silent:
-            print "Time spent (pure Python): %g" % time_spent
+            print("Time spent (pure Python): %g" % time_spent)
         return p, v
 
     def fill_array_c(self, steps, years, int_method = None, acc_method = None,
@@ -235,7 +235,7 @@ class SolarSystem:
         post = time.clock()
         time_spent = post - pre
         if not silent:
-            print "Time spent (C): %g" % time_spent
+            print("Time spent (C): %g" % time_spent)
         if perihelion_minima != 0:
             minima = minima[:recorded_minima].copy()
             return p, v, minima
@@ -277,15 +277,15 @@ class SolarSystem:
                 plt.show()
             plt.clf()
 
-            print "Center of mass at beginning of simulation, and after 15 years:"
-            print CenterOfMass[0], "\n", CenterOfMass[-1]
+            print("Center of mass at beginning of simulation, and after 15 years:")
+            print(CenterOfMass[0], "\n", CenterOfMass[-1])
 
             AngularMomentum = TestSolarSystem.ObjectMasses[1]*np.cross(P[:,1], V[:,1])
             plt.plot(t, AngularMomentum)
             plt.title("Angular Momentum of Planet over 15 years")
             plt.xlabel("time in years")
             plt.ylabel("Angular Momentum")
-            print "Relative error in angular momentum over 15 years: %e" % (( np.min(AngularMomentum) - np.max(AngularMomentum) ) / np.min(AngularMomentum))
+            print("Relative error in angular momentum over 15 years: %e" % (( np.min(AngularMomentum) - np.max(AngularMomentum) ) / np.min(AngularMomentum)))
             plt.axis([0,15,0,4e-5])
             plt.tight_layout()
             plt.savefig(os.path.join(get_fig_dir(),

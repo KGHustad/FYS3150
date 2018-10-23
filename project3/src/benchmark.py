@@ -33,4 +33,4 @@ for int_alg, int_str in [(ss.ForwardEuler, "Forward Euler"),
                                            int_method = int_alg,
                                            acc_method = acc_alg,
                                            silent=True, benchmark=True)
-        print "%8g s with  %15s  AND  %20s" % (time_spent, int_str, acc_str)
+        print("%8g s with  %15s  AND  %20s" % (time_spent, int_str, acc_str))

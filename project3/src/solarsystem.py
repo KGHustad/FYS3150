@@ -31,22 +31,22 @@ for key in sorted_bodies:
 p, v = MySolarSystem.fill_array_c(int(1e3), 100, int_method = MySolarSystem.VelocityVerlet, acc_method = MySolarSystem.Acc, skip_saving=1000)
 
 """
-print "\nInitial values:"
-print p[0]
-print v[0]
+print("\nInitial values:")
+print(p[0])
+print(v[0])
 
-print "\nAfter first step:"
-print p[1]
-print v[1]
+print("\nAfter first step:")
+print(p[1])
+print(v[1])
 
-print "\nAfter second step:"
-print p[2]
-print v[2]
+print("\nAfter second step:")
+print(p[2])
+print(v[2])
 """
 
-print "\nSun development:"
-print p[:,0]
-print v[:,0]
+print("\nSun development:")
+print(p[:,0])
+print(v[:,0])
 
 #"""
 plt.axes(aspect='equal')

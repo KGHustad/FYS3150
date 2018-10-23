@@ -53,7 +53,7 @@ show = args.show
 
 #time_steps = np.linspace(0, years, N+1)
 dt = years/float(N*skip_saving)
-print "dt = %g" % dt
+print("dt = %g" % dt)
 radians_to_arcseconds = 360*60*60 /(2*math.pi)
 
 mercurymass = 0.1652e-6
@@ -86,9 +86,9 @@ points_einstein, angles_einstein, indices_einstein = res_einstein
 points_einstein, angles_einstein, times_einstein = find_perihelion_alt(minima_einstein)
 
 """
-#print indices_newton
-#print time_steps[indices_einstein]
-#print angles_newton
+#print(indices_newton)
+#print(time_steps[indices_einstein])
+#print(angles_newton)
 plt.plot(time_steps[indices_newton], angles_newton, 'o-')
 plt.plot(time_steps[indices_einstein], angles_einstein, 'o-')
 """
@@ -123,13 +123,13 @@ try:
     precession_newton *= radians_to_arcseconds
     precession_einstein = angles_einstein[-1]*100/times_einstein[-1]
     precession_einstein *= radians_to_arcseconds
-    print "Precession per 100 years (Newton):   %g" % (precession_newton)
-    print "Precession per 100 years (Einstein): %g" % (precession_einstein)
-    print "Observed perihelions (Newton):   %d" % len(points_newton)
-    print "Observed perihelions (Einstein): %d" % len(points_einstein)
+    print("Precession per 100 years (Newton):   %g" % (precession_newton))
+    print("Precession per 100 years (Einstein): %g" % (precession_einstein))
+    print("Observed perihelions (Newton):   %d" % len(points_newton))
+    print("Observed perihelions (Einstein): %d" % len(points_einstein))
 except IndexError:
-    print "*** ERROR: No minima (perihelions) found"
-    print "Isaac"
-    print p_newton[:10,:,:]
-    print "Albert"
-    print p_einstein[:10,:,:]
+    print("*** ERROR: No minima (perihelions) found")
+    print("Isaac")
+    print(p_newton[:10,:,:])
+    print("Albert")
+    print(p_einstein[:10,:,:])
