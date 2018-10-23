@@ -1,6 +1,23 @@
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.linalg
+
+def get_proj_path():
+    this_file_dir = os.path.dirname(__file__)
+    # assume this file lies in <project_dir>/src
+    proj_path = os.path.abspath(os.path.join(this_file_dir, '..'))
+    return proj_path
+
+def get_fig_dir():
+    proj_path = get_proj_path()
+    fig_dir = os.path.join(proj_path, 'fig')
+    return fig_dir
+
+def ensure_fig_dir():
+    fig_dir = get_fig_dir()
+    if not os.path.isdir(fig_dir):
+        os.mkdir(fig_dir)
 
 # MATHEMATICAL FUNCTIONS
 def u_func(x):

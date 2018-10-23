@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys
 
-from common import u_func
+from common import u_func, get_fig_dir
 
 if __name__ == '__main__':
     n = 10000
@@ -11,6 +11,6 @@ if __name__ == '__main__':
     plt.plot(x, u)
     plt.xlabel('x')
     plt.ylabel('u(x)')
-    plt.savefig('fig/plot_exact.pdf')
+    plt.savefig(get_fig_dir()+'/plot_exact.pdf')
     if not "--dont_show" in sys.argv:
         plt.show()

@@ -10,7 +10,7 @@ if __name__ == '__main__':
     n_values = [10, 100, 1000]
     plot_solutions(n_values, solve)
 
-    plt.savefig('fig/plot_e.pdf')
+    plt.savefig(get_fig_dir()+'/plot_e.pdf')
 
     if not '--dont_show' in sys.argv:
         plt.show()
@@ -18,6 +18,6 @@ if __name__ == '__main__':
     plt.clf()
 
     plot_errors(n_values, solve)
-    plt.savefig('fig/plot_e_error.pdf')
+    plt.savefig(get_fig_dir()+'/plot_e_error.pdf')
     if not "--dont_show" in sys.argv:
         plt.show()

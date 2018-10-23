@@ -16,13 +16,13 @@ if __name__ == '__main__':
     n_values = [10, 100, 1000, 10000]
     plot_solutions(n_values, solve)
 
-    plt.savefig('fig/plot_b.pdf')
+    plt.savefig(get_fig_dir()+'/plot_b.pdf')
     if not "--dont_show" in sys.argv:
         plt.show()
 
     plt.clf()
 
     plot_errors(n_values, solve)
-    plt.savefig('fig/plot_b_error.pdf')
+    plt.savefig(get_fig_dir()+'/plot_b_error.pdf')
     if not "--dont_show" in sys.argv:
         plt.show()
