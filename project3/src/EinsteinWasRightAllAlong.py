@@ -23,7 +23,7 @@ def find_perihelion_alt(minima):
     return pos_minima, angles, time_minima
 
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument('-N', '-n',
                     dest='N', metavar='N', type=float, default=int(1E6),
                     help="total time steps stored")
