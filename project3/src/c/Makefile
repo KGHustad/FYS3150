@@ -1,5 +1,5 @@
 
-CFLAGS = -Wall -O3 -std=gnu89 -fpic -march=native
+CFLAGS = -Wall -O3 -ffast-math -std=gnu89 -fpic -march=native
 LD_FLAGS = -lm
 
 SONAME = -soname
