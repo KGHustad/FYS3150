@@ -15,6 +15,8 @@ before_install:
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then bash dependencies/install_dependencies_conda.sh; fi
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source deactivate; fi
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source activate dev; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export C_INCLUDE_PATH="${C_INCLUDE_PATH}:$(conda info --base)/envs/dev/include"; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export LDFLAGS="-L$(conda info --base)/envs/dev/lib"; fi
     - pip install tabulate
     - mkdir -p ~/.config/matplotlib
     - 'echo "backend : Agg" > ~/.config/matplotlib/matplotlibrc'
