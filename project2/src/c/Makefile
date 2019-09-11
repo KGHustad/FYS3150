@@ -1,5 +1,6 @@
 
-CC_FLAGS = -Wall -O2 -fpic -lm -march=native
+CFLAGS = -Wall -O2 -fpic -march=native
+LDLIBS = -lm
 
 SONAME = -soname
 ifeq ($(shell uname -s),Darwin)
@@ -14,9 +15,9 @@ jacobi_lib = libjacobi.so
 all: $(jacobi_lib)
 
 $(jacobi_lib): $(jacobi_object_files)
-	$(CC) -shared -Wl,$(SONAME),jacobi -o $(jacobi_lib) $(jacobi_object_files)
-$(jacobi_object_files): $(jacobi_headers) $(jacobi_sources)
-	$(CC) $(CC_FLAGS) $(jacobi_sources) -c
+	$(CC) -shared -Wl,$(SONAME),jacobi -o $@ $^ $(LDFLAGS) $(LDLIBS)
+#$(jacobi_object_files): $(jacobi_headers) $(jacobi_sources)
+#	$(CC) $(CFLAGS) $(jacobi_sources) -c
 
 
 clean:
