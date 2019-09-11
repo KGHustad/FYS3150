@@ -3,12 +3,13 @@
 SONAME = -soname
 ifeq ($(shell uname -s),Darwin)
     SONAME = -install_name
-    CC = clang -fopenmp
+    CC = clang
 endif
 
 SHELL=/bin/bash
 CFLAGS = -Wall -g -O3 -std=gnu89 #-march=native
-LDFLAGS= -lm
+#LDFLAGS = -lm
+LDLIBS = -lm
 diffuse_sources = boundary.c common.c diffuse_1d.c diffuse_2d.c tridiagonal.c
 diffuse_sources_omp = diffuse_2d_omp.c
 diffuse_sources_mpi = diffuse_2d_mpi.c
@@ -27,10 +28,12 @@ memtest_executables_2d = memtest_2d_serial memtest_2d_omp
 memtest_executables = $(memtest_executables_1d) $(memtest_executables_2d)
 valgrind_memtest_flags = -q
 
-LDFLAGS += -fopenmp
+ifeq ($(shell uname -s),Linux)
+CFLAGS += -fopenmp
 diffuse_sources += $(diffuse_sources_omp)
 diffuse_headers += $(diffuse_headers_omp)
 diffuse_object_files += $(diffuse_object_files_omp)
+endif
 
 all: $(diffuse_lib)
 
@@ -48,9 +51,9 @@ MPI: all
 
 #$(diffuse_lib): CFLAGS += -fpic
 $(diffuse_lib): $(diffuse_object_files)
-	$(CC) -shared -Wl,$(SONAME),diffuse -o $(diffuse_lib) $(diffuse_object_files) $(LDFLAGS)
+	$(CC) -shared -Wl,$(SONAME),diffuse -o $(diffuse_lib) $(diffuse_object_files) $(LDFLAGS) $(LDLIBS)
 $(diffuse_object_files): $(diffuse_headers) $(diffuse_sources)
-	$(CC) $(CFLAGS) -fpic $(diffuse_sources) -c $(LDFLAGS)
+	$(CC) $(CFLAGS) -fpic $(diffuse_sources) -c
 
 memtest: $(memtest_executables)
 	valgrind $(valgrind_memtest_flags) ./memtest_1d
